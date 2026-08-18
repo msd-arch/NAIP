@@ -1,0 +1,75 @@
+{
+  "generated": "2026-08-18T05:39:38.627429",
+  "scope": "Real-time desert-locust breeding-risk screen using real SMAP soil-moisture-anomaly and real Sentinel-2 NDVI green-up signal, standard FAO DLIS-style logic. Thresholds (SM anomaly >= 0.02 m3/m3, NDVI delta >= 0.03) are standard qualitative bands, NOT locally fitted/validated against any real locust survey ground truth this week -- treat as a screening signal, not a validated forecast. Cholistan has no official boundary anywhere (see per-region boundary_note) -- proxy geometry substantially overstates true desert extent.",
+  "regions": [
+    {
+      "region": "Tharparkar",
+      "boundary_type": "real_district",
+      "boundary_note": "real district polygon(s) from geoBoundaries ADM2",
+      "window_recent": [
+        "2026-07-19",
+        "2026-08-18"
+      ],
+      "window_prior": [
+        "2026-06-19",
+        "2026-07-19"
+      ],
+      "sm_surface_m3m3": 0.1714,
+      "sm_surface_anomaly_m3m3": 0.0007,
+      "ndvi_recent_30d": 0.117,
+      "ndvi_prior_30d": 0.07,
+      "ndvi_delta": 0.047,
+      "soil_favorable_for_egglaying": false,
+      "vegetation_greenup_detected": true,
+      "breeding_risk_flag": false,
+      "confidence": 0.65,
+      "source": "NASA SMAP L4 SPL4SMGP v008 (real, ~11km, own built-in anomaly) + Sentinel-2 SR Harmonized NDVI (real, cloud-masked, 100m reduce scale)"
+    },
+    {
+      "region": "Kharan",
+      "boundary_type": "real_district",
+      "boundary_note": "real district polygon(s) from geoBoundaries ADM2",
+      "window_recent": [
+        "2026-07-19",
+        "2026-08-18"
+      ],
+      "window_prior": [
+        "2026-06-19",
+        "2026-07-19"
+      ],
+      "sm_surface_m3m3": 0.0514,
+      "sm_surface_anomaly_m3m3": -0.0174,
+      "ndvi_recent_30d": 0.05,
+      "ndvi_prior_30d": 0.048,
+      "ndvi_delta": 0.001,
+      "soil_favorable_for_egglaying": false,
+      "vegetation_greenup_detected": false,
+      "breeding_risk_flag": false,
+      "confidence": 0.35,
+      "source": "NASA SMAP L4 SPL4SMGP v008 (real, ~11km, own built-in anomaly) + Sentinel-2 SR Harmonized NDVI (real, cloud-masked, 100m reduce scale)"
+    },
+    {
+      "region": "Cholistan",
+      "boundary_type": "proxy_district_union",
+      "boundary_note": "NO official Cholistan boundary exists anywhere accessible (checked OSM, zero results) -- this is the real-geometry union of the 3 Punjab districts (Bahawalpur, Bahawalnagar, Rahim Yar Khan) reported to contain the Cholistan Desert, NOT a Cholistan-specific boundary. Substantially overstates true desert extent.",
+      "window_recent": [
+        "2026-07-19",
+        "2026-08-18"
+      ],
+      "window_prior": [
+        "2026-06-19",
+        "2026-07-19"
+      ],
+      "sm_surface_m3m3": 0.1171,
+      "sm_surface_anomaly_m3m3": -0.0019,
+      "ndvi_recent_30d": 0.268,
+      "ndvi_prior_30d": 0.219,
+      "ndvi_delta": 0.049,
+      "soil_favorable_for_egglaying": false,
+      "vegetation_greenup_detected": true,
+      "breeding_risk_flag": false,
+      "confidence": 0.65,
+      "source": "NASA SMAP L4 SPL4SMGP v008 (real, ~11km, own built-in anomaly) + Sentinel-2 SR Harmonized NDVI (real, cloud-masked, 100m reduce scale)"
+    }
+  ]
+}
