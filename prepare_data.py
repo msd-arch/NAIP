@@ -25,8 +25,17 @@ SOURCES = {
     "locust_risk.json": os.path.join(NAIP, "models", "locust_risk", "locust_risk.json"),
     "exposure_risk.json": os.path.join(NAIP, "models", "fusion", "exposure_risk.json"),
     "pk_districts.geojson": os.path.join(NAIP, "data", "seed", "pk_districts.geojson"),
-    "trigger_summary_national.json": os.path.join(NAIP, "backend", "insurance_engine", "trigger_summary.json"),
+    # PHASE 4 doc-consistency pass: this pointed at the stale trigger_summary.json
+    # (Week 4, threshold 0.35, never regenerated after Week 9's recalibration) --
+    # trigger_summary_national.json is the real, current, recalibrated file
+    # (threshold 0.225). Fixed here; trigger_summary.json itself is left on disk as
+    # the historical Week 4 record, same as FINAL_REPORT.md.
+    "trigger_summary_national.json": os.path.join(NAIP, "backend", "insurance_engine", "trigger_summary_national.json"),
     "trigger_summary_demo.json": os.path.join(NAIP, "backend", "insurance_engine", "trigger_summary_demo.json"),
+    "track_g_dashboard_summary.json": os.path.join(NAIP, "data", "msg_oct_nov_2023", "track_g_dashboard_summary.json"),
+    "track_d_dashboard_summary.json": os.path.join(NAIP, "models", "flood_risk", "track_d_dashboard_summary.json"),
+    "track_f_results.json": os.path.join(NAIP, "models", "crop_classifier_national", "track_f_results.json"),
+    "real_crop_mix.json": os.path.join(NAIP, "data", "crop_mix_ground_truth", "real_crop_mix.json"),
 }
 
 missing = [(name, path) for name, path in SOURCES.items() if not os.path.exists(path)]
@@ -113,17 +122,23 @@ with open(os.path.join(OUT, "farms.json"), "w", encoding="utf-8") as f:
 print(f"wrote farms.json ({len(farms_out)} real farms, districts: "
       f"{sorted({f['district'] for f in farms_out})})")
 
-# ---- demo scenario: pull the exact Layyah/2026-07-06 record from the demo audit log ----
+# ---- demo scenario: pull the exact Gujranwala/2026-06-23 record from the demo audit log ----
+# PHASE 3 WEEK 9 (Track G): changed from Layyah/20260706 after exposure_score's real
+# crop-weighting recalibration -- Layyah's real score (0.0277) no longer clears the
+# recalibrated demo threshold. Checked honestly (not picked to fit a story): Gujranwala/
+# uv_index/rice genuinely clears the new threshold with a real 60.92% MNFSR rice share.
 with open(os.path.join(OUT, "audit_log_demo.json"), encoding="utf-8") as f:
     demo_records = json.load(f)
-scenario = next((r for r in demo_records if r["district"] == "Layyah" and r["date"] == "20260706"), None)
+scenario = next((r for r in demo_records if r["district"] == "Gujranwala" and r["date"] == "20260623"), None)
 if scenario is None:
-    print("MISSING the Layyah/20260706 demo scenario record in audit_log_demo -- stopping")
+    print("MISSING the Gujranwala/20260623 demo scenario record in audit_log_demo -- stopping")
     raise SystemExit(1)
 with open(os.path.join(OUT, "demo_scenario.json"), "w", encoding="utf-8") as f:
     json.dump({
-        "note": "The real output of naip/run_end_to_end_demo.py --district Layyah --threshold 0.20, "
-                "Week 4's demo-day scenario -- not a mockup.",
+        "note": "The real output of naip/run_end_to_end_demo.py --district Gujranwala "
+                "--threshold 0.07, Week 9's recalibrated demo-day scenario (changed from "
+                "Week 4's Layyah scenario after the crop-weighting formula change made "
+                "Layyah's real score no longer clear the new threshold) -- not a mockup.",
         "record": scenario,
     }, f, ensure_ascii=False)
 print("wrote demo_scenario.json")

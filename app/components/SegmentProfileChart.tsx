@@ -30,11 +30,13 @@ export default function SegmentProfileChart({ segments }: { segments: Segment[] 
       <text x={pad} y={h - 8} fontSize="10" fill="var(--text-faint)">head (0km)</text>
       <text x={w - pad - 60} y={h - 8} fontSize="10" fill="var(--text-faint)">tail ({maxDist.toFixed(0)}km)</text>
 
-      <path d={elevPath} fill="none" stroke="#4da3ff" strokeWidth={2} opacity={0.85} />
-      <path d={stressPath} fill="none" stroke="#ef4444" strokeWidth={2} />
+      {/* elevation is the supporting/verification reference -- neutral gray */}
+      <path d={elevPath} fill="none" stroke="#6b6b74" strokeWidth={1.5} opacity={0.8} strokeDasharray="3 3" />
+      {/* stress index is the one number this view is about -- the accent */}
+      <path d={stressPath} fill="none" stroke="#4fb8ad" strokeWidth={2} />
 
-      <text x={pad} y={14} fontSize="10" fill="#ef4444">stress index (1 - ET/PET)</text>
-      <text x={pad} y={28} fontSize="10" fill="#4da3ff">real SRTM elevation (m)</text>
+      <text x={pad} y={14} fontSize="10" fill="#4fb8ad">stress index (1 - ET/PET)</text>
+      <text x={pad} y={28} fontSize="10" fill="#6b6b74">real SRTM elevation (m), reference</text>
     </svg>
   );
 }

@@ -10,6 +10,7 @@ interface Scenario {
   record: {
     district: string; date: string; hazard: string; hazard_confidence: number;
     crop: string; crop_stage: string; exposure_score: number; threshold: number;
+    crop_weight?: number; crop_mix_source?: string; crop_mix_share_of_4crop_area?: number | null;
     n_real_farms_matched_in_district: number; matched_farm_ids: string[];
     basis_risk_note: string; payout: { status: string; note: string };
   };
@@ -33,10 +34,14 @@ export default function DemoWalkthroughPage() {
         "MSG/SEVIRI archive (2026-06-22..07-20).",
     },
     {
-      title: "2. Fusion + plausibility mask", body:
+      title: "2. Fusion + real crop-mix weighting", body:
         `Fused with the real regional crop calendar: ${r.crop} was in "${r.crop_stage}" stage ` +
-        `on ${r.date}. crop_plausibility.py confirmed ${r.crop} is agronomically plausible for ` +
-        `${r.district} (a real cotton-belt district) -> exposure_score = ${r.exposure_score}.`,
+        `on ${r.date}. crop_weight = ${r.crop_weight?.toFixed(4) ?? "n/a"}` +
+        (r.crop_mix_share_of_4crop_area != null
+          ? ` (${r.district}'s real MNFSR ${r.crop} share: ${(r.crop_mix_share_of_4crop_area * 100).toFixed(2)}% ` +
+            `of its 4-crop area, source: ${r.crop_mix_source}) `
+          : ` (${r.crop_mix_source ?? "crop_plausibility.py"} boolean gate) `) +
+        `-> exposure_score = hazard_confidence * vulnerability_weight * crop_weight = ${r.exposure_score}.`,
     },
     {
       title: "3. Trigger-contract engine", body:
@@ -66,14 +71,14 @@ export default function DemoWalkthroughPage() {
       <div className="mt-6 space-y-3">
         {steps.map((s) => (
           <div key={s.title} className="rounded-xl border border-soft bg-elev p-4">
-            <h2 className="text-sm font-semibold text-accent">{s.title}</h2>
+            <h2 className="text-sm font-semibold text-accent-500">{s.title}</h2>
             <p className="mt-1.5 text-xs text-dim">{s.body}</p>
           </div>
         ))}
       </div>
 
-      <div className="mt-4 rounded-xl border border-warn/40 bg-warn/10 p-4 text-xs">
-        <strong className="text-warn">Payout status: {r.payout.status}</strong>
+      <div className="caveat-banner mt-4">
+        <strong>Payout status: {r.payout.status}</strong>
         <p className="mt-1 text-dim">{r.payout.note}</p>
       </div>
 

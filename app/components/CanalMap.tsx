@@ -9,10 +9,19 @@ interface Segment {
 }
 
 function stressColor(v: number | null) {
-  if (v === null) return "#4a5878";
-  // 0.85-0.95 is this canal's real observed range -- stretch that band for visible contrast
+  if (v === null) return "#3a3a40";
+  // 0.85-0.95 is this canal's real observed range -- stretch that band for visible
+  // contrast, within the one accent hue only (light tint -> saturated accent)
   const t = Math.min(1, Math.max(0, (v - 0.82) / 0.15));
-  return `rgb(${Math.round(80 + t * 175)}, ${Math.round(180 - t * 140)}, 90)`;
+  const stops: [number, number, number][] = [
+    [60, 84, 82],   // dim, low stress
+    [79, 184, 173], // accent-500
+    [127, 224, 212], // brightest, most severe
+  ];
+  const seg = t < 0.5 ? [stops[0], stops[1], t * 2] : [stops[1], stops[2], (t - 0.5) * 2];
+  const [a, b, lt] = seg as [number[], number[], number];
+  const mix = (i: number) => Math.round(a[i] + (b[i] - a[i]) * lt);
+  return `rgb(${mix(0)}, ${mix(1)}, ${mix(2)})`;
 }
 
 export default function CanalMap({ segments }: { segments: Segment[] }) {
@@ -28,13 +37,13 @@ export default function CanalMap({ segments }: { segments: Segment[] }) {
           subdomains="abcd"
           maxZoom={19}
         />
-        <Polyline positions={line} color="#4da3ff55" weight={2} />
+        <Polyline positions={line} color="#4fb8ad55" weight={2} />
         {segments.map((s) => (
           <CircleMarker
             key={s.segment_id}
             center={[s.lat, s.lon]}
             radius={s.position === "head" || s.position === "tail" ? 8 : 5}
-            pathOptions={{ color: "#0b0f16", weight: 1, fillColor: stressColor(s.stress_index), fillOpacity: 0.9 }}
+            pathOptions={{ color: "#09090b", weight: 1, fillColor: stressColor(s.stress_index), fillOpacity: 0.9 }}
           >
             <Tooltip>
               {s.position} &middot; {s.dist_from_head_km}km &middot; stress={s.stress_index ?? "n/a"}

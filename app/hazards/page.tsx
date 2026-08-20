@@ -16,16 +16,32 @@ interface DistrictSummary {
   hazards_triggered: Record<string, number>;
 }
 
+interface FireClassifierSummary {
+  real_window: string;
+  n_records_compared: number;
+  n_rule_flagged: number;
+  "n_model_flagged_ge_0.5"?: number;
+  n_model_flagged_ge_0_5?: number;
+  both_flagged: number;
+  rule_only: number;
+  model_only: number;
+  neither: number;
+  mean_model_score: number;
+  caveat: string;
+}
+
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 export default function HazardsPage() {
   const [geo, setGeo] = useState<GeoJSON.FeatureCollection | null>(null);
   const [summary, setSummary] = useState<{ districts: DistrictSummary[] } | null>(null);
   const [selected, setSelected] = useState<DistrictSummary | null>(null);
+  const [fire, setFire] = useState<FireClassifierSummary | null>(null);
 
   useEffect(() => {
     fetch(`${BASE}/data/pk_districts.geojson`).then((r) => r.json()).then(setGeo);
     fetch(`${BASE}/data/district_hazard_summary.json`).then((r) => r.json()).then(setSummary);
+    fetch(`${BASE}/data/track_g_dashboard_summary.json`).then((r) => r.json()).then((d) => setFire(d.fire_classifier));
   }, []);
 
   const byName = useMemo(() => {
@@ -47,9 +63,11 @@ export default function HazardsPage() {
     const name = feature.properties?.shapeName as string;
     const d = byName.get(name);
     const n = d?.n_triggered_rows ?? 0;
-    const intensity = n / maxTriggered;
-    const color = n === 0 ? "#2a3444" : `rgba(239, 68, 68, ${0.15 + intensity * 0.75})`;
-    return { color: "#4da3ff33", weight: 1, fillColor: color, fillOpacity: 1 };
+    const t = n / maxTriggered;
+    // one accent hue, light-to-saturated -- no data reads neutral gray
+    const color =
+      n === 0 ? "#1c1c20" : t < 0.33 ? "#3c5c58" : t < 0.66 ? "#4fb8ad" : "#7fe0d4";
+    return { color: "#33333a", weight: 1, fillColor: color, fillOpacity: 1 };
   };
 
   const onEachFeature = (feature: Feature<Geometry, any>, layer: any) => {
@@ -70,7 +88,7 @@ export default function HazardsPage() {
       </p>
 
       <CaveatBanner>
-        This is district-level, not farm-level. A district being colored red means the
+        This is district-level, not farm-level. A district being colored teal means the
         0.25&deg; (~27km) grid-cell reading for that district triggered a hazard on at
         least one real day in the 71-frame archive (2026-06-22..07-20) &mdash; it does
         not mean every farm in that district experienced it. See the Insurance Trigger
@@ -108,6 +126,57 @@ export default function HazardsPage() {
           )}
         </div>
       </div>
+
+      <h2 className="mt-10 text-base font-semibold">
+        residue_burning: real rule vs. Track E&apos;s trained model score
+      </h2>
+      <p className="mt-1 text-sm text-dim">
+        Every <code>residue_burning</code> alert record in this feed carries two independent
+        real signals: the unchanged rule-based <code>flag</code> above, and the trained
+        thermal-only GBT classifier&apos;s <code>model_score</code> (Week 7/9, F1=0.346 vs.
+        the rule&apos;s F1=0.004 on identical held-out data) &mdash; run side by side, not
+        one replacing the other.
+      </p>
+
+      {!fire ? (
+        <p className="mt-4 text-sm text-dim">Loading real rule-vs-model comparison...</p>
+      ) : (
+        <>
+          <p className="mt-3 text-xs text-dim">
+            {fire.real_window} &mdash; {fire.n_records_compared} real records where both
+            produced a result.
+          </p>
+          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <FireCell label="Both flag" value={fire.both_flagged} tone="match" />
+            <FireCell label="Rule only" value={fire.rule_only} tone="plain" />
+            <FireCell label="Model only (score ≥ 0.5)" value={fire.model_only} tone="plain" />
+            <FireCell label="Neither" value={fire.neither} tone="quiet" />
+          </div>
+          <div className="mt-3 grid grid-cols-1 gap-2 text-xs text-faint sm:grid-cols-3">
+            <span>Rule flagged: <span className="tnum text-dim">{fire.n_rule_flagged}</span></span>
+            <span>
+              Model flagged (&ge;0.5):{" "}
+              <span className="tnum text-dim">{fire["n_model_flagged_ge_0.5"] ?? fire.n_model_flagged_ge_0_5}</span>
+            </span>
+            <span>Mean model score: <span className="tnum text-dim">{fire.mean_model_score}</span></span>
+          </div>
+          <CaveatBanner>{fire.caveat}</CaveatBanner>
+        </>
+      )}
+    </div>
+  );
+}
+
+function FireCell({ label, value, tone }: { label: string; value: number; tone: "match" | "plain" | "quiet" }) {
+  const toneClass = {
+    match: "border-accent-500/40 bg-accent-500/10",
+    plain: "border-soft bg-elev-2",
+    quiet: "border-soft bg-elev",
+  }[tone];
+  return (
+    <div className={`rounded-lg border p-3 text-center ${toneClass}`}>
+      <div className="tnum text-lg font-semibold">{value}</div>
+      <div className="text-[11px] text-faint">{label}</div>
     </div>
   );
 }

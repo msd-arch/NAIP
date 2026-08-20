@@ -8,28 +8,26 @@ export default {
   theme: {
     extend: {
       colors: {
+        // one accent, one hue, four steps -- no per-module category colors anywhere
         accent: {
-          DEFAULT: "#4da3ff",
-          soft: "rgba(77, 163, 255, 0.15)",
-          strong: "#2f8ce0",
+          100: "#cde9e6",
+          300: "#8fd0c9",
+          500: "#4fb8ad",
+          700: "#1f7d74",
+          DEFAULT: "#4fb8ad",
+          soft: "rgba(79, 184, 173, 0.12)",
         },
-        warn: {
-          DEFAULT: "#f59e0b",
-          soft: "rgba(245, 158, 11, 0.15)",
-        },
-        danger: {
-          DEFAULT: "#ef4444",
-          soft: "rgba(239, 68, 68, 0.15)",
-        },
+        // reserved exclusively for genuinely urgent states (a fired trigger,
+        // an active critical alert) -- never for routine category labeling
+        critical: { DEFAULT: "#e5484d", soft: "rgba(229, 72, 77, 0.12)" },
       },
       fontFamily: {
-        sans: [
-          "system-ui", "-apple-system", "Segoe UI", "Roboto", "Helvetica",
-          "Arial", "sans-serif",
-        ],
+        display: ["'Space Grotesk'", "system-ui", "sans-serif"],
+        sans: ["'Public Sans'", "system-ui", "-apple-system", "Segoe UI", "sans-serif"],
+        mono: ["'IBM Plex Mono'", "ui-monospace", "SFMono-Regular", "monospace"],
       },
       boxShadow: {
-        card: "0 6px 20px rgba(0, 0, 0, 0.35)",
+        card: "0 4px 16px rgba(0, 0, 0, 0.3)",
       },
     },
   },

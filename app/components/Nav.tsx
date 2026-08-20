@@ -4,38 +4,40 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const LINKS = [
-  { href: "/", label: "Overview" },
-  { href: "/hazards", label: "National Hazards" },
+  { href: "/hazards", label: "Hazards" },
   { href: "/water-stress", label: "Water Stress" },
-  { href: "/locust", label: "Locust Risk" },
+  { href: "/locust", label: "Locust" },
   { href: "/crop-classifier", label: "Crop / Irrigation" },
   { href: "/exposure-risk", label: "Exposure Risk" },
-  { href: "/trigger-engine", label: "Insurance Trigger Engine" },
-  { href: "/demo-walkthrough", label: "Demo Walkthrough" },
+  { href: "/trigger-engine", label: "Trigger Engine" },
+  { href: "/models-in-production", label: "Models in Production" },
+  { href: "/demo-walkthrough", label: "Demo" },
 ];
 
 export default function Nav() {
   const pathname = usePathname();
   return (
     <header className="sticky top-0 z-40 border-b border-soft bg-app/95 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-1 gap-y-2 px-4 py-3">
-        <span className="mr-3 text-sm font-semibold text-main">NAIP</span>
-        {LINKS.map((l) => {
-          const active = pathname === l.href;
-          return (
-            <Link
-              key={l.href}
-              href={l.href}
-              className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
-                active
-                  ? "bg-accent text-[#05244a]"
-                  : "text-dim hover:bg-elev-2 hover:text-main"
-              }`}
-            >
-              {l.label}
-            </Link>
-          );
-        })}
+      <div className="mx-auto flex max-w-6xl items-center gap-5 px-4 py-2.5">
+        <Link href="/" className="font-display text-sm font-semibold tracking-tight text-main">
+          NAIP
+        </Link>
+        <nav className="flex flex-1 flex-wrap gap-0.5 overflow-x-auto">
+          {LINKS.map((l) => {
+            const active = pathname === l.href;
+            return (
+              <Link
+                key={l.href}
+                href={l.href}
+                className={`whitespace-nowrap rounded px-2.5 py-1.5 font-mono text-[11px] uppercase tracking-wide transition-colors ${
+                  active ? "text-accent-500" : "text-faint hover:text-dim"
+                }`}
+              >
+                {l.label}
+              </Link>
+            );
+          })}
+        </nav>
       </div>
     </header>
   );

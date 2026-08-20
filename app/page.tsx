@@ -1,66 +1,176 @@
-import Link from "next/link";
+"use client";
 
-const CARDS = [
-  {
-    href: "/hazards",
-    title: "National Hazards",
-    body: "126-district hazard alert feed from the real 11-detector engine (hazards.py, Week 1).",
-  },
-  {
-    href: "/water-stress",
-    title: "Water Stress",
-    body: "Real head-to-tail stress gradient along the Muridke Distributary, elevation-verified (Week 2).",
-  },
-  {
-    href: "/locust",
-    title: "Locust Risk",
-    body: "Real SMAP + Sentinel-2 breeding-risk screen over 3 named regions, one a labeled proxy boundary (Week 3).",
-  },
-  {
-    href: "/crop-classifier",
-    title: "Crop / Irrigation",
-    body: "Irrigated-vs-not classifier, honestly reported below the majority-class baseline (Week 2).",
-  },
-  {
-    href: "/exposure-risk",
-    title: "Exposure Risk",
-    body: "Hazard x crop-calendar fusion, filtered through the Week 4 agronomic-plausibility mask.",
-  },
-  {
-    href: "/trigger-engine",
-    title: "Insurance Trigger Engine",
-    body: "Real, audited trigger-contract events with basis risk stated on every record (Week 4).",
-  },
-  {
-    href: "/demo-walkthrough",
-    title: "Demo Walkthrough",
-    body: "The real end-to-end scenario -- Layyah, 2026-07-06, fog x cotton flowering -- as it actually ran.",
-  },
+import { useEffect, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
+import Link from "next/link";
+import StatsTicker from "./components/StatsTicker";
+
+const DistrictChoropleth = dynamic(() => import("./components/DistrictChoropleth"), { ssr: false });
+
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
+interface DistrictSummary {
+  district: string; n_rows: number; n_triggered_rows: number;
+  hazards_triggered: Record<string, number>;
+}
+
+const MODULES = [
+  { href: "/hazards", label: "National Hazards", caption: "126-district hazard feed, real 11-detector engine", metricKey: "hazardTriggered" },
+  { href: "/water-stress", label: "Water Stress", caption: "Muridke Distributary, SRTM-elevation-verified", metricKey: "waterSpan" },
+  { href: "/locust", label: "Locust Risk", caption: "3 breeding grounds, real SMAP + Sentinel-2", metricKey: "locustFlagged" },
+  { href: "/crop-classifier", label: "Crop / Irrigation", caption: "Irrigated-vs-not, reported below its own baseline", metricKey: "classifierAcc" },
+  { href: "/exposure-risk", label: "Exposure Risk", caption: "Hazard x crop calendar, plausibility-filtered", metricKey: "exposurePlausible" },
+  { href: "/trigger-engine", label: "Trigger Engine", caption: "Audited contract events, basis risk on every record", metricKey: "triggerCount" },
+  { href: "/demo-walkthrough", label: "Demo Walkthrough", caption: "Layyah, 2026-07-06 -- the real end-to-end run", metricKey: "demoScore" },
 ];
 
 export default function Home() {
+  const [geo, setGeo] = useState<GeoJSON.FeatureCollection | null>(null);
+  const [districtSummary, setDistrictSummary] = useState<DistrictSummary[]>([]);
+  const [metrics, setMetrics] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    fetch(`${BASE}/data/pk_districts.geojson`).then((r) => r.json()).then(setGeo);
+    fetch(`${BASE}/data/district_hazard_summary.json`).then((r) => r.json()).then((d) => {
+      setDistrictSummary(d.districts);
+    });
+
+    Promise.all([
+      fetch(`${BASE}/data/water_stress.json`).then((r) => r.json()),
+      fetch(`${BASE}/data/locust_risk.json`).then((r) => r.json()),
+      fetch(`${BASE}/data/crop_classifier_report.json`).then((r) => r.json()),
+      fetch(`${BASE}/data/exposure_risk.json`).then((r) => r.json()),
+      fetch(`${BASE}/data/trigger_summary_national.json`).then((r) => r.json()),
+      fetch(`${BASE}/data/demo_scenario.json`).then((r) => r.json()),
+    ]).then(([ws, locust, clf, exp, trig, demo]) => {
+      setMetrics((prev) => ({
+        ...prev,
+        waterSpan: `${ws.n_segments} pts / ${ws.flow_direction_check.span_km}km`,
+        locustFlagged: `${locust.regions.filter((r: any) => r.breeding_risk_flag).length}/${locust.regions.length} flagged`,
+        classifierAcc: `${(clf.models.random_forest.held_out_test_accuracy * 100).toFixed(0)}% (baseline ${(clf.majority_class_baseline_accuracy * 100).toFixed(0)}%)`,
+        exposurePlausible: `${(exp.n_nonzero_exposure - exp.n_nonzero_exposure_implausible).toLocaleString()} / ${exp.n_nonzero_exposure.toLocaleString()}`,
+        triggerCount: `${trig.n_triggered} events, ${trig.n_triggered_with_real_farms_matched} farm-matched`,
+        demoScore: `score ${demo.record.exposure_score}, ${demo.record.n_real_farms_matched_in_district} farms`,
+      }));
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!districtSummary.length) return;
+    const totalTrig = districtSummary.reduce((s, d) => s + d.n_triggered_rows, 0);
+    setMetrics((prev) => ({ ...prev, hazardTriggered: `${totalTrig} triggered rows` }));
+  }, [districtSummary]);
+
+  const byName = useMemo(() => {
+    const m = new Map<string, DistrictSummary>();
+    districtSummary.forEach((d) => m.set(d.district, d));
+    return m;
+  }, [districtSummary]);
+
+  const maxTriggered = useMemo(
+    () => Math.max(1, ...districtSummary.map((d) => d.n_triggered_rows)),
+    [districtSummary]
+  );
+
+  const totalRows = districtSummary.reduce((s, d) => s + d.n_rows, 0);
+
+  // one neutral-to-accent ramp -- no-data gray, then a single hue from pale to saturated
+  const styleFor = (feature: any) => {
+    const name = feature.properties?.shapeName as string;
+    const d = byName.get(name);
+    const n = d?.n_triggered_rows ?? 0;
+    const t = n / maxTriggered;
+    const color =
+      n === 0
+        ? "#1c1c20"
+        : t < 0.33
+        ? "#3c5c58"
+        : t < 0.66
+        ? "#4fb8ad"
+        : "#7fe0d4";
+    return { color: "#33333a", weight: 0.6, fillColor: color, fillOpacity: 0.9 };
+  };
+
   return (
     <div>
-      <h1 className="text-2xl font-semibold">NAIP National Dashboard</h1>
-      <p className="mt-2 max-w-3xl text-sm text-dim">
-        A visualization layer over real, already-generated data from NAIP Weeks 1-4 --
-        national hazard detection, water accounting, crop intelligence, locust risk,
-        the exposure-risk fusion model, and the insurance trigger-contract engine. No
-        new modeling happens here; every view reads real JSON/CSV output already
-        produced and reported in the project&apos;s status reports. This is a separate
-        repo from the original MSG-SEVIRI 12-city pilot dashboard, which is untouched.
-      </p>
-      <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {CARDS.map((c) => (
+      {/* Full-bleed hero -- the one dominant element on this screen */}
+      <div className="relative left-1/2 right-1/2 -mx-[50vw] w-screen">
+        <div className="graticule relative h-[58vh] min-h-[400px] w-full overflow-hidden bg-app">
+          {geo && (
+            <div className="absolute inset-0 opacity-80">
+              <DistrictChoropleth districtsGeojson={geo} styleFor={styleFor} height="100%" bare interactive={false} />
+            </div>
+          )}
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(9,9,11,0.1) 0%, rgba(9,9,11,0.4) 60%, rgba(9,9,11,0.97) 100%)",
+            }}
+          />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 px-4 pb-6">
+            <div className="mx-auto max-w-6xl">
+              <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-faint">
+                National Agriculture Intelligence Platform &middot; Pakistan
+              </p>
+              <h1 className="mt-1.5 font-display text-3xl font-semibold tracking-tight text-main sm:text-4xl">
+                From nowcasting to payout.
+              </h1>
+              <p className="mt-1.5 max-w-xl text-sm text-dim">
+                Real satellite hazard detection, water accounting, crop intelligence,
+                and an audited insurance trigger engine over real Pakistani districts.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* quiet data line -- count-up on load, then a slow seamless marquee */}
+        {totalRows > 0 && (
+          <StatsTicker
+            stats={[
+              { value: totalRows, label: "real observations" },
+              { value: 126, label: "districts" },
+              { value: 71, label: "MSG frames" },
+              { value: 120, label: "farm polygons" },
+              { value: 4, label: "districts with farm coverage" },
+            ]}
+          />
+        )}
+      </div>
+
+      {/* quiet, dense module list -- secondary to the map, not competing with it */}
+      <div className="mt-2 divide-y divide-[var(--border-soft)] border-b border-soft">
+        {MODULES.map((m) => (
           <Link
-            key={c.href}
-            href={c.href}
-            className="rounded-xl border border-soft bg-elev p-4 shadow-card transition-colors hover:border-accent/60"
+            key={m.href}
+            href={m.href}
+            className="group flex items-center justify-between gap-4 py-3.5 transition-colors hover:bg-elev/40"
           >
-            <h2 className="text-sm font-semibold text-main">{c.title}</h2>
-            <p className="mt-1.5 text-xs text-dim">{c.body}</p>
+            <div className="min-w-0">
+              <h2 className="font-display text-sm font-medium text-main group-hover:text-accent-500">
+                {m.label}
+              </h2>
+              <p className="mt-0.5 truncate text-xs text-faint">{m.caption}</p>
+            </div>
+            <span className="shrink-0 font-mono text-xs text-dim">
+              {metrics[m.metricKey] ?? "..."}
+            </span>
           </Link>
         ))}
+      </div>
+
+      {/* persistent status strip -- functional warning state, not decoration */}
+      <div className="caveat-banner mt-4">
+        <strong>Read before trusting any number above:</strong> this is a
+        visualization layer over real, already-generated project output, not new
+        modeling. Every module carries its own real limitations (below-baseline
+        classifier accuracy, coarse plausibility masks, proxy geographic boundaries,
+        stubbed payouts) surfaced on its own page. See{" "}
+        <Link href="/trigger-engine" className="text-accent-500 underline underline-offset-2">
+          the trigger engine
+        </Link>{" "}
+        for the single most important one: a trigger is a reason to investigate, not
+        proof of loss.
       </div>
     </div>
   );

@@ -18,9 +18,11 @@ export default function LocustMap({ districtsGeojson }: { districtsGeojson: GeoJ
   const styleFor = (feature: Feature<Geometry, any>) => {
     const name = feature.properties?.shapeName as string;
     if (CHOLISTAN_PROXY_DISTRICTS.has(name)) {
-      return { color: "#f59e0b", weight: 2, dashArray: "6 4", fillColor: "#f59e0b", fillOpacity: 0.15 };
+      // the one sanctioned warning-amber, same tone as the caveat banner --
+      // a boundary-uncertainty flag, not a category color
+      return { color: "#d99b3c", weight: 2, dashArray: "6 4", fillColor: "#d99b3c", fillOpacity: 0.12 };
     }
-    return { color: "#4da3ff", weight: 2, fillColor: "#4da3ff", fillOpacity: 0.25 };
+    return { color: "#4fb8ad", weight: 2, fillColor: "#4fb8ad", fillOpacity: 0.22 };
   };
 
   return (

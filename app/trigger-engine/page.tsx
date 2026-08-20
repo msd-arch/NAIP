@@ -50,20 +50,27 @@ export default function TriggerEnginePage() {
         system, no transaction ID has ever been real.
       </CaveatBanner>
 
-      <div className="mt-4 flex gap-2">
+      <div className="mt-4 flex gap-5 border-b border-soft">
         <button
           onClick={() => setThreshold("national")}
-          className={`rounded-full px-3 py-1.5 text-xs font-medium ${threshold === "national" ? "bg-accent text-[#05244a]" : "border border-soft text-dim"}`}
+          className={`border-b-2 pb-2 text-xs font-medium transition-colors ${threshold === "national" ? "border-accent-500 text-accent-500" : "border-transparent text-faint hover:text-dim"}`}
         >
-          National threshold (0.35)
+          National threshold (0.225)
         </button>
         <button
           onClick={() => setThreshold("demo")}
-          className={`rounded-full px-3 py-1.5 text-xs font-medium ${threshold === "demo" ? "bg-accent text-[#05244a]" : "border border-soft text-dim"}`}
+          className={`border-b-2 pb-2 text-xs font-medium transition-colors ${threshold === "demo" ? "border-accent-500 text-accent-500" : "border-transparent text-faint hover:text-dim"}`}
         >
-          Demo threshold (0.20)
+          Demo threshold (0.07)
         </button>
       </div>
+
+      <p className="mt-2 text-[11px] text-faint">
+        Recalibrated Week 9: the old 0.35/0.20 thresholds were matched to their real
+        selectivity against the rescaled score distribution after crop_weight became a
+        real proportional weight (see Exposure Risk) &mdash; not picked to hit a target
+        event count.
+      </p>
 
       {summary && (
         <p className="mt-2 text-xs text-warn">{summary.threshold_note}</p>
@@ -71,8 +78,8 @@ export default function TriggerEnginePage() {
 
       <div className="mt-3 grid grid-cols-2 gap-4 text-center sm:grid-cols-3">
         <Stat label="Trigger events" value={String(records.length)} />
-        <Stat label="Matched real farms" value={`${nMatched} / ${records.length}`} accent={nMatched === 0 ? "danger" : "accent"} />
-        <Stat label="No farm coverage" value={`${records.length - nMatched} / ${records.length}`} accent={records.length - nMatched > 0 ? "danger" : undefined} />
+        <Stat label="Matched real farms" value={`${nMatched} / ${records.length}`} tone={nMatched > 0 ? "accent" : undefined} />
+        <Stat label="No farm coverage" value={`${records.length - nMatched} / ${records.length}`} />
       </div>
       {nMatched === 0 && records.length > 0 && (
         <p className="mt-2 text-center text-xs text-faint">
@@ -97,11 +104,14 @@ export default function TriggerEnginePage() {
                   onClick={() => setSelected(r)}
                   className={`cursor-pointer border-t border-soft hover:bg-elev-2 ${selected?.event_id === r.event_id ? "bg-elev-2" : ""}`}
                 >
-                  <td className="p-2">{r.district}</td>
+                  <td className="p-2">
+                    <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-critical" title="fired trigger event" />
+                    {r.district}
+                  </td>
                   <td className="p-2">{r.hazard.replace("_", " ")}</td>
                   <td className="p-2">{r.crop}</td>
                   <td className="p-2 tnum">{r.exposure_score}</td>
-                  <td className={`p-2 tnum ${r.n_real_farms_matched_in_district > 0 ? "text-accent" : "text-faint"}`}>
+                  <td className={`p-2 tnum ${r.n_real_farms_matched_in_district > 0 ? "text-accent-500" : "text-faint"}`}>
                     {r.n_real_farms_matched_in_district}
                   </td>
                 </tr>
@@ -123,8 +133,8 @@ export default function TriggerEnginePage() {
                 <Row k="Real farms matched" v={`${selected.n_real_farms_matched_in_district}`} />
               </dl>
 
-              <div className="mt-4 rounded-lg border border-warn/40 bg-warn/10 p-3 text-xs">
-                <strong className="text-warn">Basis risk (verbatim from the audit record):</strong>
+              <div className="caveat-banner mt-4">
+                <strong>Basis risk (verbatim from the audit record):</strong>
                 <p className="mt-1 text-dim">{selected.basis_risk_note}</p>
               </div>
 
@@ -142,8 +152,8 @@ export default function TriggerEnginePage() {
   );
 }
 
-function Stat({ label, value, accent }: { label: string; value: string; accent?: "danger" | "accent" }) {
-  const color = accent === "danger" ? "text-danger" : accent === "accent" ? "text-accent" : "text-main";
+function Stat({ label, value, tone }: { label: string; value: string; tone?: "accent" | "critical" }) {
+  const color = tone === "accent" ? "text-accent-500" : tone === "critical" ? "text-critical" : "text-main";
   return (
     <div className="rounded-xl border border-soft bg-elev p-3">
       <div className={`tnum text-lg font-semibold ${color}`}>{value}</div>

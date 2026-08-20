@@ -33,7 +33,7 @@ export default function LocustPage() {
       <h1 className="text-xl font-semibold">Desert Locust Breeding-Risk Monitor</h1>
       <p className="mt-1 text-sm text-dim">
         Real SMAP soil-moisture-anomaly + real Sentinel-2 NDVI green-up, over the 3 named
-        breeding grounds. Solid blue = real district boundary. Dashed amber = Cholistan
+        breeding grounds. Solid teal = real district boundary. Dashed amber = Cholistan
         proxy (see caveat).
       </p>
 
@@ -50,7 +50,7 @@ export default function LocustPage() {
               <h2 className="text-sm font-semibold">{r.region}</h2>
               <span
                 className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${
-                  r.breeding_risk_flag ? "bg-danger text-white" : "border border-soft text-faint"
+                  r.breeding_risk_flag ? "bg-critical text-white" : "border border-soft text-faint"
                 }`}
               >
                 {r.breeding_risk_flag ? "Flagged" : "Not flagged"}
@@ -80,7 +80,7 @@ function Row({ k, v, good }: { k: string; v: string; good?: boolean }) {
   return (
     <div className="flex items-center justify-between border-b border-soft py-1">
       <span className="text-dim">{k}</span>
-      <span className={`tnum font-medium ${good === true ? "text-danger" : good === false ? "text-faint" : ""}`}>{v}</span>
+      <span className={`tnum font-medium ${good === true ? "text-accent-500" : good === false ? "text-faint" : ""}`}>{v}</span>
     </div>
   );
 }

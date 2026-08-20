@@ -5,25 +5,26 @@
 /* Leaflet core styles (self-hosted via node_modules import in the map component). */
 
 :root {
-  --bg: #0b0f16;
-  --bg-elev: #121826;
-  --bg-elev-2: #1a2233;
-  --border: #26304a;
-  --border-soft: #1e2740;
-  --text: #e7ecf5;
-  --text-dim: #97a3ba;
-  --text-faint: #6b7691;
+  /* neutral grayscale ramp -- no color tint anywhere in the base layer */
+  --bg: #09090b;
+  --bg-elev: #0f0f12;
+  --bg-elev-2: #16161a;
+  --border: #26262c;
+  --border-soft: #1c1c20;
+  --text: #f2f2f3;
+  --text-dim: #a1a1aa;
+  --text-faint: #6b6b74;
 }
 
 .light {
-  --bg: #f4f6fb;
+  --bg: #f7f7f8;
   --bg-elev: #ffffff;
-  --bg-elev-2: #eef1f8;
-  --border: #d3dae8;
-  --border-soft: #e2e7f1;
-  --text: #14203a;
-  --text-dim: #4a5878;
-  --text-faint: #7683a0;
+  --bg-elev-2: #eeeeef;
+  --border: #dcdce0;
+  --border-soft: #e8e8ea;
+  --text: #18181b;
+  --text-dim: #52525b;
+  --text-faint: #8a8a94;
 }
 
 html, body {
@@ -32,8 +33,24 @@ html, body {
 }
 
 body {
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, .font-display {
+  font-family: "Space Grotesk", system-ui, sans-serif;
+}
+
+.font-mono, .tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Faint cartographic graticule -- restrained ground-station texture, fully neutral. */
+.graticule {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 48px 48px;
 }
 
 /* Utility aliases bound to the CSS variables so Tailwind classes read cleanly. */
@@ -45,42 +62,45 @@ body {
 .text-main { color: var(--text); }
 .text-dim { color: var(--text-dim); }
 .text-faint { color: var(--text-faint); }
-
-.tnum { font-variant-numeric: tabular-nums; }
+/* the same functional warning-amber the caveat banner uses -- not a category
+   color, reused wherever inline text needs the identical "pay attention" tone */
+.text-warn { color: #d99b3c; }
 
 @keyframes spin { to { transform: rotate(360deg); } }
 .spinner {
   width: 34px; height: 34px;
   border: 3px solid var(--border);
-  border-top-color: var(--accent, #4da3ff);
+  border-top-color: #4fb8ad;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
 
 /* Leaflet dark-map tweaks */
-.leaflet-container { background: #05080e; font-family: inherit; }
+.leaflet-container { background: #050506; font-family: inherit; }
 .leaflet-bar a, .leaflet-bar a:hover {
   background: var(--bg-elev); color: var(--text); border-color: var(--border);
 }
 .leaflet-control-attribution {
-  background: rgba(11, 15, 22, 0.7) !important;
+  background: rgba(9, 9, 11, 0.7) !important;
   color: var(--text-faint) !important;
 }
 .leaflet-control-attribution a { color: var(--text-dim) !important; }
 
 /* Range input accent */
-input[type="range"] { accent-color: #4da3ff; }
+input[type="range"] { accent-color: #4fb8ad; }
 
 /* Persistent (non-collapsible) caveat banner -- used everywhere this project
    has a known real limitation that must stay visible in the UI, not buried
-   in a tooltip or <details>. */
+   in a tooltip or <details>. A functional warning state, not a category
+   color -- kept quiet (low-saturation amber) so it reads as "pay attention"
+   without competing with the one product accent. */
 .caveat-banner {
-  border: 1px solid rgba(245, 158, 11, 0.35);
-  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(217, 155, 60, 0.3);
+  background: rgba(217, 155, 60, 0.06);
   color: var(--text);
-  border-radius: 0.75rem;
+  border-radius: 0.5rem;
   padding: 0.75rem 1rem;
   font-size: 0.8125rem;
-  line-height: 1.4;
+  line-height: 1.5;
 }
-.caveat-banner strong { color: #f59e0b; }
+.caveat-banner strong { color: #d99b3c; }
