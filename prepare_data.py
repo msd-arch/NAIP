@@ -32,6 +32,10 @@ SOURCES = {
     # the historical Week 4 record, same as FINAL_REPORT.md.
     "trigger_summary_national.json": os.path.join(NAIP, "backend", "insurance_engine", "trigger_summary_national.json"),
     "trigger_summary_demo.json": os.path.join(NAIP, "backend", "insurance_engine", "trigger_summary_demo.json"),
+    "drought_national.json": os.path.join(NAIP, "models", "drought_national", "drought_national.json"),
+    "drought_old_vs_new.json": os.path.join(NAIP, "models", "drought_national", "old_vs_new_comparison.json"),
+    "track_j_crossyear_results.json": os.path.join(NAIP, "models", "crop_classifier_national", "track_j_crossyear_results.json"),
+    "real_crop_mix_interim_estimates.json": os.path.join(NAIP, "data", "crop_mix_ground_truth", "real_crop_mix_interim_estimates.json"),
     "track_g_dashboard_summary.json": os.path.join(NAIP, "data", "msg_oct_nov_2023", "track_g_dashboard_summary.json"),
     "track_d_dashboard_summary.json": os.path.join(NAIP, "models", "flood_risk", "track_d_dashboard_summary.json"),
     "track_f_results.json": os.path.join(NAIP, "models", "crop_classifier_national", "track_f_results.json"),

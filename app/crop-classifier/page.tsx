@@ -23,6 +23,22 @@ interface Report {
   models: Record<string, ModelResult>;
 }
 
+interface DirectionResult {
+  n_train_districts: number; n_test_districts: number;
+  district_level: Record<string, { mae: number; r2: number }>;
+}
+interface CrossYearResults {
+  direction_A_train2122_test2223: DirectionResult;
+  direction_B_train2223_test2122: DirectionResult;
+  original_week8_within_year_district_level: Record<string, { mae: number; r2: number }>;
+}
+
+interface InterimDistrict {
+  tier: string; season: string;
+  predicted_shares: { wheat: number; cotton: number; rice: number; sugarcane: number };
+  flagged_negative_share: boolean;
+}
+
 interface CropR2 { mae: number; r2: number }
 interface TrackFResults {
   n_train_districts: number; n_val_districts: number; n_test_districts: number;
@@ -89,10 +105,14 @@ function AccuracyBar({ label, value, baseline }: { label: string; value: number;
 export default function CropClassifierPage() {
   const [data, setData] = useState<Report | null>(null);
   const [trackF, setTrackF] = useState<TrackFResults | null>(null);
+  const [crossYear, setCrossYear] = useState<CrossYearResults | null>(null);
+  const [interim, setInterim] = useState<Record<string, InterimDistrict> | null>(null);
 
   useEffect(() => {
     fetch(`${BASE}/data/crop_classifier_report.json`).then((r) => r.json()).then(setData);
     fetch(`${BASE}/data/track_f_results.json`).then((r) => r.json()).then(setTrackF);
+    fetch(`${BASE}/data/track_j_crossyear_results.json`).then((r) => r.json()).then(setCrossYear);
+    fetch(`${BASE}/data/real_crop_mix_interim_estimates.json`).then((r) => r.json()).then(setInterim);
   }, []);
 
   if (!data) return <p className="text-sm text-dim">Loading real classifier results...</p>;
@@ -193,6 +213,102 @@ export default function CropClassifierPage() {
             {trackF.gbt_test_district_level.cotton.r2.toFixed(3)}/
             {trackF.gbt_test_district_level.rice.r2.toFixed(3)}) all clearly beat a
             constant-baseline. {trackF.note_on_no_geo_features}
+          </CaveatBanner>
+        </>
+      )}
+
+      <hr className="mt-10 border-soft" />
+
+      <h2 className="mt-8 text-base font-semibold">
+        Genuine cross-year validation (Track J) &mdash; a real, harder test
+      </h2>
+      <p className="mt-1 text-sm text-dim">
+        Train on one real MNFSR year, test on the other &mdash; both directions reported,
+        not just whichever looks better. Real 2021-22 labels sourced from the same
+        cap_2022_23.txt document&apos;s own embedded prior-year column (cross-validated
+        exactly against the standalone 2021-22 report before trusting it).
+      </p>
+
+      {!crossYear ? (
+        <p className="mt-4 text-sm text-dim">Loading real cross-year results...</p>
+      ) : (
+        <>
+          <div className="mt-4 overflow-x-auto rounded-xl border border-soft">
+            <table className="w-full min-w-[560px] text-left text-xs">
+              <thead>
+                <tr className="border-b border-soft text-faint">
+                  <th className="px-3 py-2 font-medium">Crop</th>
+                  <th className="px-3 py-2 font-medium">Original (within-year)</th>
+                  <th className="px-3 py-2 font-medium">A: train 21-22 &rarr; test 22-23</th>
+                  <th className="px-3 py-2 font-medium">B: train 22-23 &rarr; test 21-22</th>
+                </tr>
+              </thead>
+              <tbody>
+                {CROPS.map((crop) => {
+                  const orig = crossYear.original_week8_within_year_district_level[crop].r2;
+                  const a = crossYear.direction_A_train2122_test2223.district_level[crop].r2;
+                  const b = crossYear.direction_B_train2223_test2122.district_level[crop].r2;
+                  const improved = crop === "sugarcane" && a > orig && b > orig;
+                  return (
+                    <tr key={crop} className="border-b border-soft/50 last:border-0">
+                      <td className="px-3 py-2 capitalize text-main">{crop}</td>
+                      <td className="tnum px-3 py-2 text-dim">{orig.toFixed(3)}</td>
+                      <td className={`tnum px-3 py-2 ${improved ? "text-accent-500" : "text-dim"}`}>{a.toFixed(3)}</td>
+                      <td className={`tnum px-3 py-2 ${improved ? "text-accent-500" : "text-dim"}`}>{b.toFixed(3)}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <CaveatBanner>
+            Wheat/cotton/rice show a real, expected degradation under a genuine cross-year
+            test (harder than the original spatial-only split). Sugarcane is the real
+            exception &mdash; both cross-year directions score positive R&sup2;
+            ({crossYear.direction_A_train2122_test2223.district_level.sugarcane.r2.toFixed(3)}/
+            {crossYear.direction_B_train2223_test2122.district_level.sugarcane.r2.toFixed(3)}),
+            beating the original&apos;s catastrophic -1.120. Most likely explanation: each
+            cross-year direction trains on all 115 districts (vs. the original&apos;s 81-district
+            spatial split), and a rare, thin-signal crop like sugarcane benefits disproportionately
+            from more real training data &mdash; not claimed as a validated improvement, just the
+            most likely real cause. No lat/lon or district-identity feature in either direction;
+            permutation importance in both directions is led by real phenology metrics
+            (evi_annual_mean, ndwi_peak_value), not a district-identity back door.
+          </CaveatBanner>
+        </>
+      )}
+
+      <hr className="mt-10 border-soft" />
+
+      <h2 className="mt-8 text-base font-semibold">
+        model_estimated_interim tier &mdash; bridging the gap since MNFSR&apos;s last real report
+      </h2>
+      <p className="mt-1 text-sm text-dim">
+        The deployed Track F model (trained on real 2022-23 labels, unchanged) applied to real
+        Sentinel-2 features for 2024-25 &mdash; the most recent complete real season since
+        MNFSR&apos;s last real report. A model estimate, not real government data.
+      </p>
+
+      {!interim ? (
+        <p className="mt-4 text-sm text-dim">Loading real interim estimates...</p>
+      ) : (
+        <>
+          <div className="mt-4 grid grid-cols-2 gap-4 text-center sm:grid-cols-3">
+            <Stat label="Districts estimated" value={`${Object.keys(interim).length}`} />
+            <Stat label="Season" value={Object.values(interim)[0]?.season ?? "n/a"} />
+            <Stat
+              label="Flagged (negative share)"
+              value={`${Object.values(interim).filter((d) => d.flagged_negative_share).length}`}
+            />
+          </div>
+          <CaveatBanner>
+            This tier never overrides real MNFSR data anywhere it exists (see each district&apos;s
+            real authoritative tier in <code>real_crop_mix.json</code>) and is unvalidatable
+            until a real MNFSR report covering 2023-24/2024-25 eventually arrives to check it
+            against &mdash; a real, structural limitation of this tier, not a flaw to fix now.
+            Not wired into <code>exposure_risk.py</code> this track &mdash; a separate, deliberate
+            decision, not bundled in automatically. A handful of districts (near-zero true share)
+            predicted a small negative share &mdash; flagged and kept as-is, not silently clamped.
           </CaveatBanner>
         </>
       )}

@@ -4,3 +4,10 @@
 next-env.d.ts
 *.tsbuildinfo
 .DS_Store
+
+# Local secrets (never used in this project, kept as a guard rail --
+# real gap found and closed during the Week 17 credential scan v2, this
+# repo's .gitignore never covered these even though naip-platform's did)
+.env
+.env.local
+*.env

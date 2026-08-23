@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import StatsTicker from "./components/StatsTicker";
+import PipelineHealthBadge from "./components/PipelineHealthBadge";
 
 const DistrictChoropleth = dynamic(() => import("./components/DistrictChoropleth"), { ssr: false });
 
@@ -136,6 +137,10 @@ export default function Home() {
             ]}
           />
         )}
+      </div>
+
+      <div className="mt-4">
+        <PipelineHealthBadge />
       </div>
 
       {/* quiet, dense module list -- secondary to the map, not competing with it */}

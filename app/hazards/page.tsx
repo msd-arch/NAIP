@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import CaveatBanner from "../components/CaveatBanner";
+import PipelineHealthBadge from "../components/PipelineHealthBadge";
 import type { Feature, Geometry } from "geojson";
 
 const DistrictChoropleth = dynamic(() => import("../components/DistrictChoropleth"), { ssr: false });
@@ -86,6 +87,10 @@ export default function HazardsPage() {
         {summary.districts.reduce((s, d) => s + d.n_rows, 0).toLocaleString()} total real
         observations.
       </p>
+
+      <div className="mt-3">
+        <PipelineHealthBadge />
+      </div>
 
       <CaveatBanner>
         This is district-level, not farm-level. A district being colored teal means the
