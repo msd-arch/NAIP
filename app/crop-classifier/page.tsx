@@ -39,6 +39,25 @@ interface InterimDistrict {
   flagged_negative_share: boolean;
 }
 
+interface YieldEvalBlock { n: number; mae: number; r2: number | null }
+interface YieldDirection {
+  skipped?: boolean;
+  district_level?: YieldEvalBlock;
+  feature_importance_top5?: Record<string, number>;
+}
+interface YieldCropResult {
+  n_real_yield_cells_2022_23: number; n_real_yield_cells_2021_22: number;
+  direction_A_train2122_test2223: YieldDirection;
+  direction_B_train2223_test2122: YieldDirection;
+  naive_baseline_A_predict2223_from2122: YieldEvalBlock & { skipped?: boolean; n_districts?: number };
+  naive_baseline_B_predict2122_from2223: YieldEvalBlock & { skipped?: boolean; n_districts?: number };
+}
+interface YieldResults {
+  features_used: string[];
+  crops: Record<string, YieldCropResult>;
+  real_hazard_ablation: { attempted: boolean; reason: string };
+}
+
 interface CropR2 { mae: number; r2: number }
 interface TrackFResults {
   n_train_districts: number; n_val_districts: number; n_test_districts: number;
@@ -107,12 +126,14 @@ export default function CropClassifierPage() {
   const [trackF, setTrackF] = useState<TrackFResults | null>(null);
   const [crossYear, setCrossYear] = useState<CrossYearResults | null>(null);
   const [interim, setInterim] = useState<Record<string, InterimDistrict> | null>(null);
+  const [yieldResults, setYieldResults] = useState<YieldResults | null>(null);
 
   useEffect(() => {
     fetch(`${BASE}/data/crop_classifier_report.json`).then((r) => r.json()).then(setData);
     fetch(`${BASE}/data/track_f_results.json`).then((r) => r.json()).then(setTrackF);
     fetch(`${BASE}/data/track_j_crossyear_results.json`).then((r) => r.json()).then(setCrossYear);
     fetch(`${BASE}/data/real_crop_mix_interim_estimates.json`).then((r) => r.json()).then(setInterim);
+    fetch(`${BASE}/data/track_o_yield_results.json`).then((r) => r.json()).then(setYieldResults);
   }, []);
 
   if (!data) return <p className="text-sm text-dim">Loading real classifier results...</p>;
@@ -310,6 +331,86 @@ export default function CropClassifierPage() {
             decision, not bundled in automatically. A handful of districts (near-zero true share)
             predicted a small negative share &mdash; flagged and kept as-is, not silently clamped.
           </CaveatBanner>
+        </>
+      )}
+
+      <hr className="mt-10 border-soft" />
+
+      <h2 className="mt-8 text-base font-semibold">
+        Real yield prediction (Track O) &mdash; a real, mostly negative result
+      </h2>
+      <p className="mt-1 text-sm text-dim">
+        Predicts real yield (production &divide; area, tons/hectare) per district/crop from the
+        same real Sentinel-2 phenology features Track F uses &mdash; a new target, extending the
+        same real infrastructure. Production figures were already sitting in the parsed MNFSR
+        data unused; a real gap was found and closed (production had never been independently
+        cross-validated against its own printed total, only area had) before any model was built.
+      </p>
+
+      {!yieldResults ? (
+        <p className="mt-4 text-sm text-dim">Loading real yield results...</p>
+      ) : (
+        <>
+          <div className="mt-4 overflow-x-auto rounded-xl border border-soft">
+            <table className="w-full min-w-[720px] text-left text-xs">
+              <thead>
+                <tr className="border-b border-soft text-faint">
+                  <th className="px-3 py-2 font-medium">Crop</th>
+                  <th className="px-3 py-2 font-medium">Direction</th>
+                  <th className="px-3 py-2 font-medium">Model R&sup2;</th>
+                  <th className="px-3 py-2 font-medium">Naive baseline R&sup2;</th>
+                  <th className="px-3 py-2 font-medium">Winner</th>
+                </tr>
+              </thead>
+              <tbody>
+                {CROPS.flatMap((crop) => {
+                  const c = yieldResults.crops[crop];
+                  if (!c) return [];
+                  const rows = [
+                    { label: "A: train 21-22 → test 22-23", model: c.direction_A_train2122_test2223, naive: c.naive_baseline_A_predict2223_from2122 },
+                    { label: "B: train 22-23 → test 21-22", model: c.direction_B_train2223_test2122, naive: c.naive_baseline_B_predict2122_from2223 },
+                  ];
+                  return rows.map(({ label, model, naive }) => {
+                    const modelR2 = model.district_level?.r2 ?? null;
+                    const naiveR2 = naive.skipped ? null : naive.r2;
+                    const naiveWins = modelR2 != null && naiveR2 != null && naiveR2 > modelR2;
+                    return (
+                      <tr key={`${crop}-${label}`} className="border-b border-soft/50 last:border-0">
+                        <td className="px-3 py-2 capitalize text-main">{crop}</td>
+                        <td className="px-3 py-2 text-dim">{label}</td>
+                        <td className="tnum px-3 py-2 text-dim">{modelR2 != null ? modelR2.toFixed(3) : "—"}</td>
+                        <td className="tnum px-3 py-2 text-dim">{naiveR2 != null ? naiveR2.toFixed(3) : "—"}</td>
+                        <td className={`px-3 py-2 font-medium ${naiveWins ? "text-warn" : "text-accent-500"}`}>
+                          {naiveWins ? "naive baseline" : "model"}
+                        </td>
+                      </tr>
+                    );
+                  });
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          <CaveatBanner>
+            <strong>Real, mostly negative result, reported plainly</strong>: a simple naive
+            baseline (&ldquo;this district&apos;s yield this year = its real reported yield the
+            other real year&rdquo;) beats the trained Sentinel-2 phenology model for wheat,
+            cotton, and sugarcane in both cross-year directions, and for rice in one of two. Real
+            wheat district-level yield is highly persistent year-over-year in this data (naive
+            R&sup2; &asymp; 0.77) &mdash; a genuinely hard bar for satellite phenology from a
+            <em> different</em> year to clear. Permutation importance confirms the model is
+            learning real phenology signal where it works at all (top features: evi_annual_mean,
+            ndwi_peak_value, ndvi_green_up_slope &mdash; no lat/lon or district-identity feature
+            exists in the feature set at all, by construction). Real hazard co-occurrence
+            (heat/drought exposure during the growing season) was <strong>not attempted</strong>:
+            {" "}{yieldResults.real_hazard_ablation.reason}
+          </CaveatBanner>
+
+          <p className="mt-3 text-xs text-faint">
+            What this doesn&apos;t claim: yield prediction is a real, useful input to exposure
+            risk, not a substitute for the actuarial claims/loss-data gap that&apos;s been
+            honestly flagged as unresolved since Week 4.
+          </p>
         </>
       )}
     </div>

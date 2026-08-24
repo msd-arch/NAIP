@@ -39,6 +39,7 @@ SOURCES = {
     "track_g_dashboard_summary.json": os.path.join(NAIP, "data", "msg_oct_nov_2023", "track_g_dashboard_summary.json"),
     "track_d_dashboard_summary.json": os.path.join(NAIP, "models", "flood_risk", "track_d_dashboard_summary.json"),
     "track_f_results.json": os.path.join(NAIP, "models", "crop_classifier_national", "track_f_results.json"),
+    "track_o_yield_results.json": os.path.join(NAIP, "models", "crop_classifier_national", "track_o_yield_results.json"),
     "real_crop_mix.json": os.path.join(NAIP, "data", "crop_mix_ground_truth", "real_crop_mix.json"),
 }
 
