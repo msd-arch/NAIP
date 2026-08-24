@@ -8,6 +8,7 @@ const LINKS = [
   { href: "/water-stress", label: "Water Stress" },
   { href: "/locust", label: "Locust" },
   { href: "/crop-classifier", label: "Crop / Irrigation" },
+  { href: "/crop-stress", label: "Crop Stress Screen" },
   { href: "/exposure-risk", label: "Exposure Risk" },
   { href: "/trigger-engine", label: "Trigger Engine" },
   { href: "/models-in-production", label: "Models in Production" },

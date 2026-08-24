@@ -40,6 +40,7 @@ SOURCES = {
     "track_d_dashboard_summary.json": os.path.join(NAIP, "models", "flood_risk", "track_d_dashboard_summary.json"),
     "track_f_results.json": os.path.join(NAIP, "models", "crop_classifier_national", "track_f_results.json"),
     "track_o_yield_results.json": os.path.join(NAIP, "models", "crop_classifier_national", "track_o_yield_results.json"),
+    "crop_stress_screen.json": os.path.join(NAIP, "models", "crop_stress_screen", "crop_stress_screen.json"),
     "real_crop_mix.json": os.path.join(NAIP, "data", "crop_mix_ground_truth", "real_crop_mix.json"),
 }
 
