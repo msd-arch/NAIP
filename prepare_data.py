@@ -55,7 +55,15 @@ for name, path in SOURCES.items():
 
 # ---- JSONL audit logs -> JSON arrays (easier to fetch/parse in the browser) ----
 for name, path in [
-    ("audit_log_national.json", os.path.join(NAIP, "backend", "insurance_engine", "audit_log.jsonl")),
+    # PHASE 4 FINAL ITEM: found and fixed a real, pre-existing bug here while
+    # wiring model_estimated_interim through -- this was still pointed at
+    # audit_log.jsonl (the stale Week 4, threshold=0.35 file) even after
+    # Week 12's doc-consistency pass fixed trigger_summary_national.json's own
+    # mapping to the real 0.225 file. The Trigger Engine page's summary stats
+    # were correct; the actual audit-record table below them was silently
+    # showing stale 0.35-threshold events the whole time. audit_log_national.jsonl
+    # (the real, current, threshold=0.225 file) is the correct source.
+    ("audit_log_national.json", os.path.join(NAIP, "backend", "insurance_engine", "audit_log_national.jsonl")),
     ("audit_log_demo.json", os.path.join(NAIP, "backend", "insurance_engine", "audit_log_demo.jsonl")),
     ("delivery_log.json", os.path.join(NAIP, "delivery", "sms_ussd_ivr", "delivery_log.jsonl")),
 ]:

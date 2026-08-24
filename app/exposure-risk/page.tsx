@@ -15,6 +15,7 @@ interface ExposureRow {
 interface ExposureData {
   scope: string; crops: string[]; n_rows: number;
   n_nonzero_exposure: number; n_nonzero_exposure_implausible: number;
+  crop_mix_source_breakdown?: Record<string, number>;
   top_exposure_events: ExposureRow[]; top_plausible_exposure_events: ExposureRow[];
 }
 
@@ -23,34 +24,34 @@ interface TierBreakdown {
 }
 
 const TIER_LABEL: Record<string, string> = {
-  real_district_area: "Real MNFSR district data",
-  model_predicted: "Model-predicted (Track F)",
-  hand_classified_mask: "Hand-classified mask (fallback)",
+  real_district_area: "Real MNFSR district data (2022-23 season only)",
+  model_estimated_interim: "Model-estimated interim (Track F, post-2022-23 seasons)",
+  hand_classified_mask: "Hand-classified mask (11 GB/AJK districts)",
 };
 const TIER_COLOR: Record<string, string> = {
   real_district_area: "bg-accent-500",
-  model_predicted: "bg-[#7aa8c9]",
+  model_estimated_interim: "bg-[#7aa8c9]",
   hand_classified_mask: "bg-[#3a3a40]",
 };
+const TIER_ORDER = ["real_district_area", "model_estimated_interim", "hand_classified_mask"];
 
-function TierBar({ tiers }: { tiers: Record<string, number> }) {
+function TierBar({ tiers, unit }: { tiers: Record<string, number>; unit: string }) {
   const total = Object.values(tiers).reduce((a, b) => a + b, 0);
-  const order = ["real_district_area", "model_predicted", "hand_classified_mask"];
   return (
     <div>
       <div className="flex h-6 w-full overflow-hidden rounded-full border border-soft">
-        {order.map((k) =>
+        {TIER_ORDER.map((k) =>
           tiers[k] > 0 ? (
             <div key={k} className={TIER_COLOR[k]} style={{ width: `${(tiers[k] / total) * 100}%` }}
-                 title={`${TIER_LABEL[k]}: ${tiers[k]}`} />
+                 title={`${TIER_LABEL[k]}: ${tiers[k].toLocaleString()}`} />
           ) : null
         )}
       </div>
       <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-dim">
-        {order.map((k) => (
+        {TIER_ORDER.map((k) => (
           <span key={k} className="flex items-center gap-1.5">
             <span className={`inline-block h-2 w-2 rounded-full ${TIER_COLOR[k]}`} />
-            {TIER_LABEL[k]}: <span className="tnum font-semibold text-main">{tiers[k]}</span>/126
+            {TIER_LABEL[k]}: <span className="tnum font-semibold text-main">{(tiers[k] ?? 0).toLocaleString()}</span>{unit}
           </span>
         ))}
       </div>
@@ -89,16 +90,53 @@ export default function ExposureRiskPage() {
       <p className="mt-1 text-sm text-dim">
         <code>exposure_score = hazard_confidence &times; vulnerability_weight &times; crop_weight</code>.
         Through Week 6, <code>crop_weight</code> was a boolean 1.0/0.0 plausibility gate for every
-        district. Since Week 9, wherever real MNFSR crop-mix data exists, <code>crop_weight</code> is
-        the real proportional area share instead &mdash; a district growing 0.87% cotton now scores
-        a small nonzero weight, not a hard pass. The boolean gate only remains for the 11
-        hand-classified-mask districts below.
+        district. Since Week 9, wherever real crop-mix data exists (now two real tiers, see below),
+        <code> crop_weight</code> is the real proportional area share instead &mdash; a district
+        growing 0.87% cotton now scores a small nonzero weight, not a hard pass. The boolean gate
+        only remains for the 11 hand-classified-mask districts.
       </p>
+
+      <div className="mt-4 rounded-xl border border-warn/40 bg-elev p-4">
+        <h3 className="mb-1 text-sm font-semibold text-warn">
+          Phase 4 final item: crop_mix_source is now three-tier
+        </h3>
+        <p className="text-xs text-dim">
+          Real MNFSR government data (<code>real_district_area</code>) covers exactly one real
+          season, 2022-23 &mdash; it always wins <em>for that season</em>, never overridden. Every
+          alert in NAIP&apos;s actual real hazard archives postdates 2022-23 (they start mid-2026),
+          so for the 115 real MNFSR-covered districts, rows now resolve to{" "}
+          <code>model_estimated_interim</code>: Track F&apos;s trained crop-share model&apos;s real
+          prediction for that season, used only because real MNFSR has no report for it at all.{" "}
+          <strong className="text-main">
+            This is a trained model&apos;s estimate, not a government survey &mdash; per Track
+            J&apos;s own finding, genuinely unvalidatable until a future real MNFSR report arrives to
+            check it against.
+          </strong>{" "}
+          The 11 GB/AJK districts stay on the hand-classified mask regardless of season, unchanged
+          from Track G&apos;s standing rejection of the model there.
+        </p>
+      </div>
+
+      {data.crop_mix_source_breakdown && (
+        <div className="mt-4 rounded-xl border border-soft bg-elev p-4">
+          <h3 className="mb-2 text-sm font-semibold">
+            crop_mix_source tier, this real archive ({data.n_rows.toLocaleString()} rows)
+          </h3>
+          <TierBar tiers={data.crop_mix_source_breakdown} unit=" rows" />
+        </div>
+      )}
 
       {tiers && (
         <div className="mt-4 rounded-xl border border-soft bg-elev p-4">
-          <h3 className="mb-2 text-sm font-semibold">crop_mix_source tier, all 126 real districts</h3>
-          <TierBar tiers={tiers} />
+          <h3 className="mb-2 text-sm font-semibold">
+            Underlying data coverage, all 126 real districts (season-independent)
+          </h3>
+          <p className="mb-2 text-[11px] text-faint">
+            Which districts real MNFSR data (2022-23) vs. the hand mask covers at all &mdash; distinct
+            from the row-level tier above, which reflects which season this archive&apos;s alerts are
+            actually in.
+          </p>
+          <TierBar tiers={{ ...tiers, model_estimated_interim: 0 }} unit="/126 districts" />
         </div>
       )}
 

@@ -9,10 +9,17 @@ interface AuditRecord {
   event_id: string; district: string; date: string; hazard: string;
   hazard_confidence: number; crop: string; crop_stage: string;
   exposure_score: number; threshold: number;
+  crop_mix_source?: string; crop_mix_share_of_4crop_area?: number | null;
   n_real_farms_matched_in_district: number; matched_farm_ids: string[];
   basis_risk_note: string;
   payout: { status: string; note: string; amount: null; transaction_id: null };
 }
+
+const TIER_TAG: Record<string, { label: string; className: string }> = {
+  real_district_area: { label: "real MNFSR (2022-23)", className: "text-accent-500" },
+  model_estimated_interim: { label: "model-estimated interim", className: "text-warn" },
+  hand_classified_mask: { label: "hand-classified mask", className: "text-faint" },
+};
 
 interface Summary {
   threshold: number; threshold_note: string; n_triggered: number;
@@ -94,7 +101,8 @@ export default function TriggerEnginePage() {
             <thead className="sticky top-0 bg-elev-2 text-left text-faint">
               <tr>
                 <th className="p-2">District</th><th className="p-2">Hazard</th>
-                <th className="p-2">Crop</th><th className="p-2">Score</th><th className="p-2">Farms</th>
+                <th className="p-2">Crop</th><th className="p-2">Crop-mix source</th>
+                <th className="p-2">Score</th><th className="p-2">Farms</th>
               </tr>
             </thead>
             <tbody>
@@ -110,6 +118,9 @@ export default function TriggerEnginePage() {
                   </td>
                   <td className="p-2">{r.hazard.replace("_", " ")}</td>
                   <td className="p-2">{r.crop}</td>
+                  <td className={`p-2 text-[11px] ${TIER_TAG[r.crop_mix_source ?? ""]?.className ?? "text-faint"}`}>
+                    {TIER_TAG[r.crop_mix_source ?? ""]?.label ?? r.crop_mix_source ?? "—"}
+                  </td>
                   <td className="p-2 tnum">{r.exposure_score}</td>
                   <td className={`p-2 tnum ${r.n_real_farms_matched_in_district > 0 ? "text-accent-500" : "text-faint"}`}>
                     {r.n_real_farms_matched_in_district}
@@ -130,8 +141,22 @@ export default function TriggerEnginePage() {
                 <Row k="Hazard confidence" v={selected.hazard_confidence.toString()} />
                 <Row k="Crop stage" v={selected.crop_stage} />
                 <Row k="Exposure score" v={`${selected.exposure_score} (threshold ${selected.threshold})`} />
+                <Row
+                  k="Crop-mix source"
+                  v={TIER_TAG[selected.crop_mix_source ?? ""]?.label ?? selected.crop_mix_source ?? "—"}
+                />
+                {selected.crop_mix_share_of_4crop_area != null && (
+                  <Row k="Real crop-mix share" v={`${(selected.crop_mix_share_of_4crop_area * 100).toFixed(2)}%`} />
+                )}
                 <Row k="Real farms matched" v={`${selected.n_real_farms_matched_in_district}`} />
               </dl>
+              {selected.crop_mix_source === "model_estimated_interim" && (
+                <p className="mt-2 text-[11px] text-warn">
+                  This event&apos;s crop-mix weight came from Track F&apos;s trained model&apos;s real
+                  prediction, not a government survey &mdash; genuinely unvalidatable until a future
+                  real MNFSR report arrives to check it against.
+                </p>
+              )}
 
               <div className="caveat-banner mt-4">
                 <strong>Basis risk (verbatim from the audit record):</strong>
