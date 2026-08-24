@@ -10,6 +10,7 @@ interface AuditRecord {
   hazard_confidence: number; crop: string; crop_stage: string;
   exposure_score: number; threshold: number;
   crop_mix_source?: string; crop_mix_share_of_4crop_area?: number | null;
+  interim_confidence_multiplier?: number; exposure_score_before_confidence_discount?: number;
   n_real_farms_matched_in_district: number; matched_farm_ids: string[];
   basis_risk_note: string;
   payout: { status: string; note: string; amount: null; transaction_id: null };
@@ -68,15 +69,17 @@ export default function TriggerEnginePage() {
           onClick={() => setThreshold("demo")}
           className={`border-b-2 pb-2 text-xs font-medium transition-colors ${threshold === "demo" ? "border-accent-500 text-accent-500" : "border-transparent text-faint hover:text-dim"}`}
         >
-          Demo threshold (0.07)
+          Demo threshold (0.0216)
         </button>
       </div>
 
       <p className="mt-2 text-[11px] text-faint">
-        Recalibrated Week 9: the old 0.35/0.20 thresholds were matched to their real
-        selectivity against the rescaled score distribution after crop_weight became a
-        real proportional weight (see Exposure Risk) &mdash; not picked to hit a target
-        event count.
+        Recalibrated Week 9 (0.35/0.20 &rarr; 0.225/0.07: crop_weight became a real
+        proportional weight) and again for the threshold-recalibration pass (demo:
+        0.07 &rarr; 0.0216, re-matched to the same real selectivity against the score
+        distribution after model_estimated_interim rows started carrying a real
+        per-crop confidence discount &mdash; see Exposure Risk) &mdash; never picked to hit
+        a target event count or preserve a specific scenario.
       </p>
 
       {summary && (
@@ -102,6 +105,7 @@ export default function TriggerEnginePage() {
               <tr>
                 <th className="p-2">District</th><th className="p-2">Hazard</th>
                 <th className="p-2">Crop</th><th className="p-2">Crop-mix source</th>
+                <th className="p-2">Confidence &times;</th>
                 <th className="p-2">Score</th><th className="p-2">Farms</th>
               </tr>
             </thead>
@@ -120,6 +124,9 @@ export default function TriggerEnginePage() {
                   <td className="p-2">{r.crop}</td>
                   <td className={`p-2 text-[11px] ${TIER_TAG[r.crop_mix_source ?? ""]?.className ?? "text-faint"}`}>
                     {TIER_TAG[r.crop_mix_source ?? ""]?.label ?? r.crop_mix_source ?? "—"}
+                  </td>
+                  <td className={`p-2 tnum ${(r.interim_confidence_multiplier ?? 1) < 1 ? "text-warn" : "text-faint"}`}>
+                    {(r.interim_confidence_multiplier ?? 1).toFixed(3)}
                   </td>
                   <td className="p-2 tnum">{r.exposure_score}</td>
                   <td className={`p-2 tnum ${r.n_real_farms_matched_in_district > 0 ? "text-accent-500" : "text-faint"}`}>
@@ -148,13 +155,28 @@ export default function TriggerEnginePage() {
                 {selected.crop_mix_share_of_4crop_area != null && (
                   <Row k="Real crop-mix share" v={`${(selected.crop_mix_share_of_4crop_area * 100).toFixed(2)}%`} />
                 )}
+                {(selected.interim_confidence_multiplier ?? 1) < 1 && (
+                  <>
+                    <Row
+                      k="Raw score (before confidence discount)"
+                      v={`${selected.exposure_score_before_confidence_discount}`}
+                    />
+                    <Row
+                      k={`Confidence multiplier (${selected.crop} R²)`}
+                      v={`×${selected.interim_confidence_multiplier?.toFixed(4)}`}
+                    />
+                  </>
+                )}
                 <Row k="Real farms matched" v={`${selected.n_real_farms_matched_in_district}`} />
               </dl>
               {selected.crop_mix_source === "model_estimated_interim" && (
                 <p className="mt-2 text-[11px] text-warn">
                   This event&apos;s crop-mix weight came from Track F&apos;s trained model&apos;s real
                   prediction, not a government survey &mdash; genuinely unvalidatable until a future
-                  real MNFSR report arrives to check it against.
+                  real MNFSR report arrives to check it against. Its score is also discounted by a
+                  real, per-crop confidence multiplier (&times;{selected.interim_confidence_multiplier?.toFixed(3)}
+                  {" "}for {selected.crop}) &mdash; the mean of Track F&apos;s own validated cross-year
+                  R&sup2; for this crop, applied directly with no further transform.
                 </p>
               )}
 

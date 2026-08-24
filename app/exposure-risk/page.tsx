@@ -10,7 +10,10 @@ interface ExposureRow {
   crop: string; crop_stage: string | null; vulnerability_weight: number;
   crop_weight?: number; exposure_score: number; agronomically_plausible: boolean;
   crop_mix_source?: string;
+  interim_confidence_multiplier?: number; exposure_score_before_confidence_discount?: number;
 }
+
+const CROP_R2: Record<string, number> = { wheat: 0.4725, cotton: 0.428, rice: 0.264, sugarcane: 0.1225 };
 
 interface ExposureData {
   scope: string; crops: string[]; n_rows: number;
@@ -117,6 +120,33 @@ export default function ExposureRiskPage() {
         </p>
       </div>
 
+      <div className="mt-4 rounded-xl border border-warn/40 bg-elev p-4">
+        <h3 className="mb-1 text-sm font-semibold text-warn">
+          Threshold recalibration: real, per-crop confidence discount
+        </h3>
+        <p className="text-xs text-dim">
+          <code>real_district_area</code>/<code>hand_classified_mask</code> rows are unaffected
+          (multiplier 1.0). <code>model_estimated_interim</code> rows get a real per-crop
+          discount &mdash; the direct value of Track F&apos;s own validated cross-year R&sup2;
+          (mean of both real holdout directions, no further transform):
+        </p>
+        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {Object.entries(CROP_R2).map(([crop, r2]) => (
+            <div key={crop} className="rounded-lg border border-soft bg-elev-2 p-2 text-center">
+              <div className="text-[11px] text-faint capitalize">{crop}</div>
+              <div className="tnum text-sm font-semibold text-main">&times;{r2.toFixed(4)}</div>
+              <div className="text-[10px] text-faint">needs {(1 / r2).toFixed(1)}x raw score</div>
+            </div>
+          ))}
+        </div>
+        <p className="mt-2 text-[11px] text-faint">
+          Real, deliberate consequence: an interim-tier wheat row (the model&apos;s
+          best-performing crop) still needs ~2.1x the raw score of a real-tier row to clear the
+          same threshold. Sugarcane needs ~8.2x &mdash; discounted hard enough to essentially not
+          fire on a marginal score alone.
+        </p>
+      </div>
+
       {data.crop_mix_source_breakdown && (
         <div className="mt-4 rounded-xl border border-soft bg-elev p-4">
           <h3 className="mb-2 text-sm font-semibold">
@@ -210,6 +240,7 @@ export default function ExposureRiskPage() {
               <th className="p-2">District</th><th className="p-2">Date</th><th className="p-2">Hazard</th>
               <th className="p-2">Crop</th><th className="p-2">Stage</th>
               <th className="p-2">crop_weight</th><th className="p-2">Source tier</th>
+              <th className="p-2">Confidence &times;</th>
               <th className="p-2">Score</th><th className="p-2">Plausible?</th>
             </tr>
           </thead>
@@ -223,6 +254,9 @@ export default function ExposureRiskPage() {
                 <td className="p-2 text-dim">{r.crop_stage}</td>
                 <td className="p-2 tnum">{r.crop_weight?.toFixed(3) ?? "—"}</td>
                 <td className="p-2 text-[11px] text-faint">{r.crop_mix_source ?? "—"}</td>
+                <td className={`p-2 tnum ${(r.interim_confidence_multiplier ?? 1) < 1 ? "text-warn" : "text-faint"}`}>
+                  {(r.interim_confidence_multiplier ?? 1).toFixed(3)}
+                </td>
                 <td className="p-2 tnum font-medium">{r.exposure_score}</td>
                 <td className="p-2">
                   {r.agronomically_plausible ? (
