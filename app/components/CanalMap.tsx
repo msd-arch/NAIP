@@ -9,14 +9,14 @@ interface Segment {
 }
 
 function stressColor(v: number | null) {
-  if (v === null) return "#3a3a40";
+  if (v === null) return "#b0aa95";
   // 0.85-0.95 is this canal's real observed range -- stretch that band for visible
-  // contrast, within the one accent hue only (light tint -> saturated accent)
+  // contrast, within the one accent hue only (pale tint -> saturated accent-700)
   const t = Math.min(1, Math.max(0, (v - 0.82) / 0.15));
   const stops: [number, number, number][] = [
-    [60, 84, 82],   // dim, low stress
-    [79, 184, 173], // accent-500
-    [127, 224, 212], // brightest, most severe
+    [143, 199, 138], // accent-300, low stress
+    [74, 143, 60],   // accent-500
+    [47, 94, 38],    // accent-700, most severe
   ];
   const seg = t < 0.5 ? [stops[0], stops[1], t * 2] : [stops[1], stops[2], (t - 0.5) * 2];
   const [a, b, lt] = seg as [number[], number[], number];
@@ -32,18 +32,18 @@ export default function CanalMap({ segments }: { segments: Segment[] }) {
     <div style={{ height: "360px" }} className="overflow-hidden rounded-xl border border-soft">
       <MapContainer center={center} zoom={9} className="h-full w-full" zoomControl={false}>
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          url="https://{s}.basemaps.cartocdn.com/voyager_nolabels/{z}/{x}/{y}{r}.png"
           attribution='&copy; CARTO &copy; OpenStreetMap'
           subdomains="abcd"
           maxZoom={19}
         />
-        <Polyline positions={line} color="#4fb8ad55" weight={2} />
+        <Polyline positions={line} color="#4a8f3c88" weight={2} />
         {segments.map((s) => (
           <CircleMarker
             key={s.segment_id}
             center={[s.lat, s.lon]}
             radius={s.position === "head" || s.position === "tail" ? 8 : 5}
-            pathOptions={{ color: "#09090b", weight: 1, fillColor: stressColor(s.stress_index), fillOpacity: 0.9 }}
+            pathOptions={{ color: "#faf7f0", weight: 1, fillColor: stressColor(s.stress_index), fillOpacity: 0.9 }}
           >
             <Tooltip>
               {s.position} &middot; {s.dist_from_head_km}km &middot; stress={s.stress_index ?? "n/a"}

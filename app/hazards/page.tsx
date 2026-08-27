@@ -4,6 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import CaveatBanner from "../components/CaveatBanner";
 import PipelineHealthBadge from "../components/PipelineHealthBadge";
+import TechNote from "../components/TechNote";
+import DisclaimerBar from "../components/DisclaimerBar";
+import ProvenanceLine from "../components/ProvenanceLine";
 import type { Feature, Geometry } from "geojson";
 
 const DistrictChoropleth = dynamic(() => import("../components/DistrictChoropleth"), { ssr: false });
@@ -67,8 +70,8 @@ export default function HazardsPage() {
     const t = n / maxTriggered;
     // one accent hue, light-to-saturated -- no data reads neutral gray
     const color =
-      n === 0 ? "#1c1c20" : t < 0.33 ? "#3c5c58" : t < 0.66 ? "#4fb8ad" : "#7fe0d4";
-    return { color: "#33333a", weight: 1, fillColor: color, fillOpacity: 1 };
+      n === 0 ? "#e8e2d1" : t < 0.33 ? "#bcd9b3" : t < 0.66 ? "#4a8f3c" : "#2f5e26";
+    return { color: "#8c8878", weight: 1, fillColor: color, fillOpacity: 1 };
   };
 
   const onEachFeature = (feature: Feature<Geometry, any>, layer: any) => {
@@ -91,6 +94,11 @@ export default function HazardsPage() {
       <div className="mt-3">
         <PipelineHealthBadge />
       </div>
+
+      <DisclaimerBar>
+        District-level, not farm-level: a triggered color on the map means the ~27km grid
+        cell for that district crossed a hazard threshold, not that every farm in it did.
+      </DisclaimerBar>
 
       <CaveatBanner>
         This is district-level, not farm-level. A district being colored teal means the
@@ -133,15 +141,16 @@ export default function HazardsPage() {
       </div>
 
       <h2 className="mt-10 text-base font-semibold">
-        residue_burning: real rule vs. Track E&apos;s trained model score
+        Fire Detection Model: residue burning, rule vs. trained model
       </h2>
       <p className="mt-1 text-sm text-dim">
         Every <code>residue_burning</code> alert record in this feed carries two independent
-        real signals: the unchanged rule-based <code>flag</code> above, and the trained
-        thermal-only GBT classifier&apos;s <code>model_score</code> (Week 7/9, F1=0.346 vs.
+        real signals: the unchanged rule-based <code>flag</code> above, and a trained
+        thermal-only classifier&apos;s <code>model_score</code> (F1=0.346 vs.
         the rule&apos;s F1=0.004 on identical held-out data) &mdash; run side by side, not
         one replacing the other.
       </p>
+      <TechNote>Internally &ldquo;Track E&rdquo; (fire classifier), benchmarked in Weeks 7 and 9.</TechNote>
 
       {!fire ? (
         <p className="mt-4 text-sm text-dim">Loading real rule-vs-model comparison...</p>
@@ -166,6 +175,7 @@ export default function HazardsPage() {
             <span>Mean model score: <span className="tnum text-dim">{fire.mean_model_score}</span></span>
           </div>
           <CaveatBanner>{fire.caveat}</CaveatBanner>
+          <ProvenanceLine source="track_g_dashboard_summary.json (fire_classifier)" updated="Week 19 cross-year validation" />
         </>
       )}
     </div>

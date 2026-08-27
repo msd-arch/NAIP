@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import StatsTicker from "./components/StatsTicker";
 import PipelineHealthBadge from "./components/PipelineHealthBadge";
+import DisclaimerBar from "./components/DisclaimerBar";
 
 const DistrictChoropleth = dynamic(() => import("./components/DistrictChoropleth"), { ssr: false });
 
@@ -22,7 +23,6 @@ const MODULES = [
   { href: "/crop-classifier", label: "Crop / Irrigation", caption: "Irrigated-vs-not, reported below its own baseline", metricKey: "classifierAcc" },
   { href: "/exposure-risk", label: "Exposure Risk", caption: "Hazard x crop calendar, plausibility-filtered", metricKey: "exposurePlausible" },
   { href: "/trigger-engine", label: "Trigger Engine", caption: "Audited contract events, basis risk on every record", metricKey: "triggerCount" },
-  { href: "/demo-walkthrough", label: "Demo Walkthrough", caption: "Layyah, 2026-07-06 -- the real end-to-end run", metricKey: "demoScore" },
 ];
 
 export default function Home() {
@@ -42,8 +42,7 @@ export default function Home() {
       fetch(`${BASE}/data/crop_classifier_report.json`).then((r) => r.json()),
       fetch(`${BASE}/data/exposure_risk.json`).then((r) => r.json()),
       fetch(`${BASE}/data/trigger_summary_national.json`).then((r) => r.json()),
-      fetch(`${BASE}/data/demo_scenario.json`).then((r) => r.json()),
-    ]).then(([ws, locust, clf, exp, trig, demo]) => {
+    ]).then(([ws, locust, clf, exp, trig]) => {
       setMetrics((prev) => ({
         ...prev,
         waterSpan: `${ws.n_segments} pts / ${ws.flow_direction_check.span_km}km`,
@@ -51,7 +50,6 @@ export default function Home() {
         classifierAcc: `${(clf.models.random_forest.held_out_test_accuracy * 100).toFixed(0)}% (baseline ${(clf.majority_class_baseline_accuracy * 100).toFixed(0)}%)`,
         exposurePlausible: `${(exp.n_nonzero_exposure - exp.n_nonzero_exposure_implausible).toLocaleString()} / ${exp.n_nonzero_exposure.toLocaleString()}`,
         triggerCount: `${trig.n_triggered} events, ${trig.n_triggered_with_real_farms_matched} farm-matched`,
-        demoScore: `score ${demo.record.exposure_score}, ${demo.record.n_real_farms_matched_in_district} farms`,
       }));
     });
   }, []);
@@ -83,13 +81,13 @@ export default function Home() {
     const t = n / maxTriggered;
     const color =
       n === 0
-        ? "#1c1c20"
+        ? "#e8e2d1"
         : t < 0.33
-        ? "#3c5c58"
+        ? "#bcd9b3"
         : t < 0.66
-        ? "#4fb8ad"
-        : "#7fe0d4";
-    return { color: "#33333a", weight: 0.6, fillColor: color, fillOpacity: 0.9 };
+        ? "#4a8f3c"
+        : "#2f5e26";
+    return { color: "#8c8878", weight: 0.6, fillColor: color, fillOpacity: 0.9 };
   };
 
   return (
@@ -143,6 +141,18 @@ export default function Home() {
         <PipelineHealthBadge />
       </div>
 
+      <DisclaimerBar>
+        This is a visualization layer over real, already-generated project output, not new
+        modeling. Every module carries its own real limitations (below-baseline classifier
+        accuracy, coarse plausibility masks, proxy geographic boundaries, stubbed payouts)
+        surfaced on its own page. See{" "}
+        <Link href="/trigger-engine" className="text-accent-500 underline underline-offset-2">
+          the trigger engine
+        </Link>{" "}
+        for the single most important one: a trigger is a reason to investigate, not proof
+        of loss.
+      </DisclaimerBar>
+
       {/* quiet, dense module list -- secondary to the map, not competing with it */}
       <div className="mt-2 divide-y divide-[var(--border-soft)] border-b border-soft">
         {MODULES.map((m) => (
@@ -164,19 +174,6 @@ export default function Home() {
         ))}
       </div>
 
-      {/* persistent status strip -- functional warning state, not decoration */}
-      <div className="caveat-banner mt-4">
-        <strong>Read before trusting any number above:</strong> this is a
-        visualization layer over real, already-generated project output, not new
-        modeling. Every module carries its own real limitations (below-baseline
-        classifier accuracy, coarse plausibility masks, proxy geographic boundaries,
-        stubbed payouts) surfaced on its own page. See{" "}
-        <Link href="/trigger-engine" className="text-accent-500 underline underline-offset-2">
-          the trigger engine
-        </Link>{" "}
-        for the single most important one: a trigger is a reason to investigate, not
-        proof of loss.
-      </div>
     </div>
   );
 }

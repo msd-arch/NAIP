@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import CaveatBanner from "../components/CaveatBanner";
+import DisclaimerBar from "../components/DisclaimerBar";
+import AlertCard from "../components/AlertCard";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
@@ -18,7 +20,7 @@ interface AuditRecord {
 
 const TIER_TAG: Record<string, { label: string; className: string }> = {
   real_district_area: { label: "real MNFSR (2022-23)", className: "text-accent-500" },
-  model_estimated_interim: { label: "model-estimated interim", className: "text-warn" },
+  model_estimated_interim: { label: "model-estimated interim", className: "text-secondary-500" },
   hand_classified_mask: { label: "hand-classified mask", className: "text-faint" },
 };
 
@@ -50,13 +52,13 @@ export default function TriggerEnginePage() {
         plausible. Every event is logged with the exact hazard reading that caused it.
       </p>
 
-      <CaveatBanner>
+      <DisclaimerBar>
         &ldquo;A trigger is a reason to investigate or pay against an index, not proof
         that any specific farmer actually lost anything.&rdquo; &mdash; FINAL_REPORT.md.
         Payout is always <strong>STUBBED_INTENT_ONLY</strong>: Raast (SBP instant-payment
         rail) is an integration point only, no real money has ever moved through this
         system, no transaction ID has ever been real.
-      </CaveatBanner>
+      </DisclaimerBar>
 
       <div className="mt-4 flex gap-5 border-b border-soft">
         <button
@@ -74,12 +76,12 @@ export default function TriggerEnginePage() {
       </div>
 
       <p className="mt-2 text-[11px] text-faint">
-        Recalibrated Week 9 (0.35/0.20 &rarr; 0.225/0.07: crop_weight became a real
-        proportional weight) and again for the threshold-recalibration pass (demo:
-        0.07 &rarr; 0.0216, re-matched to the same real selectivity against the score
-        distribution after model_estimated_interim rows started carrying a real
-        per-crop confidence discount &mdash; see Exposure Risk) &mdash; never picked to hit
-        a target event count or preserve a specific scenario.
+        Recalibrated once when crop_weight became a real proportional weight
+        (0.35/0.20 &rarr; 0.225/0.07), and again after model_estimated_interim rows
+        started carrying a real per-crop confidence discount (demo: 0.07 &rarr; 0.0216,
+        re-matched to the same real selectivity against the score distribution &mdash; see
+        Exposure Risk) &mdash; never picked to hit a target event count or preserve a
+        specific scenario.
       </p>
 
       {summary && (
@@ -99,43 +101,25 @@ export default function TriggerEnginePage() {
       )}
 
       <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <div className="max-h-[480px] overflow-y-auto rounded-xl border border-soft">
-          <table className="w-full text-xs">
-            <thead className="sticky top-0 bg-elev-2 text-left text-faint">
-              <tr>
-                <th className="p-2">District</th><th className="p-2">Hazard</th>
-                <th className="p-2">Crop</th><th className="p-2">Crop-mix source</th>
-                <th className="p-2">Confidence &times;</th>
-                <th className="p-2">Score</th><th className="p-2">Farms</th>
-              </tr>
-            </thead>
-            <tbody>
-              {records.map((r) => (
-                <tr
-                  key={r.event_id}
-                  onClick={() => setSelected(r)}
-                  className={`cursor-pointer border-t border-soft hover:bg-elev-2 ${selected?.event_id === r.event_id ? "bg-elev-2" : ""}`}
-                >
-                  <td className="p-2">
-                    <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-critical" title="fired trigger event" />
-                    {r.district}
-                  </td>
-                  <td className="p-2">{r.hazard.replace("_", " ")}</td>
-                  <td className="p-2">{r.crop}</td>
-                  <td className={`p-2 text-[11px] ${TIER_TAG[r.crop_mix_source ?? ""]?.className ?? "text-faint"}`}>
-                    {TIER_TAG[r.crop_mix_source ?? ""]?.label ?? r.crop_mix_source ?? "—"}
-                  </td>
-                  <td className={`p-2 tnum ${(r.interim_confidence_multiplier ?? 1) < 1 ? "text-warn" : "text-faint"}`}>
-                    {(r.interim_confidence_multiplier ?? 1).toFixed(3)}
-                  </td>
-                  <td className="p-2 tnum">{r.exposure_score}</td>
-                  <td className={`p-2 tnum ${r.n_real_farms_matched_in_district > 0 ? "text-accent-500" : "text-faint"}`}>
-                    {r.n_real_farms_matched_in_district}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="max-h-[480px] space-y-2 overflow-y-auto rounded-xl border border-soft bg-elev-2 p-2">
+          {records.map((r) => (
+            <AlertCard
+              key={r.event_id}
+              title={`${r.district} · ${r.hazard.replace("_", " ")} × ${r.crop}`}
+              subtitle={`Crop-mix: ${TIER_TAG[r.crop_mix_source ?? ""]?.label ?? r.crop_mix_source ?? "—"} · ${r.n_real_farms_matched_in_district} real farm${r.n_real_farms_matched_in_district === 1 ? "" : "s"} matched`}
+              severity="critical"
+              confidencePct={Math.round(r.hazard_confidence * 100)}
+              modelLabel={`Trigger Engine · score ${r.exposure_score}`}
+              asOf={r.date}
+              tierLabel={TIER_TAG[r.crop_mix_source ?? ""]?.label ?? r.crop_mix_source ?? "—"}
+              tierClassName={TIER_TAG[r.crop_mix_source ?? ""]?.className ?? "text-faint"}
+              selected={selected?.event_id === r.event_id}
+              onClick={() => setSelected(r)}
+            />
+          ))}
+          <p className="provenance-line px-1">
+            trigger_engine.py audit log &mdash; regenerated each pipeline run
+          </p>
         </div>
 
         <div className="rounded-xl border border-soft bg-elev p-4">
@@ -171,18 +155,23 @@ export default function TriggerEnginePage() {
               </dl>
               {selected.crop_mix_source === "model_estimated_interim" && (
                 <p className="mt-2 text-[11px] text-warn">
-                  This event&apos;s crop-mix weight came from Track F&apos;s trained model&apos;s real
-                  prediction, not a government survey &mdash; genuinely unvalidatable until a future
+                  This event&apos;s crop-mix weight came from the trained national crop-share
+                  model&apos;s real prediction, not a government survey &mdash; genuinely unvalidatable until a future
                   real MNFSR report arrives to check it against. Its score is also discounted by a
                   real, per-crop confidence multiplier (&times;{selected.interim_confidence_multiplier?.toFixed(3)}
-                  {" "}for {selected.crop}) &mdash; the mean of Track F&apos;s own validated cross-year
+                  {" "}for {selected.crop}) &mdash; the mean of that model&apos;s own validated cross-year
                   R&sup2; for this crop, applied directly with no further transform.
                 </p>
               )}
 
               <div className="caveat-banner mt-4">
                 <strong>Basis risk (verbatim from the audit record):</strong>
-                <p className="mt-1 text-dim">{selected.basis_risk_note}</p>
+                <p className="mt-1 text-[11px] italic text-faint">
+                  Kept verbatim for auditability &mdash; this is the exact text the trigger
+                  engine wrote to the audit log, including its own internal references,
+                  unedited.
+                </p>
+                <p className="mt-1.5 text-dim">{selected.basis_risk_note}</p>
               </div>
 
               <div className="mt-3 rounded-lg border border-soft bg-elev-2 p-3 text-xs">

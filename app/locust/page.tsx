@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import CaveatBanner from "../components/CaveatBanner";
+import DisclaimerBar from "../components/DisclaimerBar";
+import ProvenanceLine from "../components/ProvenanceLine";
 
 const LocustMap = dynamic(() => import("../components/LocustMap"), { ssr: false });
 
@@ -37,10 +39,17 @@ export default function LocustPage() {
         proxy (see caveat).
       </p>
 
+      <DisclaimerBar>
+        Recall-only validated (12/49 real confirmed events hit after recalibration) &mdash;
+        no confirmed-absence data exists to measure a false-alarm rate, so this is a
+        real but partial signal, not a calibrated risk score.
+      </DisclaimerBar>
+
       <CaveatBanner>{data.scope}</CaveatBanner>
 
       <div className="mt-4">
         <LocustMap districtsGeojson={geo} />
+        <ProvenanceLine source="locust_risk.json (SMAP + Sentinel-2, FAO-validated thresholds)" updated="Week 5/19" />
       </div>
 
       <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">

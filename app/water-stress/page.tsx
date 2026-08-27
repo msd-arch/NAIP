@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import CaveatBanner from "../components/CaveatBanner";
 import SegmentProfileChart from "../components/SegmentProfileChart";
+import TechNote from "../components/TechNote";
+import DisclaimerBar from "../components/DisclaimerBar";
+import ProvenanceLine from "../components/ProvenanceLine";
 
 const CanalMap = dynamic(() => import("../components/CanalMap"), { ssr: false });
 
@@ -93,12 +96,12 @@ interface WaterStress {
 function NdviTierBar({ tiers }: { tiers: Record<string, number> }) {
   const order = ["real_mnfsr_cropland_masked", "real_gbajk_unmasked"];
   const label: Record<string, string> = {
-    real_mnfsr_cropland_masked: "Real cropland-masked (Track F points)",
+    real_mnfsr_cropland_masked: "Real cropland-masked",
     real_gbajk_unmasked: "Real unmasked (GB/AJK extension)",
   };
   const color: Record<string, string> = {
     real_mnfsr_cropland_masked: "bg-accent-500",
-    real_gbajk_unmasked: "bg-[#7aa8c9]",
+    real_gbajk_unmasked: "bg-secondary-500",
   };
   const total = Object.values(tiers).reduce((a, b) => a + b, 0);
   return (
@@ -117,6 +120,34 @@ function NdviTierBar({ tiers }: { tiers: Record<string, number> }) {
             {label[k]}: <span className="tnum font-semibold text-main">{tiers[k]}</span>/126
           </span>
         ))}
+      </div>
+    </div>
+  );
+}
+
+function NdviCompareBar({ district }: { district: DroughtDistrict }) {
+  const max = Math.max(district.mean_current_ndvi, district.mean_historical_ndvi, 0.1) * 1.15;
+  return (
+    <div className="mb-3">
+      <div className="mb-1 flex justify-between text-xs">
+        <span className="text-main">{district.district}</span>
+        <span className="tnum text-faint">z = {district.mean_z_score.toFixed(2)}</span>
+      </div>
+      <div className="space-y-1">
+        <div className="flex items-center gap-2">
+          <span className="w-16 shrink-0 text-[10px] text-faint">current</span>
+          <div className="h-2.5 flex-1 rounded-full bg-elev-2">
+            <div className="h-full rounded-full bg-critical/70" style={{ width: `${(district.mean_current_ndvi / max) * 100}%` }} />
+          </div>
+          <span className="tnum w-12 shrink-0 text-right text-[10px] text-dim">{district.mean_current_ndvi.toFixed(3)}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="w-16 shrink-0 text-[10px] text-faint">historical</span>
+          <div className="h-2.5 flex-1 rounded-full bg-elev-2">
+            <div className="h-full rounded-full bg-accent-500" style={{ width: `${(district.mean_historical_ndvi / max) * 100}%` }} />
+          </div>
+          <span className="tnum w-12 shrink-0 text-right text-[10px] text-dim">{district.mean_historical_ndvi.toFixed(3)}</span>
+        </div>
       </div>
     </div>
   );
@@ -141,15 +172,21 @@ export default function WaterStressPage() {
 
   return (
     <div>
-      <h1 className="text-xl font-semibold">Water Stress &mdash; {data.canal_name}</h1>
+      <h1 id="canal-water-stress" className="scroll-mt-20 text-xl font-semibold">Water Stress &mdash; {data.canal_name}</h1>
       <p className="mt-1 text-sm text-dim">{data.geometry_source}</p>
+
+      <DisclaimerBar>
+        This page bundles three genuinely separate real modules (canal water stress,
+        flood risk, national drought) &mdash; each has its own real scope, real coverage
+        gaps, and its own caveats below. None are merged into a single number.
+      </DisclaimerBar>
 
       <CaveatBanner>{data.scope}</CaveatBanner>
 
       <div className="mt-4 rounded-xl border border-soft bg-elev p-4">
         <h2 className="text-sm font-semibold">Flow direction &mdash; verified, not assumed</h2>
         <p className="mt-1 text-xs text-dim">
-          The original head/tail labeling was a geometric guess (Week 2). It was
+          The original head/tail labeling was a geometric guess. It was
           independently cross-checked against real SRTM elevation ({fd.source}):
           elevation drops <strong className="text-main">{fd.total_drop_m}m</strong> over{" "}
           {fd.span_km}km (slope {fd.slope_m_per_km} m/km, correlation{" "}
@@ -170,6 +207,7 @@ export default function WaterStressPage() {
           <h2 className="mb-2 text-sm font-semibold">Head-to-tail profile</h2>
           <SegmentProfileChart segments={data.segments} />
           <p className="mt-2 text-xs text-faint">{data.stress_index_definition}</p>
+          <ProvenanceLine source="water_stress.json (real MODIS ET/PET + SRTM)" updated="Week 2" />
         </div>
         <CanalMap segments={data.segments} />
       </div>
@@ -178,8 +216,8 @@ export default function WaterStressPage() {
 
       <hr className="mt-10 border-soft" />
 
-      <h2 className="mt-8 text-base font-semibold">
-        Flood risk (Track D) &mdash; a separate module, not part of this canal&apos;s index
+      <h2 id="flood-risk" className="mt-8 scroll-mt-20 text-base font-semibold">
+        Flood Risk Screen &mdash; a separate module, not part of this canal&apos;s index
       </h2>
       <p className="mt-1 text-sm text-dim">
         Shares the water theme with the canal-stress work above but is a genuinely
@@ -187,12 +225,13 @@ export default function WaterStressPage() {
         Water) &mdash; kept here as its own clearly-bounded section, not folded into
         the canal water-stress numbers above.
       </p>
+      <TechNote>Internally &ldquo;Track D.&rdquo;</TechNote>
 
       {!flood ? (
         <p className="mt-4 text-sm text-dim">Loading live flood screen...</p>
       ) : (
         <>
-          <div className="mt-4 rounded-xl border border-[#e5484d]/40 bg-[#e5484d]/10 p-4 text-sm">
+          <div className="mt-4 rounded-xl border border-critical/40 bg-critical/10 p-4 text-sm">
             <strong className="text-main">Not a flood alert.</strong>{" "}
             <span className="text-dim">
               Live screen ({flood.during_window[0]} to {flood.during_window[1]}) flagged{" "}
@@ -214,19 +253,21 @@ export default function WaterStressPage() {
             </span>
           </div>
           <CaveatBanner>{flood.not_merged_reason}</CaveatBanner>
+          <ProvenanceLine source="track_d_dashboard_summary.json" updated={`live screen, ${flood.during_window[1]}`} />
         </>
       )}
 
       <hr className="mt-10 border-soft" />
 
-      <h2 className="mt-8 text-base font-semibold">
-        National drought / NDVI signal (Track M) &mdash; the project&apos;s oldest gap, closed
+      <h2 id="drought-signal" className="mt-8 scroll-mt-20 text-base font-semibold">
+        National Drought / NDVI Signal &mdash; the project&apos;s oldest gap, closed
       </h2>
       <p className="mt-1 text-sm text-dim">
-        Replaces the original Week 1 signal (2 farm clusters, 0.25&deg;/27km MSG grid) with a
+        Replaces the original pilot signal (2 farm clusters, 0.25&deg;/27km MSG grid) with a
         real national NDVI trend-deviation signal at real Sentinel-2 resolution (10m), reusing
-        Track F&apos;s national point-sampling infrastructure.
+        the crop-share model&apos;s national point-sampling infrastructure.
       </p>
+      <TechNote>Internally &ldquo;Track M,&rdquo; reusing &ldquo;Track F&rdquo;&apos;s point set.</TechNote>
 
       {oldVsNew && (
         <div className="mt-4 rounded-xl border border-accent-500/40 bg-accent-500/10 p-4 text-sm">
@@ -271,7 +312,7 @@ export default function WaterStressPage() {
           </div>
           <p className="mt-2 text-[11px] text-faint">
             {drought.n_districts_covered}/{drought.n_districts_total_seed} real districts covered
-            &mdash; wider than Track F&apos;s own 115/126 scope, since drought monitoring isn&apos;t
+            &mdash; wider than the crop-share model&apos;s own 115/126 scope, since drought monitoring isn&apos;t
             gated by crop-type data the way crop-share estimation is.
           </p>
 
@@ -287,8 +328,24 @@ export default function WaterStressPage() {
             <span>z-score median: <span className="tnum text-dim">{drought.z_score_distribution.median.toFixed(2)}</span></span>
           </div>
 
+          {drought.district_results.filter((d) => d.district_flag).length > 0 && (
+            <div className="mt-4 rounded-xl border border-soft bg-elev p-4">
+              <h4 className="mb-1 text-sm font-semibold">Flagged districts: current vs. historical NDVI</h4>
+              <p className="mb-3 text-xs text-faint">
+                Current real Sentinel-2 mean NDVI against each district&apos;s own real
+                21-year MODIS historical norm &mdash; the direct comparison the z-score flag
+                is computed from.
+              </p>
+              {drought.district_results.filter((d) => d.district_flag).map((d) => (
+                <NdviCompareBar key={d.district} district={d} />
+              ))}
+              <ProvenanceLine source="drought_national.json (Sentinel-2 current + MODIS MOD13Q1 historical)" updated="Week 16" />
+            </div>
+          )}
+
           <CaveatBanner>{drought.cross_sensor_bias_finding}</CaveatBanner>
           <CaveatBanner>{drought.systematic_offset_finding}</CaveatBanner>
+          <ProvenanceLine source="drought_national.json" updated="Week 16 national build" />
         </>
       )}
     </div>

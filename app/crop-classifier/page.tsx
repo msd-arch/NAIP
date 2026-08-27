@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 import CaveatBanner from "../components/CaveatBanner";
+import TechNote from "../components/TechNote";
+import ProvenanceLine from "../components/ProvenanceLine";
+import DisclaimerBar from "../components/DisclaimerBar";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
@@ -80,14 +83,14 @@ function R2Bar({ crop, r2 }: { crop: string; r2: number }) {
     <div className="mb-3">
       <div className="mb-1 flex justify-between text-xs">
         <span className="capitalize text-dim">{crop}</span>
-        <span className={`tnum font-semibold ${negative ? "text-[#e5484d]" : "text-main"}`}>
+        <span className={`tnum font-semibold ${negative ? "text-critical" : "text-main"}`}>
           R² = {r2.toFixed(3)} {negative && "(real, reported failure)"}
         </span>
       </div>
       <div className="relative h-3 w-full rounded-full bg-elev-2">
         <div className="absolute left-1/2 top-0 h-full w-px bg-[var(--text)] opacity-40" />
         <div
-          className={`absolute top-0 h-full rounded-full ${negative ? "bg-[#e5484d]/70" : "bg-accent-500"}`}
+          className={`absolute top-0 h-full rounded-full ${negative ? "bg-critical/70" : "bg-accent-500"}`}
           style={negative ? { right: "50%", width: `${widthPct}%` } : { left: "50%", width: `${widthPct}%` }}
         />
       </div>
@@ -108,7 +111,7 @@ function AccuracyBar({ label, value, baseline }: { label: string; value: number;
       </div>
       <div className="relative h-3 rounded-full bg-elev-2">
         <div
-          className={`h-full rounded-full ${belowBaseline ? "bg-[#3a3a40]" : "bg-accent-500"}`}
+          className={`h-full rounded-full ${belowBaseline ? "bg-[#8c8878]" : "bg-accent-500"}`}
           style={{ width: `${(value / max) * 100}%` }}
         />
         <div
@@ -116,6 +119,38 @@ function AccuracyBar({ label, value, baseline }: { label: string; value: number;
           style={{ left: `${(baseline / max) * 100}%` }}
           title={`majority-class baseline: ${(baseline * 100).toFixed(1)}%`}
         />
+      </div>
+    </div>
+  );
+}
+
+function YieldBar({ label, modelR2, naiveR2 }: { label: string; modelR2: number | null; naiveR2: number | null }) {
+  const vals = [modelR2, naiveR2].filter((v): v is number => v != null);
+  const maxAbs = Math.max(0.2, ...vals.map((v) => Math.abs(v)));
+  const bar = (v: number | null, isBaseline: boolean) => {
+    if (v == null) return <div className="h-2 w-full rounded-full bg-elev-2" />;
+    const neg = v < 0;
+    const widthPct = (Math.abs(v) / maxAbs) * 100;
+    return (
+      <div className="h-2 w-full rounded-full bg-elev-2">
+        <div
+          className={`h-full rounded-full ${isBaseline ? "bg-[#8c8878]" : neg ? "bg-critical/70" : "bg-accent-500"}`}
+          style={{ width: `${Math.max(2, widthPct)}%` }}
+        />
+      </div>
+    );
+  };
+  return (
+    <div className="mb-2.5">
+      <div className="mb-1 flex justify-between text-[11px]">
+        <span className="capitalize text-dim">{label}</span>
+        <span className="tnum text-faint">
+          model {modelR2 != null ? modelR2.toFixed(3) : "—"} vs. naive {naiveR2 != null ? naiveR2.toFixed(3) : "—"}
+        </span>
+      </div>
+      <div className="space-y-1">
+        {bar(modelR2, false)}
+        {bar(naiveR2, true)}
       </div>
     </div>
   );
@@ -142,13 +177,20 @@ export default function CropClassifierPage() {
     <div>
       <h1 className="text-xl font-semibold">Crop Intelligence</h1>
       <p className="mt-1 text-sm text-dim">
-        Two real, separately-scoped classifiers: Week 2&apos;s pilot-region irrigation
-        classifier below, and Track F&apos;s national per-crop area-share regressor
+        Two real, separately-scoped classifiers: a pilot-region irrigation
+        classifier below, and a national per-crop area-share regressor
         further down &mdash; different farms, different districts, different real
         ground truth, not one superseding the other.
       </p>
 
-      <h2 className="mt-6 text-base font-semibold">Irrigation classifier (Week 2, 120-farm pilot)</h2>
+      <DisclaimerBar>
+        Every model on this page is reported against its own real baseline, with sample
+        size and coverage limits stated plainly &mdash; including two negative results
+        (irrigation accuracy below its majority-class baseline; sugarcane yield/crop-share
+        R&sup2; both negative) that are not smoothed over.
+      </DisclaimerBar>
+
+      <h2 id="irrigation-classifier" className="mt-6 scroll-mt-20 text-base font-semibold">Irrigation classifier (120-farm pilot)</h2>
       <p className="mt-1 text-sm text-dim">{data.task}</p>
 
       <CaveatBanner>{data.scope_note}</CaveatBanner>
@@ -194,14 +236,15 @@ export default function CropClassifierPage() {
 
       <hr className="mt-10 border-soft" />
 
-      <h2 className="mt-8 text-base font-semibold">
-        National crop-share regressor (Track F, 115-district scope)
+      <h2 id="crop-model" className="mt-8 scroll-mt-20 text-base font-semibold">
+        National crop-share model (115-district scope)
       </h2>
       <p className="mt-1 text-sm text-dim">
         Predicts real per-crop area SHARES (wheat/cotton/rice/sugarcane), not a single
         dominant crop &mdash; a literal &ldquo;classifier&rdquo; framing was checked
         first and found degenerate (wheat dominant in 93% of real districts).
       </p>
+      <TechNote>Internally &ldquo;Track F.&rdquo;</TechNote>
 
       {!trackF ? (
         <p className="mt-4 text-sm text-dim">Loading real Track F results...</p>
@@ -224,6 +267,7 @@ export default function CropClassifierPage() {
             {CROPS.map((crop) => (
               <R2Bar key={crop} crop={crop} r2={trackF.gbt_test_district_level[crop].r2} />
             ))}
+            <ProvenanceLine source="track_f_results.json" updated="Week 8, district-level held-out test" />
           </div>
 
           <CaveatBanner>
@@ -240,9 +284,10 @@ export default function CropClassifierPage() {
 
       <hr className="mt-10 border-soft" />
 
-      <h2 className="mt-8 text-base font-semibold">
-        Genuine cross-year validation (Track J) &mdash; a real, harder test
+      <h2 id="cross-year-validation" className="mt-8 scroll-mt-20 text-base font-semibold">
+        Genuine cross-year validation &mdash; a real, harder test
       </h2>
+      <TechNote>Internally &ldquo;Track J.&rdquo;</TechNote>
       <p className="mt-1 text-sm text-dim">
         Train on one real MNFSR year, test on the other &mdash; both directions reported,
         not just whichever looks better. Real 2021-22 labels sourced from the same
@@ -305,7 +350,7 @@ export default function CropClassifierPage() {
         model_estimated_interim tier &mdash; bridging the gap since MNFSR&apos;s last real report
       </h2>
       <p className="mt-1 text-sm text-dim">
-        The deployed Track F model (trained on real 2022-23 labels, unchanged) applied to real
+        The deployed national crop-share model (trained on real 2022-23 labels, unchanged) applied to real
         Sentinel-2 features for 2024-25 &mdash; the most recent complete real season since
         MNFSR&apos;s last real report. A model estimate, not real government data.
       </p>
@@ -336,21 +381,48 @@ export default function CropClassifierPage() {
 
       <hr className="mt-10 border-soft" />
 
-      <h2 className="mt-8 text-base font-semibold">
-        Real yield prediction (Track O) &mdash; a real, mostly negative result
+      <h2 id="yield-prediction" className="mt-8 scroll-mt-20 text-base font-semibold">
+        Real yield prediction &mdash; a real, mostly negative result
       </h2>
       <p className="mt-1 text-sm text-dim">
         Predicts real yield (production &divide; area, tons/hectare) per district/crop from the
-        same real Sentinel-2 phenology features Track F uses &mdash; a new target, extending the
+        same real Sentinel-2 phenology features the crop-share model uses &mdash; a new target, extending the
         same real infrastructure. Production figures were already sitting in the parsed MNFSR
         data unused; a real gap was found and closed (production had never been independently
         cross-validated against its own printed total, only area had) before any model was built.
       </p>
+      <TechNote>Internally &ldquo;Track O.&rdquo;</TechNote>
 
       {!yieldResults ? (
         <p className="mt-4 text-sm text-dim">Loading real yield results...</p>
       ) : (
         <>
+          <div className="mt-4 rounded-xl border border-soft bg-elev p-4">
+            <h3 className="mb-1 text-sm font-semibold">Naive baseline vs. trained model, real R&sup2; per crop</h3>
+            <p className="mb-3 text-xs text-faint">
+              Both cross-year directions shown, un-rounded &mdash; where the gray naive-baseline
+              bar reaches further than the green model bar, the simple baseline really does win.
+              Nothing here is framed to make the negative results look better than they are.
+            </p>
+            {CROPS.flatMap((crop) => {
+              const c = yieldResults.crops[crop];
+              if (!c) return [];
+              const rows = [
+                { label: "A: 21-22→22-23", model: c.direction_A_train2122_test2223, naive: c.naive_baseline_A_predict2223_from2122 },
+                { label: "B: 22-23→21-22", model: c.direction_B_train2223_test2122, naive: c.naive_baseline_B_predict2122_from2223 },
+              ];
+              return rows.map(({ label, model, naive }) => {
+                const modelR2 = model.district_level?.r2 ?? null;
+                const naiveR2 = naive.skipped ? null : naive.r2;
+                if (modelR2 == null && naiveR2 == null) return [];
+                return (
+                  <YieldBar key={`${crop}-${label}`} label={`${crop} (${label})`} modelR2={modelR2} naiveR2={naiveR2} />
+                );
+              });
+            })}
+            <ProvenanceLine source="track_o_yield_results.json" updated="Week 22" />
+          </div>
+
           <div className="mt-4 overflow-x-auto rounded-xl border border-soft">
             <table className="w-full min-w-[720px] text-left text-xs">
               <thead>
@@ -409,7 +481,7 @@ export default function CropClassifierPage() {
           <p className="mt-3 text-xs text-faint">
             What this doesn&apos;t claim: yield prediction is a real, useful input to exposure
             risk, not a substitute for the actuarial claims/loss-data gap that&apos;s been
-            honestly flagged as unresolved since Week 4.
+            honestly flagged as unresolved since the insurance engine&apos;s first build.
           </p>
         </>
       )}

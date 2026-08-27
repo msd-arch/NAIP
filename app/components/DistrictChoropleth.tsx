@@ -40,7 +40,7 @@ export default function DistrictChoropleth({
       >
         {!bare && <ZoomControl position="topright" />}
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"
+          url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
           attribution='&copy; <a href="https://carto.com/">CARTO</a> &copy; OpenStreetMap contributors'
           subdomains="abcd"
           maxZoom={19}
@@ -52,7 +52,7 @@ export default function DistrictChoropleth({
         />
         {!bare && (
           <TileLayer
-            url="https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png"
+            url="https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png"
             subdomains="abcd"
             maxZoom={19}
           />

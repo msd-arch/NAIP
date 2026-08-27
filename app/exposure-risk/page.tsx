@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 import CaveatBanner from "../components/CaveatBanner";
+import TechNote from "../components/TechNote";
+import DisclaimerBar from "../components/DisclaimerBar";
+import ProvenanceLine from "../components/ProvenanceLine";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
@@ -28,13 +31,13 @@ interface TierBreakdown {
 
 const TIER_LABEL: Record<string, string> = {
   real_district_area: "Real MNFSR district data (2022-23 season only)",
-  model_estimated_interim: "Model-estimated interim (Track F, post-2022-23 seasons)",
+  model_estimated_interim: "Model-estimated interim (post-2022-23 seasons)",
   hand_classified_mask: "Hand-classified mask (11 GB/AJK districts)",
 };
 const TIER_COLOR: Record<string, string> = {
   real_district_area: "bg-accent-500",
-  model_estimated_interim: "bg-[#7aa8c9]",
-  hand_classified_mask: "bg-[#3a3a40]",
+  model_estimated_interim: "bg-secondary-500",
+  hand_classified_mask: "bg-[#8c8878]",
 };
 const TIER_ORDER = ["real_district_area", "model_estimated_interim", "hand_classified_mask"];
 
@@ -84,16 +87,23 @@ export default function ExposureRiskPage() {
       <p className="mt-1 text-sm text-dim">
         Real district hazard detections &times; the real regional crop calendar &times;
         <code> crop_weight</code> &mdash; the real per-district crop-area share, not just a
-        pass/fail gate (Week 9 recalibration).
+        pass/fail gate.
       </p>
+
+      <DisclaimerBar>
+        Exposure scores here feed directly into the Trigger Engine&apos;s payout logic.
+        Every row&apos;s crop-mix tier (real government data, model-estimated, or
+        hand-classified fallback) is shown alongside its score &mdash; none are blended
+        into a single number without that label attached.
+      </DisclaimerBar>
 
       <CaveatBanner>{data.scope}</CaveatBanner>
 
       <h2 className="mt-8 text-base font-semibold">The real mechanism: crop_weight, not just a plausibility gate</h2>
       <p className="mt-1 text-sm text-dim">
         <code>exposure_score = hazard_confidence &times; vulnerability_weight &times; crop_weight</code>.
-        Through Week 6, <code>crop_weight</code> was a boolean 1.0/0.0 plausibility gate for every
-        district. Since Week 9, wherever real crop-mix data exists (now two real tiers, see below),
+        Originally, <code>crop_weight</code> was a boolean 1.0/0.0 plausibility gate for every
+        district. Since a later recalibration, wherever real crop-mix data exists (now two real tiers, see below),
         <code> crop_weight</code> is the real proportional area share instead &mdash; a district
         growing 0.87% cotton now scores a small nonzero weight, not a hard pass. The boolean gate
         only remains for the 11 hand-classified-mask districts.
@@ -101,23 +111,24 @@ export default function ExposureRiskPage() {
 
       <div className="mt-4 rounded-xl border border-warn/40 bg-elev p-4">
         <h3 className="mb-1 text-sm font-semibold text-warn">
-          Phase 4 final item: crop_mix_source is now three-tier
+          crop_mix_source is now three-tier
         </h3>
         <p className="text-xs text-dim">
           Real MNFSR government data (<code>real_district_area</code>) covers exactly one real
           season, 2022-23 &mdash; it always wins <em>for that season</em>, never overridden. Every
           alert in NAIP&apos;s actual real hazard archives postdates 2022-23 (they start mid-2026),
           so for the 115 real MNFSR-covered districts, rows now resolve to{" "}
-          <code>model_estimated_interim</code>: Track F&apos;s trained crop-share model&apos;s real
+          <code>model_estimated_interim</code>: the trained crop-share model&apos;s real
           prediction for that season, used only because real MNFSR has no report for it at all.{" "}
           <strong className="text-main">
-            This is a trained model&apos;s estimate, not a government survey &mdash; per Track
-            J&apos;s own finding, genuinely unvalidatable until a future real MNFSR report arrives to
+            This is a trained model&apos;s estimate, not a government survey &mdash; per the
+            cross-year validation&apos;s own finding, genuinely unvalidatable until a future real MNFSR report arrives to
             check it against.
           </strong>{" "}
           The 11 GB/AJK districts stay on the hand-classified mask regardless of season, unchanged
-          from Track G&apos;s standing rejection of the model there.
+          from the model integration pass&apos;s standing rejection of the model there.
         </p>
+        <TechNote>Internally: Phase 4&apos;s final item; Track F (crop-share model), Track J (cross-year validation), Track G (model integration).</TechNote>
       </div>
 
       <div className="mt-4 rounded-xl border border-warn/40 bg-elev p-4">
@@ -127,7 +138,7 @@ export default function ExposureRiskPage() {
         <p className="text-xs text-dim">
           <code>real_district_area</code>/<code>hand_classified_mask</code> rows are unaffected
           (multiplier 1.0). <code>model_estimated_interim</code> rows get a real per-crop
-          discount &mdash; the direct value of Track F&apos;s own validated cross-year R&sup2;
+          discount &mdash; the direct value of the crop-share model&apos;s own validated cross-year R&sup2;
           (mean of both real holdout directions, no further transform):
         </p>
         <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -171,7 +182,7 @@ export default function ExposureRiskPage() {
       )}
 
       <div className="mt-4 rounded-xl border border-soft bg-elev p-4">
-        <h3 className="mb-2 text-sm font-semibold">Real before/after, Week 9 reweighting</h3>
+        <h3 className="mb-2 text-sm font-semibold">Real before/after, crop-weight reweighting</h3>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div className="rounded-lg border border-soft bg-elev-2 p-3">
             <div className="text-xs text-faint">Kasur &middot; cotton (real MNFSR share: 0.87%)</div>
@@ -198,7 +209,7 @@ export default function ExposureRiskPage() {
         </div>
         <p className="mt-3 text-[11px] text-faint">
           Real consequence: the national max <code>exposure_score</code> fell from ~0.39&ndash;0.68
-          (pre-Week-9) to <strong className="text-main">0.225</strong> &mdash; which is why the
+          (pre-reweighting) to <strong className="text-main">0.225</strong> &mdash; which is why the
           trigger thresholds were recalibrated (see Trigger Engine).
         </p>
       </div>
@@ -210,10 +221,10 @@ export default function ExposureRiskPage() {
         <Stat label="Nonzero remaining" value={nPlausible.toLocaleString()} accent />
       </div>
       <p className="mt-2 text-center text-xs text-faint">
-        As of Week 9, agronomic implausibility for real/model-tier districts is absorbed into
+        Agronomic implausibility for real/model-tier districts is now absorbed into
         <code> crop_weight</code> itself (a near-zero real share, not a hard exclusion) rather than
         a separate boolean filter &mdash; so this count is now {data.n_nonzero_exposure_implausible}, not
-        the old Week 4&ndash;6 78% figure. The <code>agronomically_plausible</code> field below still
+        the original 78% figure from before crop_weight became a continuous share. The <code>agronomically_plausible</code> field below still
         reflects the hand-authored plausibility check and remains the only gate for the 11
         hand-classified-mask districts.
       </p>
@@ -275,6 +286,7 @@ export default function ExposureRiskPage() {
         crop_plausibility.py (both hand-authored this project, not locally validated) and
         the real crop_weight/crop_mix_source from `real_crop_mix.json`.
       </p>
+      <ProvenanceLine source="exposure_risk.json" updated="Week 21 threshold recalibration" />
     </div>
   );
 }

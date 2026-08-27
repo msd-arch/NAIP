@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 import CaveatBanner from "../components/CaveatBanner";
+import TechNote from "../components/TechNote";
+import DisclaimerBar from "../components/DisclaimerBar";
+import ProvenanceLine from "../components/ProvenanceLine";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
@@ -42,17 +45,16 @@ export default function CropStressPage() {
     <div>
       <h1 className="text-xl font-semibold">Crop Stress Early-Warning Screen</h1>
       <p className="mt-1 text-sm text-dim">
-        Phase 5 Track Q. A real pre-check found no extractable per-location pest/disease
+        A real pre-check found no extractable per-location pest/disease
         surveillance dataset for Pakistan — this is the honest fallback the scope document named,
         not a disease detector.
       </p>
+      <TechNote>Internally &ldquo;Phase 5, Track Q.&rdquo;</TechNote>
 
-      <div className="my-4 rounded-xl border-2 border-warn bg-elev p-4">
-        <h2 className="mb-1 text-sm font-bold uppercase tracking-wide text-warn">
-          Not a pest or disease diagnosis
-        </h2>
-        <p className="text-xs text-dim">{data.not_a_diagnosis_notice}</p>
-      </div>
+      <DisclaimerBar>
+        <span className="font-bold uppercase tracking-wide">Not a pest or disease diagnosis. </span>
+        {data.not_a_diagnosis_notice}
+      </DisclaimerBar>
 
       <CaveatBanner>{data.generated_note}</CaveatBanner>
 
@@ -68,7 +70,7 @@ export default function CropStressPage() {
           <h3 className="mb-1 text-sm font-semibold">Signal 1 — level anomaly</h3>
           <p className="text-[11px] text-faint">
             Current NDVI below this location&apos;s own real 21-year historical norm (bottom
-            decile nationally). Same real method as Track M&apos;s drought signal — more
+            decile nationally). Same real method as the National Drought Signal — more
             consistent with sustained/chronic conditions.
           </p>
           <p className="mt-2 text-xs text-dim">
@@ -141,6 +143,7 @@ export default function CropStressPage() {
         </table>
       </div>
       {rows.length === 0 && <p className="mt-3 text-sm text-dim">No districts in this view.</p>}
+      <ProvenanceLine source="crop_stress_screen.json" updated="Week 23" />
     </div>
   );
 }

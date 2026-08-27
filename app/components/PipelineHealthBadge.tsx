@@ -44,20 +44,20 @@ export default function PipelineHealthBadge() {
   if (!health) {
     return (
       <div className="rounded-lg border border-soft bg-elev-2 px-3 py-2 text-xs text-faint">
-        Live nowcasting loop (Track H): status unavailable &mdash; pipeline_health.json not found.
+        Live Data Pipeline: status unavailable &mdash; pipeline_health.json not found.
       </div>
     );
   }
 
   const dotColor =
-    health.status === "ok" ? "bg-accent-500" : health.status === "error" ? "bg-[#e5484d]" : "bg-[#d99b3c]";
+    health.status === "ok" ? "bg-accent-500" : health.status === "error" ? "bg-critical" : "bg-[#b5651d]";
 
   return (
     <div className="rounded-lg border border-soft bg-elev-2 px-3 py-2 text-xs">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
         <span className="flex items-center gap-1.5 font-medium text-main">
           <span className={`inline-block h-2 w-2 rounded-full ${dotColor}`} />
-          Live nowcasting loop (Track H)
+          Live Data Pipeline
         </span>
         <span className="text-dim">
           Last successful real cycle: <span className="tnum text-main">{timeAgo(health.last_success_utc)}</span>
@@ -69,11 +69,13 @@ export default function PipelineHealthBadge() {
           onClick={() => setShowCaveat((s) => !s)}
           className="text-faint underline underline-offset-2 hover:text-dim"
         >
-          {showCaveat ? "hide" : "real limitation"}
+          {showCaveat ? "hide" : "details"}
         </button>
       </div>
       {showCaveat && (
-        <p className="mt-1.5 text-[11px] text-faint">{health.windows_uptime_caveat}</p>
+        <p className="mt-1.5 text-[11px] text-faint">
+          Live nowcasting loop (internally &ldquo;Track H&rdquo;). {health.windows_uptime_caveat}
+        </p>
       )}
     </div>
   );

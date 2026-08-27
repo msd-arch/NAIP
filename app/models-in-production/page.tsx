@@ -2,6 +2,10 @@
 
 import { useEffect, useState } from "react";
 import CaveatBanner from "../components/CaveatBanner";
+import TechNote from "../components/TechNote";
+import DisclaimerBar from "../components/DisclaimerBar";
+import ModelCard from "../components/ModelCard";
+import ProvenanceLine from "../components/ProvenanceLine";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
@@ -68,13 +72,13 @@ interface FloodSummary {
 
 const TIER_LABEL: Record<string, string> = {
   real_district_area: "Real MNFSR district data",
-  model_predicted: "Model-predicted (Track F)",
+  model_predicted: "Model-predicted",
   hand_classified_mask: "Hand-classified mask (fallback)",
 };
 const TIER_COLOR: Record<string, string> = {
   real_district_area: "bg-accent-500",
-  model_predicted: "bg-[#7aa8c9]",
-  hand_classified_mask: "bg-[#3a3a40]",
+  model_predicted: "bg-secondary-500",
+  hand_classified_mask: "bg-[#8c8878]",
 };
 
 function TierBar({ tiers }: { tiers: Record<string, number> }) {
@@ -132,7 +136,7 @@ function ScoreDistributionBar({ dist }: { dist: FloodSummary["score_distribution
           style={{ left: `${pct(dist.p10)}%`, width: `${pct(dist.p90) - pct(dist.p10)}%` }}
         />
         <div className="absolute h-3 w-0.5 bg-accent-500" style={{ left: `${pct(dist.median)}%` }} />
-        <div className="absolute h-3 w-px bg-[#e5484d]" style={{ left: "50%" }} title="flag threshold 0.5" />
+        <div className="absolute h-3 w-px bg-critical" style={{ left: "50%" }} title="flag threshold 0.5" />
       </div>
       <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-dim">
         <span>min <span className="tnum text-main">{dist.min.toFixed(3)}</span></span>
@@ -176,16 +180,44 @@ export default function ModelsInProductionPage() {
     <div>
       <h1 className="text-xl font-semibold">Trained Models in Production</h1>
       <p className="mt-1 text-sm text-dim">
-        Phase 3&apos;s two trained models (Track E&apos;s fire classifier, Track F&apos;s crop-share
-        regressor) wired into the real pipeline &mdash; not just benchmarked in a report.
+        Two trained models &mdash; a fire classifier and a national crop-share regressor
+        &mdash; wired into the real pipeline &mdash; not just benchmarked in a report.
       </p>
+      <TechNote>Internally &ldquo;Track E&rdquo; (fire classifier) and &ldquo;Track F&rdquo; (crop-share regressor), Phase 3.</TechNote>
+
+      <DisclaimerBar>
+        Every score on this page comes from a trained model applied to real satellite
+        inputs &mdash; none of it is a certified government measurement. Where a model was
+        tested and rejected (GB/AJK crop shares below), that rejection is reported here too,
+        not hidden.
+      </DisclaimerBar>
 
       <h2 className="mt-8 text-base font-semibold">Crop-share model: national district coverage</h2>
       <p className="mt-1 text-sm text-dim">
         Every one of the 126 real districts now has a labeled source tier for its crop mix.
       </p>
+
+      <ModelCard
+        name="National Crop-Share Model"
+        version="GBT, district-level, held-out test"
+        confidenceLabel="moderate"
+        confidenceTone="moderate"
+        trainedOn="Trained on real Sentinel-2 NDVI/NDWI/EVI phenology features against real MNFSR district crop-area labels (2,875 cropland points, 115/126 districts, spatially-blocked 81/17/17 split). No latitude/longitude or district-identity feature, by construction."
+        comparison={[
+          { label: "Wheat R²", value: 0.581 },
+          { label: "Cotton R²", value: 0.507 },
+          { label: "Rice R²", value: 0.420 },
+          { label: "Sugarcane R²", value: -1.120, negative: true },
+        ]}
+      >
+        All four clearly beat a constant-baseline except sugarcane, a real reported failure
+        (small national share, thin weak-label signal) &mdash; shown at true scale, not folded
+        into an average with the others.
+      </ModelCard>
+
       <div className="mt-4 rounded-xl border border-soft bg-elev p-4">
         <TierBar tiers={tiers} />
+        <ProvenanceLine source="real_crop_mix.json + track_g_dashboard_summary.json" updated="Week 20 integration" />
       </div>
 
       <CaveatBanner>
@@ -217,7 +249,7 @@ export default function ModelsInProductionPage() {
                   <td className="tnum px-3 py-2 text-dim">{d.predicted_shares.wheat.toFixed(3)}</td>
                   <td className="tnum px-3 py-2 text-dim">{d.predicted_shares.cotton.toFixed(3)}</td>
                   <td className="tnum px-3 py-2 text-dim">{d.predicted_shares.rice.toFixed(3)}</td>
-                  <td className={`tnum px-3 py-2 ${neg ? "text-[#e5484d]" : "text-dim"}`}>
+                  <td className={`tnum px-3 py-2 ${neg ? "text-critical" : "text-dim"}`}>
                     {d.predicted_shares.sugarcane.toFixed(3)}
                     {neg && " ⚠"}
                   </td>
@@ -237,6 +269,21 @@ export default function ModelsInProductionPage() {
         trained model produced a result.
       </p>
 
+      <ModelCard
+        name="Residue-Burning Fire Classifier"
+        version="Thermal-only GBT, 2021 held-out generalization test"
+        confidenceLabel="moderate"
+        confidenceTone="moderate"
+        trainedOn="Trained on real MSG thermal-band grid cells (183,150 rows, national bbox) labeled against real NASA FIRMS hotspots. Deliberately excludes lat/lon after an earlier with-geo version scored higher only by memorizing location, not learning thermal signal."
+        comparison={[
+          { label: "Model F1 (2021 unseen year)", value: 0.354 },
+          { label: "Rule-based F1 (same data)", value: 0.002, isBaseline: true },
+        ]}
+      >
+        Recall rose from 0.587 (2023 test) to 0.763 on an entirely unseen 2021 archive with
+        essentially unchanged F1 &mdash; real evidence the original result wasn&apos;t a one-off.
+      </ModelCard>
+
       <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <ConfusionCell label="Both flag" value={fc.both_flagged} tone="match" />
         <ConfusionCell label="Rule only" value={fc.rule_only} tone="rule" />
@@ -251,19 +298,22 @@ export default function ModelsInProductionPage() {
       </div>
 
       <CaveatBanner>{fc.caveat}</CaveatBanner>
+      <ProvenanceLine source="track_g_dashboard_summary.json (fire_classifier)" updated="Week 19 cross-year validation" />
 
       <h2 className="mt-10 text-base font-semibold">Flood risk model: live national screen</h2>
       <p className="mt-1 text-sm text-dim">
-        Unlike the fire classifier above (bound to a fixed Nov 2023 MSG archive), Track D&apos;s
-        Sentinel-1/JRC inputs are live and continuously updating &mdash; this section reflects
-        real current conditions as of generation time, not a replay of the 2022 training event.
+        Unlike the fire classifier above (bound to a fixed Nov 2023 MSG archive), this
+        model&apos;s Sentinel-1/JRC inputs are live and continuously updating &mdash; this
+        section reflects real current conditions as of generation time, not a replay of
+        the 2022 training event.
       </p>
+      <TechNote>Internally &ldquo;Track D&rdquo; (flood classifier).</TechNote>
 
       {!flood ? (
         <p className="mt-4 text-sm text-dim">Loading live flood screen...</p>
       ) : (
         <>
-          <div className="mt-4 rounded-xl border border-[#e5484d]/40 bg-[#e5484d]/10 p-4 text-sm">
+          <div className="mt-4 rounded-xl border border-critical/40 bg-critical/10 p-4 text-sm">
             <strong className="text-main">Not a flood alert.</strong>{" "}
             <span className="text-dim">
               This live run flagged {flood.n_districts_flagged_raw}/{flood.n_districts_total} districts
@@ -271,6 +321,23 @@ export default function ModelsInProductionPage() {
               That is not reported as real current flooding &mdash; see the finding below.
             </span>
           </div>
+
+          <ModelCard
+            name="Flood Risk Screen"
+            version="Sentinel-1 SAR + JRC surface water, GBT classifier"
+            confidenceLabel="low (2022-only training)"
+            confidenceTone="low"
+            trainedOn="Trained on real Sentinel-1 VV/VH change + JRC water-occurrence baseline against IOM/Shelter Cluster's independently-sourced 2022 calamity-declared districts (96/126 matched) &mdash; not the same satellite-derived map used as model input, avoiding label circularity."
+            comparison={[
+              { label: "F1 (2022 test set)", value: 0.738 },
+              { label: "Rule-based F1 (same data)", value: 0.143, isBaseline: true },
+            ]}
+          >
+            A 2021-negative-year retrain (v2) was evaluated and explicitly rejected: it scored
+            worse on every metric against a fair 2024 test (AUC 0.519, barely above random) and
+            was found to output a near-constant score regardless of true label. v2 stays
+            unshipped; the original 2022-only model remains the deployed candidate.
+          </ModelCard>
 
           <h3 className="mt-6 text-sm font-semibold text-main">Real finding: a generalization gap, not sampling bias</h3>
           <p className="mt-1 text-sm text-dim">{flood.domain_shift_finding.headline}</p>
@@ -337,6 +404,7 @@ export default function ModelsInProductionPage() {
           {flood.caveats.map((c, i) => (
             <CaveatBanner key={i}>{c}</CaveatBanner>
           ))}
+          <ProvenanceLine source="track_d_dashboard_summary.json" updated={`live screen, ${flood.during_window[1]}`} />
         </>
       )}
     </div>
