@@ -18,15 +18,26 @@ interface FloodDistrictScore {
 }
 
 interface FloodSummary {
+  model_version: string;
+  status: string;
   during_window: [string, string];
   n_districts_flagged_raw: number;
   n_districts_total: number;
   flag_threshold: number;
   score_distribution: { min: number; median: number; max: number; p10: number; p90: number };
   districts_below_threshold: FloodDistrictScore[];
-  top5_by_score: FloodDistrictScore[];
-  domain_shift_finding: { headline: string; explanation: string };
-  not_merged_reason: string;
+  top5_by_score: (FloodDistrictScore & { mean_precip_anomaly_pct?: number })[];
+  real_fair_test_validation: {
+    note: string;
+    original_model: { precision: number; recall: number; f1: number; roc_auc: number | null };
+    v2_model_rejected: { precision: number; recall: number; f1: number; roc_auc: number | null };
+    v3_model_deployed: { precision: number; recall: number; f1: number; roc_auc: number | null };
+    score_separation_diagnostic: { original: { separation_gap: number }; v2: { separation_gap: number }; v3_precip: { separation_gap: number } };
+  };
+  nine_district_investigation: { headline: string; caveat: string };
+  threshold_decision: { national_illustrative: number; demo: number; note: string };
+  wired_into_trigger_engine: boolean;
+  trigger_engine_effect: string;
   caveats: string[];
 }
 
@@ -41,6 +52,8 @@ interface DroughtDistrict {
 }
 
 interface DroughtNational {
+  last_computed_utc?: string;
+  refresh_cadence_note?: string;
   method: string;
   cross_sensor_bias_finding: string;
   systematic_offset_finding: string;
@@ -231,17 +244,69 @@ export default function WaterStressPage() {
         <p className="mt-4 text-sm text-dim">Loading live flood screen...</p>
       ) : (
         <>
-          <div className="mt-4 rounded-xl border border-critical/40 bg-critical/10 p-4 text-sm">
-            <strong className="text-main">Not a flood alert.</strong>{" "}
+          <div className="mt-4 rounded-xl border border-accent-500/40 bg-accent-soft p-4 text-sm">
+            <strong className="text-main">Promoted &amp; wired into the trigger engine (Week 27).</strong>{" "}
             <span className="text-dim">
-              Live screen ({flood.during_window[0]} to {flood.during_window[1]}) flagged{" "}
-              {flood.n_districts_flagged_raw}/{flood.n_districts_total} districts at the raw{" "}
-              {flood.flag_threshold} model cutoff &mdash; not reported as real current
-              flooding. Full detail: <code>/models-in-production</code>.
+              Real precipitation-augmented model (v3), validated on a fair 2024 held-out year
+              never seen in training &mdash; the same structural cross-year check used for the
+              fire model. No longer informational-only: {flood.trigger_engine_effect}
             </span>
           </div>
-          <p className="mt-3 text-sm text-dim">{flood.domain_shift_finding.headline}</p>
-          <p className="mt-2 text-xs text-faint">{flood.domain_shift_finding.explanation}</p>
+
+          <div className="mt-4 rounded-xl border border-soft bg-elev p-4">
+            <h3 className="mb-2 text-sm font-semibold">Real fair-test validation (2024, unseen year)</h3>
+            <p className="mb-3 text-xs text-faint">{flood.real_fair_test_validation.note}</p>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[480px] text-left text-xs">
+                <thead>
+                  <tr className="border-b border-soft text-faint">
+                    <th className="py-1 pr-3 font-medium">Model</th>
+                    <th className="py-1 pr-3 font-medium">Precision</th>
+                    <th className="py-1 pr-3 font-medium">Recall</th>
+                    <th className="py-1 pr-3 font-medium">F1</th>
+                    <th className="py-1 pr-3 font-medium">AUC</th>
+                    <th className="py-1 font-medium">Score-separation gap</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b border-soft/50 text-dim">
+                    <td className="py-1 pr-3">Original (SAR/JRC only)</td>
+                    <td className="tnum py-1 pr-3">{flood.real_fair_test_validation.original_model.precision.toFixed(3)}</td>
+                    <td className="tnum py-1 pr-3">{flood.real_fair_test_validation.original_model.recall.toFixed(3)}</td>
+                    <td className="tnum py-1 pr-3">{flood.real_fair_test_validation.original_model.f1.toFixed(3)}</td>
+                    <td className="tnum py-1 pr-3">{flood.real_fair_test_validation.original_model.roc_auc?.toFixed(3)}</td>
+                    <td className="tnum py-1">{flood.real_fair_test_validation.score_separation_diagnostic.original.separation_gap.toFixed(3)}</td>
+                  </tr>
+                  <tr className="border-b border-soft/50 text-faint">
+                    <td className="py-1 pr-3">v2 (rejected &mdash; collapsed)</td>
+                    <td className="tnum py-1 pr-3">{flood.real_fair_test_validation.v2_model_rejected.precision.toFixed(3)}</td>
+                    <td className="tnum py-1 pr-3">{flood.real_fair_test_validation.v2_model_rejected.recall.toFixed(3)}</td>
+                    <td className="tnum py-1 pr-3">{flood.real_fair_test_validation.v2_model_rejected.f1.toFixed(3)}</td>
+                    <td className="tnum py-1 pr-3">{flood.real_fair_test_validation.v2_model_rejected.roc_auc?.toFixed(3)}</td>
+                    <td className="tnum py-1">{flood.real_fair_test_validation.score_separation_diagnostic.v2.separation_gap.toFixed(3)}</td>
+                  </tr>
+                  <tr className="text-main">
+                    <td className="py-1 pr-3 font-semibold">v3 (precip-augmented, deployed)</td>
+                    <td className="tnum py-1 pr-3 font-semibold text-accent-500">{flood.real_fair_test_validation.v3_model_deployed.precision.toFixed(3)}</td>
+                    <td className="tnum py-1 pr-3 font-semibold text-accent-500">{flood.real_fair_test_validation.v3_model_deployed.recall.toFixed(3)}</td>
+                    <td className="tnum py-1 pr-3 font-semibold text-accent-500">{flood.real_fair_test_validation.v3_model_deployed.f1.toFixed(3)}</td>
+                    <td className="tnum py-1 pr-3 font-semibold text-accent-500">{flood.real_fair_test_validation.v3_model_deployed.roc_auc?.toFixed(3)}</td>
+                    <td className="tnum py-1 font-semibold text-accent-500">{flood.real_fair_test_validation.score_separation_diagnostic.v3_precip.separation_gap.toFixed(3)}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-2 text-[11px] text-faint">
+              Real precision (0.190) still means most &ldquo;flooded&rdquo; predictions are wrong
+              even on this best-so-far evaluation &mdash; read as a meaningfully-improved
+              relative risk ranking, not a calibrated probability.
+            </p>
+          </div>
+
+          <p className="mt-4 text-sm text-dim">
+            Live screen ({flood.during_window[0]} to {flood.during_window[1]}): {flood.n_districts_flagged_raw}/
+            {flood.n_districts_total} districts flagged at the {flood.flag_threshold} model cutoff.
+          </p>
           <div className="mt-3 grid grid-cols-1 gap-2 text-xs text-faint sm:grid-cols-2">
             <span>
               Score range: <span className="tnum text-dim">{flood.score_distribution.min.toFixed(3)}</span> to{" "}
@@ -252,7 +317,24 @@ export default function WaterStressPage() {
               Below threshold: {flood.districts_below_threshold.map((d) => d.district).join(", ")}
             </span>
           </div>
-          <CaveatBanner>{flood.not_merged_reason}</CaveatBanner>
+
+          <div className="mt-4 rounded-xl border border-soft bg-elev p-4">
+            <h3 className="mb-1 text-sm font-semibold">The 9-district rainfall-anomaly finding, investigated</h3>
+            <p className="text-xs text-dim">{flood.nine_district_investigation.headline}</p>
+            <p className="mt-2 text-[11px] text-warn">{flood.nine_district_investigation.caveat}</p>
+          </div>
+
+          <div className="mt-4 rounded-xl border border-soft bg-elev p-4">
+            <h3 className="mb-1 text-sm font-semibold">
+              Threshold: shared with crop hazards ({flood.threshold_decision.national_illustrative} illustrative /{" "}
+              {flood.threshold_decision.demo} demo), by deliberate choice
+            </h3>
+            <p className="text-xs text-dim">{flood.threshold_decision.note}</p>
+          </div>
+
+          {flood.caveats.map((c, i) => (
+            <CaveatBanner key={i}>{c}</CaveatBanner>
+          ))}
           <ProvenanceLine source="track_d_dashboard_summary.json" updated={`live screen, ${flood.during_window[1]}`} />
         </>
       )}
@@ -268,6 +350,20 @@ export default function WaterStressPage() {
         the crop-share model&apos;s national point-sampling infrastructure.
       </p>
       <TechNote>Internally &ldquo;Track M,&rdquo; reusing &ldquo;Track F&rdquo;&apos;s point set.</TechNote>
+
+      {drought?.last_computed_utc && (
+        <div className="mt-3 rounded-lg border border-soft bg-elev-2 px-3 py-2 text-xs">
+          <span className="font-medium text-main">
+            Last computed: {new Date(drought.last_computed_utc).toLocaleString(undefined, {
+              dateStyle: "medium", timeStyle: "short",
+            })}
+          </span>{" "}
+          <span className="text-faint">&mdash; refreshes weekly, not every 15 minutes like the live hazard feed.</span>
+          {drought.refresh_cadence_note && (
+            <p className="mt-1.5 text-[11px] text-faint">{drought.refresh_cadence_note}</p>
+          )}
+        </div>
+      )}
 
       {oldVsNew && (
         <div className="mt-4 rounded-xl border border-accent-500/40 bg-accent-500/10 p-4 text-sm">
