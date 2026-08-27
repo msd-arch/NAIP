@@ -46,6 +46,8 @@ interface FloodDistrictScore {
 
 interface FloodSummary {
   generated_note: string;
+  model_version: string;
+  status: string;
   during_window: [string, string];
   pre_monsoon_baseline_window: [string, string];
   flag_threshold: number;
@@ -56,18 +58,19 @@ interface FloodSummary {
     median: number; p75: number; p90: number; mean: number;
   };
   districts_below_threshold: FloodDistrictScore[];
-  top5_by_score: FloodDistrictScore[];
-  bottom5_by_score: FloodDistrictScore[];
-  domain_shift_finding: {
-    headline: string;
-    training_flooded_class_centroid: Record<string, number>;
-    training_not_flooded_class_centroid: Record<string, number>;
-    live_2026_national_mean: Record<string, number>;
-    explanation: string;
+  top5_by_score: (FloodDistrictScore & { mean_precip_anomaly_pct?: number })[];
+  real_fair_test_validation: {
+    note: string;
+    original_model: { precision: number; recall: number; f1: number; roc_auc: number | null };
+    v2_model_rejected: { precision: number; recall: number; f1: number; roc_auc: number | null };
+    v3_model_deployed: { precision: number; recall: number; f1: number; roc_auc: number | null };
+    score_separation_diagnostic: { original: { separation_gap: number }; v2: { separation_gap: number }; v3_precip: { separation_gap: number } };
   };
+  nine_district_investigation: { headline: string; caveat: string };
+  threshold_decision: { national_illustrative: number; demo: number; note: string };
   caveats: string[];
-  not_merged_into_district_alerts: boolean;
-  not_merged_reason: string;
+  wired_into_trigger_engine: boolean;
+  trigger_engine_effect: string;
 }
 
 const TIER_LABEL: Record<string, string> = {
@@ -149,16 +152,6 @@ function ScoreDistributionBar({ dist }: { dist: FloodSummary["score_distribution
   );
 }
 
-function FeatureRow({ label, values }: { label: string; values: Record<string, number> }) {
-  return (
-    <tr className="border-b border-soft/50 last:border-0">
-      <td className="px-3 py-2 text-dim">{label}</td>
-      {Object.values(values).map((v, i) => (
-        <td key={i} className="tnum px-3 py-2 text-main">{v.toFixed(3)}</td>
-      ))}
-    </tr>
-  );
-}
 
 export default function ModelsInProductionPage() {
   const [data, setData] = useState<Summary | null>(null);
@@ -313,57 +306,93 @@ export default function ModelsInProductionPage() {
         <p className="mt-4 text-sm text-dim">Loading live flood screen...</p>
       ) : (
         <>
-          <div className="mt-4 rounded-xl border border-critical/40 bg-critical/10 p-4 text-sm">
-            <strong className="text-main">Not a flood alert.</strong>{" "}
+          <div className="mt-4 rounded-xl border border-accent-500/40 bg-accent-soft p-4 text-sm">
+            <strong className="text-main">Promoted &amp; wired into the trigger engine (Week 27).</strong>{" "}
             <span className="text-dim">
               This live run flagged {flood.n_districts_flagged_raw}/{flood.n_districts_total} districts
               at the raw {flood.flag_threshold} cutoff ({flood.during_window[0]} to {flood.during_window[1]}).
-              That is not reported as real current flooding &mdash; see the finding below.
+              {" "}{flood.trigger_engine_effect}
             </span>
           </div>
 
           <ModelCard
             name="Flood Risk Screen"
-            version="Sentinel-1 SAR + JRC surface water, GBT classifier"
-            confidenceLabel="low (2022-only training)"
-            confidenceTone="low"
-            trainedOn="Trained on real Sentinel-1 VV/VH change + JRC water-occurrence baseline against IOM/Shelter Cluster's independently-sourced 2022 calamity-declared districts (96/126 matched) &mdash; not the same satellite-derived map used as model input, avoiding label circularity."
+            version="v3: Sentinel-1 SAR + JRC + real CHIRPS precipitation, GBT classifier"
+            confidenceLabel="moderate (fair-test validated)"
+            confidenceTone="moderate"
+            trainedOn="Trained on real Sentinel-1 VV/VH change + JRC water-occurrence + real CHIRPS precipitation (total + 20-year anomaly) against IOM/Shelter Cluster's independently-sourced 2022 calamity-declared districts (96/126 matched) &mdash; not the same satellite-derived map used as model input, avoiding label circularity."
             comparison={[
-              { label: "F1 (2022 test set)", value: 0.738 },
+              { label: "F1 (fair 2024 held-out test)", value: flood.real_fair_test_validation.v3_model_deployed.f1 },
               { label: "Rule-based F1 (same data)", value: 0.143, isBaseline: true },
             ]}
           >
             A 2021-negative-year retrain (v2) was evaluated and explicitly rejected: it scored
             worse on every metric against a fair 2024 test (AUC 0.519, barely above random) and
-            was found to output a near-constant score regardless of true label. v2 stays
-            unshipped; the original 2022-only model remains the deployed candidate.
+            was found to output a near-constant score regardless of true label. Adding real
+            precipitation (v3) instead, validated on the same fair test, is the deployed candidate.
           </ModelCard>
 
-          <h3 className="mt-6 text-sm font-semibold text-main">Real finding: a generalization gap, not sampling bias</h3>
-          <p className="mt-1 text-sm text-dim">{flood.domain_shift_finding.headline}</p>
-          <p className="mt-2 text-sm text-dim">{flood.domain_shift_finding.explanation}</p>
-
+          <h3 className="mt-6 text-sm font-semibold text-main">Real fair-test validation (2024, unseen year)</h3>
+          <p className="mt-1 text-sm text-dim">{flood.real_fair_test_validation.note}</p>
           <div className="mt-4 overflow-x-auto rounded-xl border border-soft bg-elev">
-            <table className="w-full text-left text-xs">
+            <table className="w-full min-w-[480px] text-left text-xs">
               <thead>
                 <tr className="border-b border-soft text-faint">
-                  <th className="px-3 py-2 font-medium"></th>
-                  {Object.keys(flood.domain_shift_finding.training_flooded_class_centroid).map((k) => (
-                    <th key={k} className="px-3 py-2 font-medium">{k}</th>
-                  ))}
+                  <th className="px-3 py-2 font-medium">Model</th>
+                  <th className="px-3 py-2 font-medium">Precision</th>
+                  <th className="px-3 py-2 font-medium">Recall</th>
+                  <th className="px-3 py-2 font-medium">F1</th>
+                  <th className="px-3 py-2 font-medium">AUC</th>
+                  <th className="px-3 py-2 font-medium">Score-separation gap</th>
                 </tr>
               </thead>
               <tbody>
-                <FeatureRow label="2022 training: flooded class" values={flood.domain_shift_finding.training_flooded_class_centroid} />
-                <FeatureRow label="2022 training: not-flooded class" values={flood.domain_shift_finding.training_not_flooded_class_centroid} />
-                <FeatureRow label="Live 2026 national mean" values={flood.domain_shift_finding.live_2026_national_mean} />
+                <tr className="border-b border-soft/50 text-dim">
+                  <td className="px-3 py-2">Original (SAR/JRC only)</td>
+                  <td className="tnum px-3 py-2">{flood.real_fair_test_validation.original_model.precision.toFixed(3)}</td>
+                  <td className="tnum px-3 py-2">{flood.real_fair_test_validation.original_model.recall.toFixed(3)}</td>
+                  <td className="tnum px-3 py-2">{flood.real_fair_test_validation.original_model.f1.toFixed(3)}</td>
+                  <td className="tnum px-3 py-2">{flood.real_fair_test_validation.original_model.roc_auc?.toFixed(3)}</td>
+                  <td className="tnum px-3 py-2">{flood.real_fair_test_validation.score_separation_diagnostic.original.separation_gap.toFixed(3)}</td>
+                </tr>
+                <tr className="border-b border-soft/50 text-faint">
+                  <td className="px-3 py-2">v2 (rejected &mdash; collapsed)</td>
+                  <td className="tnum px-3 py-2">{flood.real_fair_test_validation.v2_model_rejected.precision.toFixed(3)}</td>
+                  <td className="tnum px-3 py-2">{flood.real_fair_test_validation.v2_model_rejected.recall.toFixed(3)}</td>
+                  <td className="tnum px-3 py-2">{flood.real_fair_test_validation.v2_model_rejected.f1.toFixed(3)}</td>
+                  <td className="tnum px-3 py-2">{flood.real_fair_test_validation.v2_model_rejected.roc_auc?.toFixed(3)}</td>
+                  <td className="tnum px-3 py-2">{flood.real_fair_test_validation.score_separation_diagnostic.v2.separation_gap.toFixed(3)}</td>
+                </tr>
+                <tr className="text-main">
+                  <td className="px-3 py-2 font-semibold">v3 (precip-augmented, deployed)</td>
+                  <td className="tnum px-3 py-2 font-semibold text-accent-500">{flood.real_fair_test_validation.v3_model_deployed.precision.toFixed(3)}</td>
+                  <td className="tnum px-3 py-2 font-semibold text-accent-500">{flood.real_fair_test_validation.v3_model_deployed.recall.toFixed(3)}</td>
+                  <td className="tnum px-3 py-2 font-semibold text-accent-500">{flood.real_fair_test_validation.v3_model_deployed.f1.toFixed(3)}</td>
+                  <td className="tnum px-3 py-2 font-semibold text-accent-500">{flood.real_fair_test_validation.v3_model_deployed.roc_auc?.toFixed(3)}</td>
+                  <td className="tnum px-3 py-2 font-semibold text-accent-500">{flood.real_fair_test_validation.score_separation_diagnostic.v3_precip.separation_gap.toFixed(3)}</td>
+                </tr>
               </tbody>
             </table>
           </div>
           <p className="mt-2 text-[11px] text-faint">
-            The live national average sits close to the &ldquo;flooded&rdquo; row, not the &ldquo;not-flooded&rdquo;
-            row &mdash; the real reason this run over-flags.
+            Real precision (0.190) still means most &ldquo;flooded&rdquo; predictions are wrong
+            even on this best-so-far evaluation &mdash; read as a meaningfully-improved relative
+            risk ranking, not a calibrated probability.
           </p>
+
+          <div className="mt-4 rounded-xl border border-soft bg-elev p-4">
+            <h3 className="mb-1 text-sm font-semibold">The 9-district rainfall-anomaly finding, investigated</h3>
+            <p className="text-xs text-dim">{flood.nine_district_investigation.headline}</p>
+            <p className="mt-2 text-[11px] text-warn">{flood.nine_district_investigation.caveat}</p>
+          </div>
+
+          <div className="mt-4 rounded-xl border border-soft bg-elev p-4">
+            <h3 className="mb-1 text-sm font-semibold">
+              Threshold: shared with crop hazards ({flood.threshold_decision.national_illustrative} illustrative /{" "}
+              {flood.threshold_decision.demo} demo), by deliberate choice
+            </h3>
+            <p className="text-xs text-dim">{flood.threshold_decision.note}</p>
+          </div>
 
           <h3 className="mt-6 text-sm font-semibold text-main">Score distribution (not just the binary flag)</h3>
           <p className="mt-1 text-sm text-dim">
@@ -400,7 +429,6 @@ export default function ModelsInProductionPage() {
             </div>
           </div>
 
-          <CaveatBanner>{flood.not_merged_reason}</CaveatBanner>
           {flood.caveats.map((c, i) => (
             <CaveatBanner key={i}>{c}</CaveatBanner>
           ))}

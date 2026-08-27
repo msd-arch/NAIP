@@ -32,10 +32,13 @@ export default function CanalMap({ segments }: { segments: Segment[] }) {
     <div style={{ height: "360px" }} className="overflow-hidden rounded-xl border border-soft">
       <MapContainer center={center} zoom={9} className="h-full w-full" zoomControl={false}>
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/voyager_nolabels/{z}/{x}/{y}{r}.png"
-          attribution='&copy; CARTO &copy; OpenStreetMap'
-          subdomains="abcd"
-          maxZoom={19}
+          url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}"
+          attribution="Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ"
+          maxZoom={16}
+        />
+        <TileLayer
+          url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}"
+          maxZoom={16}
         />
         <Polyline positions={line} color="#4a8f3c88" weight={2} />
         {segments.map((s) => (

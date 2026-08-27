@@ -52,13 +52,15 @@ const NAV: NavItem[] = [
   { label: "AI Models", href: "/models-in-production" },
 ];
 
-/** One dropdown, built on <details>/<summary> so it's keyboard/tap-native with
-    no hover-only trap on touch devices. A pointer-fine hover also opens/closes
-    it on desktop via a small enter/leave handler, layered on top of the same
-    <details> state rather than replacing it. */
+/** One dropdown, built on <details>/<summary> so it's keyboard/tap/click
+    native on every device -- no hover-only trap on touch, and no fragile
+    hover-timer racing against the native click toggle (a real bug found in
+    testing: a mouseenter/mouseleave-based open/close layered on top of
+    <details> could close the menu again almost immediately after opening,
+    before a click on a link inside registered). Click-to-toggle + click-
+    outside-to-close is the whole mechanism now, deliberately. */
 function Dropdown({ item, active }: { item: NavItem; items: NavLink[]; active: boolean }) {
   const detailsRef = useRef<HTMLDetailsElement>(null);
-  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const el = detailsRef.current;
@@ -70,25 +72,8 @@ function Dropdown({ item, active }: { item: NavItem; items: NavLink[]; active: b
     return () => document.removeEventListener("click", onDocClick);
   }, []);
 
-  const openOnHover = () => {
-    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-    if (closeTimer.current) clearTimeout(closeTimer.current);
-    if (detailsRef.current) detailsRef.current.open = true;
-  };
-  const closeOnLeave = () => {
-    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-    closeTimer.current = setTimeout(() => {
-      if (detailsRef.current) detailsRef.current.open = false;
-    }, 150);
-  };
-
   return (
-    <details
-      ref={detailsRef}
-      className="group relative"
-      onMouseEnter={openOnHover}
-      onMouseLeave={closeOnLeave}
-    >
+    <details ref={detailsRef} className="group relative">
       <summary
         className={`flex list-none cursor-pointer select-none items-center gap-1 whitespace-nowrap rounded px-2.5 py-1.5 font-mono text-[11px] uppercase tracking-wide transition-colors [&::-webkit-details-marker]:hidden ${
           active ? "text-accent-500" : "text-faint hover:text-dim"

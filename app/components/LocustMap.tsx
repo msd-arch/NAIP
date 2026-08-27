@@ -29,10 +29,9 @@ export default function LocustMap({ districtsGeojson }: { districtsGeojson: GeoJ
     <div style={{ height: "420px" }} className="overflow-hidden rounded-xl border border-soft">
       <MapContainer center={[26.5, 68.5]} zoom={6} className="h-full w-full" zoomControl={false}>
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/voyager_nolabels/{z}/{x}/{y}{r}.png"
-          attribution='&copy; CARTO &copy; OpenStreetMap'
-          subdomains="abcd"
-          maxZoom={19}
+          url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}"
+          attribution="Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ"
+          maxZoom={16}
         />
         <GeoJSON
           data={relevant as any}

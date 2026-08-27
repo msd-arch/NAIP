@@ -51,10 +51,7 @@ export default function CropStressPage() {
       </p>
       <TechNote>Internally &ldquo;Phase 5, Track Q.&rdquo;</TechNote>
 
-      <DisclaimerBar>
-        <span className="font-bold uppercase tracking-wide">Not a pest or disease diagnosis. </span>
-        {data.not_a_diagnosis_notice}
-      </DisclaimerBar>
+      <DisclaimerBar>{data.not_a_diagnosis_notice}</DisclaimerBar>
 
       <CaveatBanner>{data.generated_note}</CaveatBanner>
 
