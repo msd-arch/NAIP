@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Nav from "./components/Nav";
 
 export const metadata: Metadata = {
   title: "NAIP National Dashboard",
@@ -24,7 +23,6 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-app text-main">
-        <Nav />
         <main className="mx-auto max-w-6xl px-4 py-6">{children}</main>
       </body>
     </html>
