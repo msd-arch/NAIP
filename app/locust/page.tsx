@@ -2,9 +2,6 @@
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import CaveatBanner from "../components/CaveatBanner";
-import DisclaimerBar from "../components/DisclaimerBar";
-import ProvenanceLine from "../components/ProvenanceLine";
 
 const LocustMap = dynamic(() => import("../components/LocustMap"), { ssr: false });
 
@@ -28,28 +25,19 @@ export default function LocustPage() {
     fetch(`${BASE}/data/pk_districts.geojson`).then((r) => r.json()).then(setGeo);
   }, []);
 
-  if (!data || !geo) return <p className="text-sm text-dim">Loading real locust breeding-risk data...</p>;
+  if (!data || !geo) return <p className="text-sm text-dim">Loading...</p>;
 
   return (
     <div>
       <h1 className="text-xl font-semibold">Desert Locust Breeding-Risk Monitor</h1>
-      <p className="mt-1 text-sm text-dim">
-        Real SMAP soil-moisture-anomaly + real Sentinel-2 NDVI green-up, over the 3 named
-        breeding grounds. Solid teal = real district boundary. Dashed amber = Cholistan
-        proxy (see caveat).
+      <p className="mt-2 text-sm text-dim">
+        Locusts breed when the soil is damp and plants start growing again. This page checks
+        soil moisture and plant growth in three known breeding areas, and flags a region when
+        both conditions look right for breeding.
       </p>
-
-      <DisclaimerBar>
-        Recall-only validated (12/49 real confirmed events hit after recalibration) &mdash;
-        no confirmed-absence data exists to measure a false-alarm rate, so this is a
-        real but partial signal, not a calibrated risk score.
-      </DisclaimerBar>
-
-      <CaveatBanner>{data.scope}</CaveatBanner>
 
       <div className="mt-4">
         <LocustMap districtsGeojson={geo} />
-        <ProvenanceLine source="locust_risk.json (SMAP + Sentinel-2, FAO-validated thresholds)" updated="Week 5/19" />
       </div>
 
       <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -65,19 +53,11 @@ export default function LocustPage() {
                 {r.breeding_risk_flag ? "Flagged" : "Not flagged"}
               </span>
             </div>
-            {r.boundary_type !== "real_district" && (
-              <p className="mt-1.5 text-[11px] text-warn">{r.boundary_note}</p>
-            )}
             <dl className="mt-3 space-y-1.5 text-xs">
-              <Row k="Soil moisture anomaly" v={`${r.sm_surface_anomaly_m3m3?.toFixed(4)} m3/m3`}
-                   good={r.soil_favorable_for_egglaying} />
-              <Row k="NDVI green-up (30d delta)" v={r.ndvi_delta?.toFixed(3) ?? "n/a"}
-                   good={r.vegetation_greenup_detected} />
-              <Row k="Confidence" v={r.confidence.toFixed(2)} />
+              <Row k="Soil damp enough?" v={r.soil_favorable_for_egglaying ? "Yes" : "No"} good={r.soil_favorable_for_egglaying} />
+              <Row k="Plants greening up?" v={r.vegetation_greenup_detected ? "Yes" : "No"} good={r.vegetation_greenup_detected} />
+              <Row k="Confidence" v={`${Math.round(r.confidence * 100)}%`} />
             </dl>
-            <p className="mt-3 text-[11px] text-faint">
-              Window: {r.window_recent[0]} to {r.window_recent[1]}
-            </p>
           </div>
         ))}
       </div>

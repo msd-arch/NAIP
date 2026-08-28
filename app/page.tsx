@@ -17,12 +17,12 @@ interface DistrictSummary {
 }
 
 const MODULES = [
-  { href: "/hazards", label: "National Hazards", caption: "126-district hazard feed, real 11-detector engine", metricKey: "hazardTriggered" },
-  { href: "/water-stress", label: "Water Stress", caption: "Muridke Distributary, SRTM-elevation-verified", metricKey: "waterSpan" },
-  { href: "/locust", label: "Locust Risk", caption: "3 breeding grounds, real SMAP + Sentinel-2", metricKey: "locustFlagged" },
-  { href: "/crop-classifier", label: "Crop / Irrigation", caption: "Irrigated-vs-not, reported below its own baseline", metricKey: "classifierAcc" },
-  { href: "/exposure-risk", label: "Exposure Risk", caption: "Hazard x crop calendar, plausibility-filtered", metricKey: "exposurePlausible" },
-  { href: "/trigger-engine", label: "Trigger Engine", caption: "Audited contract events, basis risk on every record", metricKey: "triggerCount" },
+  { href: "/hazards", label: "National Hazards", caption: "Weather hazards found across the country", metricKey: "hazardTriggered" },
+  { href: "/water-stress", label: "Water Stress", caption: "How water-stressed a canal is, start to end", metricKey: "waterSpan" },
+  { href: "/locust", label: "Locust Risk", caption: "Watching for locust breeding conditions", metricKey: "locustFlagged" },
+  { href: "/crop-classifier", label: "Crop / Irrigation", caption: "Guessing which farms are irrigated and what grows where", metricKey: "classifierAcc" },
+  { href: "/exposure-risk", label: "Exposure Risk", caption: "Combining hazards with what's actually growing", metricKey: "exposurePlausible" },
+  { href: "/trigger-engine", label: "Trigger Engine", caption: "Deciding which alerts are serious enough to act on", metricKey: "triggerCount" },
 ];
 
 export default function Home() {
@@ -116,8 +116,8 @@ export default function Home() {
                 From nowcasting to payout.
               </h1>
               <p className="mt-1.5 max-w-xl text-sm text-dim">
-                Real satellite hazard detection, water accounting, crop intelligence,
-                and an audited insurance trigger engine over real Pakistani districts.
+                Using satellites to spot weather hazards, track water and crops, and decide
+                when a farmer might deserve a payout &mdash; across Pakistan.
               </p>
             </div>
           </div>
@@ -142,15 +142,13 @@ export default function Home() {
       </div>
 
       <DisclaimerBar>
-        This is a visualization layer over real, already-generated project output, not new
-        modeling. Every module carries its own real limitations (below-baseline classifier
-        accuracy, coarse plausibility masks, proxy geographic boundaries, stubbed payouts)
-        surfaced on its own page. See{" "}
+        This shows real results from work already done, not live predictions. Each page
+        explains its own limits.{" "}
         <Link href="/trigger-engine" className="text-accent-500 underline underline-offset-2">
-          the trigger engine
+          The trigger engine
         </Link>{" "}
-        for the single most important one: a trigger is a reason to investigate, not proof
-        of loss.
+        is the most important one to understand: a trigger is a reason to investigate, not
+        proof that a farmer lost their crop.
       </DisclaimerBar>
 
       {/* quiet, dense module list -- secondary to the map, not competing with it */}

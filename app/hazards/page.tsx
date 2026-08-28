@@ -2,11 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
-import CaveatBanner from "../components/CaveatBanner";
 import PipelineHealthBadge from "../components/PipelineHealthBadge";
-import TechNote from "../components/TechNote";
-import DisclaimerBar from "../components/DisclaimerBar";
-import ProvenanceLine from "../components/ProvenanceLine";
 import type { Feature, Geometry } from "geojson";
 
 const DistrictChoropleth = dynamic(() => import("../components/DistrictChoropleth"), { ssr: false });
@@ -60,7 +56,7 @@ export default function HazardsPage() {
   );
 
   if (!geo || !summary) {
-    return <p className="text-sm text-dim">Loading real district hazard data...</p>;
+    return <p className="text-sm text-dim">Loading...</p>;
   }
 
   const styleFor = (feature: Feature<Geometry, any>) => {
@@ -68,7 +64,6 @@ export default function HazardsPage() {
     const d = byName.get(name);
     const n = d?.n_triggered_rows ?? 0;
     const t = n / maxTriggered;
-    // one accent hue, light-to-saturated -- no data reads neutral gray
     const color =
       n === 0 ? "#e8e2d1" : t < 0.33 ? "#bcd9b3" : t < 0.66 ? "#4a8f3c" : "#2f5e26";
     return { color: "#8c8878", weight: 1, fillColor: color, fillOpacity: 1 };
@@ -84,29 +79,15 @@ export default function HazardsPage() {
   return (
     <div>
       <h1 className="text-xl font-semibold">National Hazards</h1>
-      <p className="mt-1 text-sm text-dim">
-        126 real districts, real 11-detector hazard engine (<code>hazards.py</code>, Week
-        1). Color = number of triggered district-day-hazard rows out of{" "}
-        {summary.districts.reduce((s, d) => s + d.n_rows, 0).toLocaleString()} total real
-        observations.
+      <p className="mt-2 text-sm text-dim">
+        This map shows weather hazards found across Pakistan&apos;s districts &mdash; things
+        like frost, heat waves, hail, or fog. Darker green means more hazards were found there.
+        Click any district to see what was detected.
       </p>
 
       <div className="mt-3">
         <PipelineHealthBadge />
       </div>
-
-      <DisclaimerBar>
-        District-level, not farm-level: a triggered color on the map means the ~27km grid
-        cell for that district crossed a hazard threshold, not that every farm in it did.
-      </DisclaimerBar>
-
-      <CaveatBanner>
-        This is district-level, not farm-level. A district being colored teal means the
-        0.25&deg; (~27km) grid-cell reading for that district triggered a hazard on at
-        least one real day in the 71-frame archive (2026-06-22..07-20) &mdash; it does
-        not mean every farm in that district experienced it. See the Insurance Trigger
-        Engine view for how this maps (or mostly doesn&apos;t) onto real farm coverage.
-      </CaveatBanner>
 
       <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
         <div className="lg:col-span-2">
@@ -117,8 +98,7 @@ export default function HazardsPage() {
             <>
               <h2 className="text-sm font-semibold">{selected.district}</h2>
               <p className="mt-1 text-xs text-dim">
-                {selected.n_triggered_rows} / {selected.n_rows} district-day-hazard rows
-                triggered
+                {selected.n_triggered_rows} hazard alert{selected.n_triggered_rows === 1 ? "" : "s"} found here
               </p>
               <ul className="mt-3 space-y-1 text-xs">
                 {Object.entries(selected.hazards_triggered)
@@ -130,52 +110,33 @@ export default function HazardsPage() {
                     </li>
                   ))}
                 {Object.keys(selected.hazards_triggered).length === 0 && (
-                  <li className="text-faint">No triggers in the real archive for this district.</li>
+                  <li className="text-faint">Nothing detected here.</li>
                 )}
               </ul>
             </>
           ) : (
-            <p className="text-sm text-faint">Click a district on the map to see its real hazard breakdown.</p>
+            <p className="text-sm text-faint">Click a district on the map to see what was detected.</p>
           )}
         </div>
       </div>
 
-      <h2 className="mt-10 text-base font-semibold">
-        Fire Detection Model: residue burning, rule vs. trained model
-      </h2>
-      <p className="mt-1 text-sm text-dim">
-        Every <code>residue_burning</code> alert record in this feed carries two independent
-        real signals: the unchanged rule-based <code>flag</code> above, and a trained
-        thermal-only classifier&apos;s <code>model_score</code> (F1=0.346 vs.
-        the rule&apos;s F1=0.004 on identical held-out data) &mdash; run side by side, not
-        one replacing the other.
+      <h2 className="mt-10 text-base font-semibold">Crop-Burning Fires</h2>
+      <p className="mt-2 text-sm text-dim">
+        Farmers sometimes burn leftover crop stalks after harvest, and these fires can be spotted
+        from space. We check for these fires two ways &mdash; a simple rule, and a trained
+        computer model &mdash; and compare how often they agree.
       </p>
-      <TechNote>Internally &ldquo;Track E&rdquo; (fire classifier), benchmarked in Weeks 7 and 9.</TechNote>
 
       {!fire ? (
-        <p className="mt-4 text-sm text-dim">Loading real rule-vs-model comparison...</p>
+        <p className="mt-4 text-sm text-dim">Loading...</p>
       ) : (
         <>
-          <p className="mt-3 text-xs text-dim">
-            {fire.real_window} &mdash; {fire.n_records_compared} real records where both
-            produced a result.
-          </p>
           <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <FireCell label="Both flag" value={fire.both_flagged} tone="match" />
+            <FireCell label="Both agree" value={fire.both_flagged} tone="match" />
             <FireCell label="Rule only" value={fire.rule_only} tone="plain" />
-            <FireCell label="Model only (score ≥ 0.5)" value={fire.model_only} tone="plain" />
+            <FireCell label="Model only" value={fire.model_only} tone="plain" />
             <FireCell label="Neither" value={fire.neither} tone="quiet" />
           </div>
-          <div className="mt-3 grid grid-cols-1 gap-2 text-xs text-faint sm:grid-cols-3">
-            <span>Rule flagged: <span className="tnum text-dim">{fire.n_rule_flagged}</span></span>
-            <span>
-              Model flagged (&ge;0.5):{" "}
-              <span className="tnum text-dim">{fire["n_model_flagged_ge_0.5"] ?? fire.n_model_flagged_ge_0_5}</span>
-            </span>
-            <span>Mean model score: <span className="tnum text-dim">{fire.mean_model_score}</span></span>
-          </div>
-          <CaveatBanner>{fire.caveat}</CaveatBanner>
-          <ProvenanceLine source="track_g_dashboard_summary.json (fire_classifier)" updated="Week 19 cross-year validation" />
         </>
       )}
     </div>
