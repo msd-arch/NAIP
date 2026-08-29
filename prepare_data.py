@@ -110,31 +110,43 @@ with open(os.path.join(OUT, "district_hazard_summary.json"), "w", encoding="utf-
     }, f, ensure_ascii=False)
 print(f"wrote district_hazard_summary.json ({len(district_summary)} districts)")
 
-# ---- farm registry: no live DB, so regenerate the real in-memory output as JSON ----
+# ---- farm registry: Track R cutover, real live PostGIS database, no in-memory
+# stand-in. If the DB is unreachable this raises here and the whole resync
+# fails loudly (real traceback, non-zero exit) -- never silently falls back
+# to a stale/in-memory farms.json.
 import sys
 sys.path.insert(0, os.path.join(NAIP, "backend", "farm_registry"))
-from in_memory_registry import load_registry  # noqa: E402
+from db_registry import all_farms  # noqa: E402
 
-reg = load_registry(
-    os.path.join(NAIP, "data", "seed", "farms_layyahMuridke_Kharif2025.geojson"),
-    os.path.join(NAIP, "data", "seed", "pk_districts.geojson"),
-)
+dsn_path = os.path.join(NAIP, "backend", "farm_registry", ".env")
+with open(dsn_path, encoding="utf-8") as f:
+    dsn = next(l.split("=", 1)[1].strip() for l in f if l.startswith("SUPABASE_DB_URL"))
+
+farms = all_farms(dsn)
+real_farms = [f for f in farms if not f["is_synthetic"]]
+synthetic_farms = [f for f in farms if f["is_synthetic"]]
 farms_out = [{
-    "farm_id": f.farm_id, "district": f.district, "centroid_lat": f.centroid_lat,
-    "centroid_lon": f.centroid_lon, "area_ha": round(f.area_ha, 3),
-    "boundary": f.boundary_geojson,
-} for f in reg.farms.values()]
+    "farm_id": str(f["farm_id"]), "district": f["district"], "is_synthetic": f["is_synthetic"],
+    "centroid_lat": f["centroid_lat"], "centroid_lon": f["centroid_lon"],
+    "area_ha": round(f["area_ha"], 3) if f["area_ha"] is not None else None,
+    "boundary": f["boundary"],
+} for f in farms]
 with open(os.path.join(OUT, "farms.json"), "w", encoding="utf-8") as f:
     json.dump({
-        "note": "Real 120-farm Layyah/Muridke seed set, real point-in-polygon district "
-                "assignment (in_memory_registry.py, Week 4 -- no live PostGIS deployed). "
-                "crop_type/farmer_id/CNIC all null, same real gap as every prior week.",
-        "n_farms": len(farms_out),
-        "districts_with_coverage": sorted({f["district"] for f in farms_out}),
+        "note": "Track R (real live PostgreSQL+PostGIS, Supabase): 120 real Layyah/Muridke seed "
+                "farms + 2 real Track P submissions, plus 630 generated is_synthetic=true test-"
+                "scale farms across all 126 districts (area-weighted by real MNFSR crop data, "
+                "crop_type sampled from each district's real crop-mix shares). Identity fields "
+                "(farmer_name/cnic/phone_number) never appear in this export -- same real gap as "
+                "every prior week for farms with no linked farmer, and never exported here even "
+                "for the 2 real, linked submissions.",
+        "n_farms_real": len(real_farms), "n_farms_synthetic": len(synthetic_farms),
+        "districts_with_real_coverage": sorted({f["district"] for f in real_farms}),
+        "districts_with_any_coverage": sorted({f["district"] for f in farms}),
         "farms": farms_out,
     }, f, ensure_ascii=False)
-print(f"wrote farms.json ({len(farms_out)} real farms, districts: "
-      f"{sorted({f['district'] for f in farms_out})})")
+print(f"wrote farms.json ({len(real_farms)} real farms, {len(synthetic_farms)} synthetic, "
+      f"real coverage: {sorted({f['district'] for f in real_farms})})")
 
 # ---- demo scenario: pull the exact Gujranwala/2026-06-23 record from the demo audit log ----
 # PHASE 3 WEEK 9 (Track G): changed from Layyah/20260706 after exposure_score's real
