@@ -55,7 +55,12 @@ export default function LocaleProvider({ children }: { children: ReactNode }) {
 
   return (
     <LocaleContext.Provider value={{ locale, setLocale }}>
-      <NextIntlClientProvider locale={locale} messages={MESSAGES[locale]}>
+      {/* timeZone: UTC -- every real timestamp in this app (last_computed_utc,
+          gfs_cycle_utc, etc.) is already UTC ISO, formatted by this app's own
+          timeAgo()/toUTCString() helpers, not next-intl's date formatter; UTC
+          here just silences its dev-mode ENVIRONMENT_FALLBACK advisory with
+          the real, correct value rather than an arbitrary one. */}
+      <NextIntlClientProvider locale={locale} messages={MESSAGES[locale]} timeZone="UTC">
         {children}
       </NextIntlClientProvider>
     </LocaleContext.Provider>
