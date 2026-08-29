@@ -11,6 +11,20 @@ const ExplorePanel = dynamic(() => import("./ExplorePanel"), { ssr: false });
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
+// Real backend cadence: Track H's live_nowcast_cycle.py (a Windows Scheduled
+// Task) reprocesses real MSG scenes roughly every 15 minutes and, on every
+// cycle, itself calls prepare_data.py to republish the real output files
+// this view fetches -- so the files on disk genuinely do change on that
+// cadence. This view previously had NO refetch logic at all (a single
+// useEffect with an empty dependency array, fetch-once-on-mount) -- a
+// real, plain bug: the UI's own copy ("Every 15 minutes the satellite
+// pipeline checks...") promises a live cadence the code never delivered
+// to an open tab. Polling every 3 minutes here is deliberately *faster*
+// than the real 15-min backend cadence (so a real update is never more
+// than ~3 real minutes stale once it lands) without hammering local
+// static files.
+const REFRESH_INTERVAL_MS = 3 * 60 * 1000;
+
 const EMPTY_BUNDLE: DataBundle = {
   hazards: null,
   hazardMessages: null,
@@ -48,12 +62,17 @@ export default function ExploreView() {
   // forecast layer being a separate nav item -- this toggle picks which one
   // the map's own choropleth coloring reflects; the panel shows both.
   const [hazardsView, setHazardsView] = useState<"live" | "forecast">("live");
+  const [lastRefreshedUtc, setLastRefreshedUtc] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetch(`${BASE}/data/pk_districts.geojson`).then((r) => r.json()).then(setGeo);
-
-    const j = (path: string) => fetch(`${BASE}/data/${path}`).then((r) => r.json());
-    Promise.all([
+  const fetchDataBundle = useCallback(() => {
+    // cache: "no-store" -- these are real static JSON files rewritten in
+    // place by prepare_data.py every real cycle, same URL each time. A
+    // browser (or, in production, GitHub Pages' CDN) can and does cache a
+    // plain fetch() of a same-URL static asset -- without this, a refetch
+    // could silently return the same stale bytes even though the real file
+    // on disk has already changed underneath it.
+    const j = (path: string) => fetch(`${BASE}/data/${path}`, { cache: "no-store" }).then((r) => r.json());
+    return Promise.all([
       j("district_hazard_summary.json"),
       j("drought_national.json"),
       j("crop_stress_screen.json"),
@@ -119,9 +138,29 @@ export default function ExploreView() {
           triggerSummaryDemo,
           historicalEvents,
         });
+        setLastRefreshedUtc(new Date().toISOString());
       }
     );
   }, []);
+
+  useEffect(() => {
+    fetch(`${BASE}/data/pk_districts.geojson`).then((r) => r.json()).then(setGeo);
+    fetchDataBundle();
+
+    // Real refetch loop -- the actual fix. Re-runs the same real fetch on a
+    // fixed interval, and also immediately on tab focus/visibility (so
+    // switching back to an already-open tab shows real fresh numbers right
+    // away, not up to 3 real minutes later).
+    const interval = setInterval(fetchDataBundle, REFRESH_INTERVAL_MS);
+    const onVisible = () => {
+      if (document.visibilityState === "visible") fetchDataBundle();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [fetchDataBundle]);
 
   const handleSelectLayer = useCallback((id: LayerId) => {
     setActiveLayer(id);
@@ -141,7 +180,7 @@ export default function ExploreView() {
 
   return (
     <div>
-      <ExploreNav activeLayer={activeLayer} onSelect={handleSelectLayer} />
+      <ExploreNav activeLayer={activeLayer} onSelect={handleSelectLayer} lastRefreshedUtc={lastRefreshedUtc} />
 
       {!geo ? (
         <p className="mt-4 text-sm text-dim">Loading...</p>

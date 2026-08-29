@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LAYER_GROUPS, LAYERS, LayerId } from "../../explore/layers";
 import { useAppLocale } from "../../i18n/LocaleProvider";
 import { useTranslations } from "next-intl";
@@ -104,14 +104,32 @@ function LanguageToggle() {
   );
 }
 
+function timeAgo(iso: string | null): string {
+  if (!iso) return "loading…";
+  const min = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
+  if (min < 1) return "just now";
+  if (min === 1) return "1 min ago";
+  return `${min} min ago`;
+}
+
 export default function ExploreNav({
   activeLayer,
   onSelect,
+  lastRefreshedUtc,
 }: {
   activeLayer: LayerId;
   onSelect: (id: LayerId) => void;
+  lastRefreshedUtc: string | null;
 }) {
   const { locale } = useAppLocale();
+  // Real "time ago" ticks smoothly regardless of how often actual refetches
+  // land -- a cheap local re-render every 30s, not tied to the real 3-min
+  // data-refresh interval in ExploreView.
+  const [, forceTick] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => forceTick((n) => n + 1), 30000);
+    return () => clearInterval(t);
+  }, []);
   return (
     <header className="sticky top-0 z-[1000] -mx-4 border-b border-soft bg-app/95 px-4 backdrop-blur">
       <div className="flex flex-wrap items-center gap-3 py-2.5">
@@ -146,6 +164,10 @@ export default function ExploreNav({
           })}
         </nav>
 
+        <span className="hidden shrink-0 items-center gap-1.5 font-mono text-[10px] text-faint md:flex" title="Real data auto-refreshes every 3 minutes, and immediately when you return to this tab.">
+          <span className="h-1.5 w-1.5 rounded-full bg-accent-500" />
+          data refreshed <span className="tnum text-dim">{timeAgo(lastRefreshedUtc)}</span>
+        </span>
         <LanguageToggle />
 
         {/* mobile fallback: a native select covers every layer in one control */}
