@@ -13,6 +13,7 @@ const BASE = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 const EMPTY_BUNDLE: DataBundle = {
   hazards: null,
+  forecast: null,
   drought: null,
   cropStress: null,
   cropMix: null,
@@ -64,6 +65,7 @@ export default function ExploreView() {
       j("track_g_dashboard_summary.json"),
       j("trigger_summary_national.json"),
       j("trigger_summary_demo.json"),
+      j("forecast_alerts.json"),
     ]).then(
       ([
         hazards,
@@ -83,9 +85,11 @@ export default function ExploreView() {
         models,
         triggerSummaryNational,
         triggerSummaryDemo,
+        forecast,
       ]) => {
         setData({
           hazards,
+          forecast,
           drought,
           cropStress,
           cropMix,

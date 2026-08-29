@@ -447,6 +447,65 @@ function TriggerDetail({
   );
 }
 
+const FORECAST_HAZARD_LABEL: Record<string, string> = {
+  frost: "Frost", heat_wave: "Heat wave", cold_wave: "Cold wave",
+};
+
+function ForecastDetail({ data, district }: { data: DataBundle; district: string | null }) {
+  if (!data.forecast) return <EmptyHint>Loading forecast…</EmptyHint>;
+  const f = data.forecast;
+  const stamp = (
+    <div className="mt-1 text-[11px] text-faint">
+      Real GFS cycle: <span className="tnum text-dim">{new Date(f.gfs_cycle_utc).toUTCString()}</span>
+      <LastComputed iso={f.last_computed_utc} note={f.gfs_update_cadence_note} />
+    </div>
+  );
+
+  if (!district) {
+    return (
+      <div className="space-y-3">
+        <div className="rounded-xl border border-soft bg-elev p-4">
+          <div className="flex justify-between text-xs">
+            <span className="text-dim">Districts with any forecast flag</span>
+            <span className="tnum font-semibold text-main">{f.n_flagged} / {f.n_districts}</span>
+          </div>
+        </div>
+        {f.heat_wave_high_flag_rate_caveat && (
+          <Caveat>{f.heat_wave_high_flag_rate_caveat}</Caveat>
+        )}
+        <EmptyHint>Click a district to see its 3-day forecast detail.</EmptyHint>
+        {stamp}
+      </div>
+    );
+  }
+
+  const rows = f.alerts.filter((a) => a.district === district);
+  return (
+    <div className="space-y-2">
+      <h3 className="text-sm font-semibold text-main">{district}</h3>
+      {rows.map((r, i) => (
+        <div key={i} className={`rounded-lg border p-3 text-xs ${r.flag ? "border-secondary-500/50 bg-secondary-soft" : "border-soft bg-elev"}`}>
+          <div className="flex items-center justify-between">
+            <span className="font-medium text-main">
+              {FORECAST_HAZARD_LABEL[r.forecast_hazard] ?? r.forecast_hazard}
+              {r.window_days ? ` (${r.window_days[0]} → ${r.window_days[r.window_days.length - 1]})` : ` — ${r.valid_date}`}
+            </span>
+            {r.flag && <span className="pill tier-model rounded-full bg-secondary-500 px-2 py-0.5 text-[10px] font-bold uppercase text-white">Forecast flag</span>}
+          </div>
+          <p className="mt-1 text-faint">{r.message_en}</p>
+          <p className="mt-1 text-[10px] text-faint">confidence {Math.round(r.confidence * 100)}% · {r.source}</p>
+        </div>
+      ))}
+      {rows.length === 0 && <EmptyHint>No forecast rows for {district}.</EmptyHint>}
+      {f.heat_wave_high_flag_rate_caveat && rows.some((r) => r.forecast_hazard === "heat_wave" && r.flag) && (
+        <Caveat>{f.heat_wave_high_flag_rate_caveat}</Caveat>
+      )}
+      <Caveat>{f.cross_check_caveat} {f.cloud_proxy_substitution_note}</Caveat>
+      {stamp}
+    </div>
+  );
+}
+
 function ModelsDetail({ data }: { data: DataBundle }) {
   if (!data.models) return <EmptyHint>Loading model summaries…</EmptyHint>;
   return (
@@ -544,6 +603,7 @@ export default function ExplorePanel({
       {layerId === "trigger" && (
         <TriggerDetail data={data} district={selectedDistrict} threshold={triggerThreshold} onThresholdChange={onTriggerThresholdChange} />
       )}
+      {layerId === "forecast" && <ForecastDetail data={data} district={selectedDistrict} />}
       {layerId === "models" && <ModelsDetail data={data} />}
       {layerId === "locust" && (
         <div className="space-y-3">

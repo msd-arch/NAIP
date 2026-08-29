@@ -1,14 +1,14 @@
 {
-  "generated_utc": "2026-08-29T03:01:35.429611+00:00",
+  "generated_utc": "2026-08-29T05:15:17.285323+00:00",
   "status": "ok",
-  "detail": "processed MSG3-SEVI-MSG15-0100-NA-20260829015743.159000000Z-NA",
-  "last_cycle_duration_seconds": 584.5,
-  "last_scene_processed": "MSG3-SEVI-MSG15-0100-NA-20260829015743.159000000Z-NA",
-  "last_success_utc": "2026-08-29T02:59:18.983267+00:00",
-  "last_success_scene": "MSG3-SEVI-MSG15-0100-NA-20260829015743.159000000Z-NA",
-  "n_success": 154,
-  "n_failure": 16,
-  "n_no_new_scene": 10,
+  "detail": "processed MSG3-SEVI-MSG15-0100-NA-20260829041243.150000000Z-NA",
+  "last_cycle_duration_seconds": 506.4,
+  "last_scene_processed": "MSG3-SEVI-MSG15-0100-NA-20260829041243.150000000Z-NA",
+  "last_success_utc": "2026-08-29T05:13:23.816530+00:00",
+  "last_success_scene": "MSG3-SEVI-MSG15-0100-NA-20260829041243.150000000Z-NA",
+  "n_success": 156,
+  "n_failure": 17,
+  "n_no_new_scene": 13,
   "min_latency_hours_tier": 1.0,
   "windows_uptime_caveat": "This pipeline only runs while this personal Windows machine is on, awake, and Task Scheduler fires -- there is no server-grade uptime guarantee, no failover host. A gap in cycles most likely means the machine was off/asleep, not a silent pipeline failure -- check the log for the real reason either way."
 }

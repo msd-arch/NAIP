@@ -205,8 +205,35 @@ export interface ModelsSummary {
   fire_classifier: FireClassifierSummary;
 }
 
+export interface ForecastAlert {
+  district: string;
+  valid_date: string;
+  forecast_hazard: "frost" | "heat_wave" | "cold_wave";
+  window_days?: string[];
+  hazard: string;
+  flag: boolean;
+  confidence: number;
+  message_en: string;
+  message_ur: string;
+  source: string;
+}
+export interface ForecastData {
+  last_computed_utc: string;
+  gfs_cycle_utc: string;
+  gfs_update_cadence_note: string;
+  forecast_horizon_note: string;
+  cross_check_caveat: string;
+  cloud_proxy_substitution_note: string;
+  heat_wave_high_flag_rate_caveat: string | null;
+  n_districts: number;
+  n_alerts: number;
+  n_flagged: number;
+  alerts: ForecastAlert[];
+}
+
 export interface DataBundle {
   hazards: DistrictHazardSummary | null;
+  forecast: ForecastData | null;
   drought: DroughtNational | null;
   cropStress: CropStressScreen | null;
   cropMix: RealCropMix | null;

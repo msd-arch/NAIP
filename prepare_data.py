@@ -42,6 +42,10 @@ SOURCES = {
     "track_o_yield_results.json": os.path.join(NAIP, "models", "crop_classifier_national", "track_o_yield_results.json"),
     "crop_stress_screen.json": os.path.join(NAIP, "models", "crop_stress_screen", "crop_stress_screen.json"),
     "real_crop_mix.json": os.path.join(NAIP, "data", "crop_mix_ground_truth", "real_crop_mix.json"),
+    # Track S1: real GFS-forecast layer (frost/heat_wave/cold_wave only -- the 3
+    # of 11 real detectors with real GFS field compatibility). Structurally
+    # separate from district_alerts.json by design -- never merged in.
+    "forecast_alerts.json": os.path.join(NAIP, "models", "forecast", "forecast_alerts.json"),
 }
 
 missing = [(name, path) for name, path in SOURCES.items() if not os.path.exists(path)]

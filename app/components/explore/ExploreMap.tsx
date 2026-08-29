@@ -104,6 +104,15 @@ function styleForDistrict(
     if (rows.length === 0) return { fillColor: NODATA, fillOpacity: 0.3, tooltip: `${name}: no trigger fired` };
     return { fillColor: CRITICAL, fillOpacity: 0.85, tooltip: `${name}: ${rows.length} trigger event${rows.length === 1 ? "" : "s"} fired` };
   }
+  if (layerId === "forecast") {
+    const rows = (data.forecast?.alerts ?? []).filter((a) => a.district === name && a.flag);
+    if (rows.length === 0) return { fillColor: NODATA, fillOpacity: 0.35, tooltip: `${name}: no forecast flag in the next 72h` };
+    // secondary (brown/tan) accent, deliberately not the live-hazard green ramp --
+    // a forecast is a prediction, never a confirmed observation, same visual
+    // vocabulary this product already uses for "model-estimated, not real/confirmed"
+    const hazards = [...new Set(rows.map((r) => r.forecast_hazard))].join(", ");
+    return { fillColor: "#8a6d3f", fillOpacity: Math.min(0.9, 0.4 + rows.length * 0.12), tooltip: `${name}: ${hazards} forecast in the next 72h` };
+  }
   return EMPTY;
 }
 

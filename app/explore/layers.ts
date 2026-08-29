@@ -12,6 +12,7 @@ export type LayerId =
   | "yield"
   | "exposure"
   | "trigger"
+  | "forecast"
   | "models";
 
 export type LayerMode = "choropleth" | "zoom-locust" | "zoom-canal" | "panel-only";
@@ -129,6 +130,14 @@ export const LAYERS: Record<LayerId, LayerMeta> = {
     about:
       "Districts where an exposure event actually crossed the payout threshold. Every record carries its basis-risk note — a trigger measures the index, not any individual farmer's real loss.",
   },
+  forecast: {
+    id: "forecast",
+    group: "Forecast",
+    label: "72h Forecast (frost/heat/cold)",
+    mode: "choropleth",
+    about:
+      "A real GFS weather-forecast layer, additive to the live hazard map — not a replacement. Covers only frost, heat wave, and cold wave (the 3 of 11 hazards with real compatible forecast data), 3 days ahead, refreshed each time it runs against the latest real GFS cycle (published 4x daily). This is a prediction, never a confirmed observation — kept structurally separate from the live hazard feed.",
+  },
   models: {
     id: "models",
     group: "",
@@ -152,6 +161,7 @@ export const LAYER_GROUPS: LayerGroup[] = [
   { label: "Water & Climate", layers: ["canal", "flood", "drought"] },
   { label: "Crop Intelligence", layers: ["cropmodel", "irrigation", "crossyear", "yield"] },
   { label: "Insurance Engine", layers: ["exposure", "trigger"] },
+  { label: "Forecast", layers: ["forecast"], standalone: true },
   { label: "About", layers: ["models"], standalone: true },
 ];
 
