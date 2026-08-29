@@ -172,48 +172,52 @@ function HazardWindowToggle({ view, onChange }: { view: "live" | "forecast"; onC
 }
 
 function LiveHazardsWindow({ data, district }: { data: DataBundle; district: string | null }) {
-  if (!district) return <EmptyHint>Click a district on the map to see its detected hazards.</EmptyHint>;
-  const row = data.hazards?.districts.find((d) => d.district === district);
-  if (!row) return <EmptyHint>No hazard data for {district}.</EmptyHint>;
-  const entries = Object.entries(row.hazards_triggered).sort((a, b) => b[1] - a[1]);
   const { locale } = useAppLocale();
+  if (!district) return <EmptyHint>Click a district on the map to see its current hazard status.</EmptyHint>;
+  const row = data.hazardCurrent?.districts.find((d) => d.district === district);
+  if (!row) return <EmptyHint>No hazard data for {district}.</EmptyHint>;
+  // Flagged hazards first, then the rest -- all 11 real hazard types always
+  // shown, never silently omitted, so "not currently flagged" is a real,
+  // explicit statement, not an absence a reader has to interpret.
+  const entries = [...row.hazards].sort((a, b) => Number(b.currently_flagged) - Number(a.currently_flagged));
   return (
     <div className="space-y-2">
       <div className="rounded-xl border border-soft bg-elev p-4">
         <h3 className="text-sm font-semibold text-main">{district}</h3>
         <p className="mt-1 text-xs text-dim">
-          {row.n_triggered_rows} hazard alert{row.n_triggered_rows === 1 ? "" : "s"} found here (across the real
-          archive on disk)
+          {row.n_currently_flagged === 0
+            ? "No hazard currently flagged here"
+            : `${row.n_currently_flagged} hazard${row.n_currently_flagged === 1 ? "" : "s"} currently flagged here`}
+          {" "}— as of the most recent real check, {row.most_recent_check_date}
         </p>
       </div>
-      {entries.length === 0 && <EmptyHint>Nothing detected here.</EmptyHint>}
-      {entries.map(([hazard, n]) => {
-        const msg = data.hazardMessages?.messages.find((m) => m.district === district && m.hazard === hazard);
-        return (
-          <div key={hazard} className="rounded-lg border border-soft bg-elev p-3 text-xs">
-            <div className="flex items-center justify-between">
-              <span className="font-medium capitalize text-main">{hazard.replace(/_/g, " ")}</span>
-              <span className="tnum text-[10px] text-faint" title="how many separate 15-min observations flagged this hazard, not a magnitude/severity number">
-                flagged in {n} observation{n === 1 ? "" : "s"}
-              </span>
-            </div>
-            {HAZARD_INFO[hazard] && <p className="mt-1.5 text-[11px] leading-relaxed text-dim">{HAZARD_INFO[hazard]}</p>}
-            {msg && (
-              <div className="mt-2 rounded-md bg-elev-2 p-2">
-                <p
-                  className={`text-[11px] leading-relaxed text-dim ${locale === "ur" ? "urdu-text" : ""}`}
-                  dir={locale === "ur" ? "rtl" : undefined}
-                >
-                  {locale === "ur" ? msg.message_ur : msg.message_en}
-                </p>
-                <p className="mt-1 text-[10px] text-faint">
-                  most recent: {msg.date} · confidence {Math.round(msg.max_confidence * 100)}%
-                </p>
-              </div>
-            )}
+      {entries.map((h) => (
+        <div
+          key={h.hazard}
+          className={`rounded-lg border p-3 text-xs ${h.currently_flagged ? "border-secondary-500/50 bg-secondary-soft" : "border-soft bg-elev"}`}
+        >
+          <div className="flex items-center justify-between">
+            <span className="font-medium capitalize text-main">{h.hazard.replace(/_/g, " ")}</span>
+            <span
+              className={`rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide ${h.currently_flagged ? "bg-secondary-500 text-white" : "text-faint"}`}
+            >
+              {h.currently_flagged ? "Flagged now" : "No hazard right now"}
+            </span>
           </div>
-        );
-      })}
+          {HAZARD_INFO[h.hazard] && <p className="mt-1.5 text-[11px] leading-relaxed text-dim">{HAZARD_INFO[h.hazard]}</p>}
+          <div className="mt-2 rounded-md bg-elev-2 p-2">
+            <p
+              className={`text-[11px] leading-relaxed text-dim ${locale === "ur" ? "urdu-text" : ""}`}
+              dir={locale === "ur" ? "rtl" : undefined}
+            >
+              {locale === "ur" ? h.message_ur : h.message_en}
+            </p>
+            <p className="mt-1 text-[10px] text-faint">
+              as of {h.date} · confidence {Math.round(h.max_confidence * 100)}%
+            </p>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

@@ -27,7 +27,7 @@ const REFRESH_INTERVAL_MS = 3 * 60 * 1000;
 
 const EMPTY_BUNDLE: DataBundle = {
   hazards: null,
-  hazardMessages: null,
+  hazardCurrent: null,
   forecast: null,
   drought: null,
   cropStress: null,
@@ -92,7 +92,7 @@ export default function ExploreView() {
       j("trigger_summary_demo.json"),
       j("forecast_alerts.json"),
       j("historical_events.json"),
-      j("district_hazard_messages.json"),
+      j("district_hazard_current.json"),
     ]).then(
       ([
         hazards,
@@ -114,11 +114,11 @@ export default function ExploreView() {
         triggerSummaryDemo,
         forecast,
         historicalEvents,
-        hazardMessages,
+        hazardCurrent,
       ]) => {
         setData({
           hazards,
-          hazardMessages,
+          hazardCurrent,
           forecast,
           drought,
           cropStress,

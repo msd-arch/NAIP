@@ -11,9 +11,12 @@ export interface DistrictHazardRow {
   n_triggered_rows: number;
   hazards_triggered: Record<string, number>;
 }
-export interface DistrictHazardMessage {
-  district: string;
+// Real CURRENT status, not a cumulative total -- see prepare_data.py's own
+// comment on district_hazard_current.json for why the cumulative version
+// was confusing (a lifetime count that never reads as "right now").
+export interface DistrictHazardCurrentEntry {
   hazard: string;
+  currently_flagged: boolean;
   date: string;
   max_confidence: number;
   n_triggered: number;
@@ -21,8 +24,14 @@ export interface DistrictHazardMessage {
   message_en: string;
   message_ur: string;
 }
-export interface DistrictHazardMessages {
-  messages: DistrictHazardMessage[];
+export interface DistrictHazardCurrentRow {
+  district: string;
+  n_currently_flagged: number;
+  most_recent_check_date: string;
+  hazards: DistrictHazardCurrentEntry[];
+}
+export interface DistrictHazardCurrent {
+  districts: DistrictHazardCurrentRow[];
 }
 
 export interface DistrictHazardSummary {
@@ -303,7 +312,7 @@ export interface HistoricalEventsData {
 
 export interface DataBundle {
   hazards: DistrictHazardSummary | null;
-  hazardMessages: DistrictHazardMessages | null;
+  hazardCurrent: DistrictHazardCurrent | null;
   forecast: ForecastData | null;
   drought: DroughtNational | null;
   cropStress: CropStressScreen | null;

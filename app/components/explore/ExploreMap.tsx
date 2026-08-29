@@ -50,14 +50,30 @@ function styleForDistrict(
     const hazards = [...new Set(rows.map((r) => r.forecast_hazard))].join(", ");
     return { fillColor: "#8a6d3f", fillOpacity: Math.min(0.9, 0.4 + rows.length * 0.12), tooltip: `${name}: ${hazards} forecast in the next 72h` };
   }
-  if (layerId === "hazards" || layerId === "home") {
+  if (layerId === "hazards") {
+    // Live window: real CURRENT status (most recent real check per hazard),
+    // not a cumulative lifetime total -- see prepare_data.py's own comment
+    // on district_hazard_current.json for the real user-reported confusion
+    // this replaced (a lifetime count that never read as "right now").
+    const rows = data.hazardCurrent?.districts ?? [];
+    const row = rows.find((d) => d.district === name);
+    const n = row?.n_currently_flagged ?? 0;
+    const fillColor = n === 0 ? NODATA : n === 1 ? STEP1 : n === 2 ? STEP2 : STEP3;
+    return {
+      fillColor, fillOpacity: n === 0 ? 0.55 : 0.92,
+      tooltip: n === 0
+        ? `${name}: no hazard currently flagged (as of ${row?.most_recent_check_date ?? "n/a"})`
+        : `${name}: ${n} hazard${n === 1 ? "" : "s"} currently flagged (as of ${row?.most_recent_check_date})`,
+    };
+  }
+  if (layerId === "home") {
     const rows = data.hazards?.districts ?? [];
     const row = rows.find((d) => d.district === name);
     const max = Math.max(1, ...rows.map((d) => d.n_triggered_rows));
     const n = row?.n_triggered_rows ?? 0;
     const t = n / max;
     const fillColor = n === 0 ? NODATA : t < 0.33 ? STEP1 : t < 0.66 ? STEP2 : STEP3;
-    return { fillColor, fillOpacity: n === 0 ? 0.55 : 0.92, tooltip: `${name}: ${n} triggered hazard rows` };
+    return { fillColor, fillOpacity: n === 0 ? 0.55 : 0.92, tooltip: `${name}: ${n} real triggered hazard rows in the archive (cumulative)` };
   }
   if (layerId === "cropstress") {
     const row = data.cropStress?.district_results.find((d) => d.district === name);
