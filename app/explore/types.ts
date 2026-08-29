@@ -27,6 +27,8 @@ export interface DroughtDistrict {
 export interface DroughtNational {
   n_districts_covered: number;
   n_districts_flagged: number;
+  last_computed_utc?: string;
+  refresh_cadence_note?: string;
   district_results: DroughtDistrict[];
 }
 
@@ -85,11 +87,13 @@ export interface LocustRegion {
   region: string; boundary_type: string; boundary_note: string;
   sm_surface_m3m3: number | null; sm_surface_anomaly_m3m3: number | null;
   ndvi_recent_30d: number | null; ndvi_prior_30d: number | null; ndvi_delta: number | null;
-  soil_favorable_for_egglaying: boolean; vegetation_greenup_detected: boolean;
+  soil_favorable_for_egglaying: boolean; vegetation_not_browning: boolean;
   breeding_risk_flag: boolean; confidence: number; source: string;
 }
 export interface LocustData {
   scope: string;
+  last_computed_utc?: string;
+  refresh_cadence_note?: string;
   regions: LocustRegion[];
 }
 
@@ -104,6 +108,8 @@ export interface FloodDistrictResult {
 export interface FloodSummary {
   model_version: string;
   status: string;
+  last_computed_utc?: string;
+  refresh_cadence_note?: string;
   n_districts_flagged_raw: number;
   n_districts_total: number;
   flag_threshold: number;
@@ -129,6 +135,12 @@ export interface ExposureData {
   crop_mix_source_breakdown?: Record<string, number>;
   top_exposure_events: ExposureRow[];
   top_plausible_exposure_events: ExposureRow[];
+}
+
+export interface TriggerSummary {
+  last_computed_utc?: string;
+  refresh_cadence_note?: string;
+  n_triggered: number;
 }
 
 export interface AuditRecord {
@@ -204,6 +216,8 @@ export interface DataBundle {
   exposure: ExposureData | null;
   triggerNational: AuditRecord[] | null;
   triggerDemo: AuditRecord[] | null;
+  triggerSummaryNational: TriggerSummary | null;
+  triggerSummaryDemo: TriggerSummary | null;
   cropClassifier: CropClassifierReport | null;
   trackF: TrackFResults | null;
   crossYear: CrossYearResults | null;

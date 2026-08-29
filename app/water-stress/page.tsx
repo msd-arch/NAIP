@@ -16,6 +16,7 @@ interface FloodDistrictScore {
 interface FloodSummary {
   model_version: string;
   status: string;
+  last_computed_utc?: string;
   during_window: [string, string];
   n_districts_flagged_raw: number;
   n_districts_total: number;
@@ -188,6 +189,7 @@ export default function WaterStressPage() {
               </p>
             </div>
           )}
+          <LastComputed iso={flood.last_computed_utc} />
         </>
       )}
 
@@ -220,10 +222,19 @@ export default function WaterStressPage() {
               ))}
             </div>
           )}
+          <LastComputed iso={drought.last_computed_utc} />
         </>
       )}
     </div>
   );
+}
+
+function LastComputed({ iso }: { iso?: string }) {
+  if (!iso) return null;
+  const then = new Date(iso).getTime();
+  const mins = Math.round((Date.now() - then) / 60000);
+  const label = mins < 1 ? "just now" : mins < 60 ? `${mins} min ago` : mins < 2880 ? `${Math.round(mins / 60)} hr ago` : `${Math.round(mins / 1440)} days ago`;
+  return <p className="mt-2 text-[11px] text-faint">Last computed <span className="tnum">{label}</span> — recomputed on a real weekly schedule, not every 15 min.</p>;
 }
 
 function Stat({ label, value }: { label: string; value: string }) {

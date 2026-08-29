@@ -50,6 +50,33 @@ function Caveat({ children }: { children: React.ReactNode }) {
   );
 }
 
+function timeAgo(iso: string): string {
+  const then = new Date(iso).getTime();
+  if (Number.isNaN(then)) return iso;
+  const mins = Math.round((Date.now() - then) / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins} min ago`;
+  const hours = Math.round(mins / 60);
+  if (hours < 48) return `${hours} hr ago`;
+  return `${Math.round(hours / 24)} days ago`;
+}
+
+/** Real "last computed" timestamp, same visibility standard everywhere this
+    appears -- drought, flood, locust, trigger engine all show this rather
+    than burying freshness in a docs file. */
+function LastComputed({ iso, note }: { iso?: string; note?: string }) {
+  if (!iso) return null;
+  return (
+    <div className="mt-3 flex items-start gap-1.5 text-[11px] text-faint" title={note}>
+      <span className="mt-[3px] h-1.5 w-1.5 shrink-0 rounded-full bg-accent-500" />
+      <span>
+        Last computed <span className="tnum text-dim">{timeAgo(iso)}</span>
+        {note && <span> (hover for how often this refreshes)</span>}
+      </span>
+    </div>
+  );
+}
+
 function StatTile({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-lg border border-soft bg-elev-2 p-2.5 text-center">
@@ -122,7 +149,15 @@ function CropStressDetail({ data, district }: { data: DataBundle; district: stri
 }
 
 function DroughtDetail({ data, district }: { data: DataBundle; district: string | null }) {
-  if (!district) return <EmptyHint>Click a district to see its drought signal.</EmptyHint>;
+  const stamp = <LastComputed iso={data.drought?.last_computed_utc} note={data.drought?.refresh_cadence_note} />;
+  if (!district) {
+    return (
+      <div>
+        <EmptyHint>Click a district to see its drought signal.</EmptyHint>
+        {stamp}
+      </div>
+    );
+  }
   const row = data.drought?.district_results.find((d) => d.district === district);
   if (!row) return <EmptyHint>{district} isn&apos;t covered by this signal.</EmptyHint>;
   return (
@@ -132,12 +167,21 @@ function DroughtDetail({ data, district }: { data: DataBundle; district: string 
       <Row k="NDVI usual for this time of year" v={row.mean_historical_ndvi.toFixed(3)} />
       <Row k="Z-score vs. own history" v={row.mean_z_score.toFixed(2)} />
       <Row k="Flagged" v={row.district_flag ? "yes — drier than usual" : "no"} />
+      {stamp}
     </div>
   );
 }
 
 function FloodDetail({ data, district }: { data: DataBundle; district: string | null }) {
-  if (!district) return <EmptyHint>Click a district to see its flood-risk score.</EmptyHint>;
+  const stamp = <LastComputed iso={data.flood?.last_computed_utc} note={data.flood?.refresh_cadence_note} />;
+  if (!district) {
+    return (
+      <div>
+        <EmptyHint>Click a district to see its flood-risk score.</EmptyHint>
+        {stamp}
+      </div>
+    );
+  }
   const row = data.flood?.district_results.find((d) => d.district === district);
   if (!row || row.mean_model_score == null) return <EmptyHint>No score for {district}.</EmptyHint>;
   return (
@@ -149,6 +193,7 @@ function FloodDetail({ data, district }: { data: DataBundle; district: string | 
       )}
       <Row k="Flagged" v={row.flag ? "yes" : "no"} />
       <Caveat>{data.flood?.threshold_decision.note}</Caveat>
+      {stamp}
     </div>
   );
 }
@@ -350,9 +395,11 @@ function TriggerDetail({
 }) {
   const records = (threshold === "national" ? data.triggerNational : data.triggerDemo) ?? [];
   const filtered = district ? records.filter((r) => r.district === district) : records;
+  const summary = threshold === "national" ? data.triggerSummaryNational : data.triggerSummaryDemo;
 
   return (
     <div className="space-y-3">
+      <LastComputed iso={summary?.last_computed_utc} note={summary?.refresh_cadence_note} />
       <div className="flex gap-2 text-[11px]">
         <button
           onClick={() => onThresholdChange("national")}
@@ -513,10 +560,11 @@ export default function ExplorePanel({
                 </span>
               </div>
               <Row k="Soil damp enough?" v={r.soil_favorable_for_egglaying ? "Yes" : "No"} />
-              <Row k="Plants greening up?" v={r.vegetation_greenup_detected ? "Yes" : "No"} />
+              <Row k="Vegetation not browning much?" v={r.vegetation_not_browning ? "Yes" : "No"} />
               <Row k="Confidence" v={`${Math.round(r.confidence * 100)}%`} />
             </div>
           ))}
+          <LastComputed iso={data.locust?.last_computed_utc} note={data.locust?.refresh_cadence_note} />
         </div>
       )}
       {layerId === "canal" && data.water && (

@@ -12,7 +12,7 @@ interface Region {
   window_recent: [string, string]; window_prior: [string, string];
   sm_surface_m3m3: number | null; sm_surface_anomaly_m3m3: number | null;
   ndvi_recent_30d: number | null; ndvi_prior_30d: number | null; ndvi_delta: number | null;
-  soil_favorable_for_egglaying: boolean; vegetation_greenup_detected: boolean;
+  soil_favorable_for_egglaying: boolean; vegetation_not_browning: boolean;
   breeding_risk_flag: boolean; confidence: number; source: string;
 }
 
@@ -55,7 +55,7 @@ export default function LocustPage() {
             </div>
             <dl className="mt-3 space-y-1.5 text-xs">
               <Row k="Soil damp enough?" v={r.soil_favorable_for_egglaying ? "Yes" : "No"} good={r.soil_favorable_for_egglaying} />
-              <Row k="Plants greening up?" v={r.vegetation_greenup_detected ? "Yes" : "No"} good={r.vegetation_greenup_detected} />
+              <Row k="Vegetation not browning much?" v={r.vegetation_not_browning ? "Yes" : "No"} good={r.vegetation_not_browning} />
               <Row k="Confidence" v={`${Math.round(r.confidence * 100)}%`} />
             </dl>
           </div>

@@ -22,6 +22,8 @@ const EMPTY_BUNDLE: DataBundle = {
   exposure: null,
   triggerNational: null,
   triggerDemo: null,
+  triggerSummaryNational: null,
+  triggerSummaryDemo: null,
   cropClassifier: null,
   trackF: null,
   crossYear: null,
@@ -60,6 +62,8 @@ export default function ExploreView() {
       j("track_j_crossyear_results.json"),
       j("track_o_yield_results.json"),
       j("track_g_dashboard_summary.json"),
+      j("trigger_summary_national.json"),
+      j("trigger_summary_demo.json"),
     ]).then(
       ([
         hazards,
@@ -77,6 +81,8 @@ export default function ExploreView() {
         crossYear,
         yieldResults,
         models,
+        triggerSummaryNational,
+        triggerSummaryDemo,
       ]) => {
         setData({
           hazards,
@@ -94,6 +100,8 @@ export default function ExploreView() {
           crossYear,
           yieldResults,
           models,
+          triggerSummaryNational,
+          triggerSummaryDemo,
         });
       }
     );
