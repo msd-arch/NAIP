@@ -184,20 +184,8 @@ export default function ExploreView() {
 
       {!geo ? (
         <p className="mt-4 text-sm text-dim">Loading...</p>
-      ) : (
-        <div className={`mt-4 grid grid-cols-1 gap-4 ${isPanelOnly ? "" : "lg:grid-cols-[1fr_360px]"}`}>
-          {!isPanelOnly && (
-            <ExploreMap
-              geo={geo}
-              layerId={activeLayer}
-              data={data}
-              cropPick={cropPick}
-              triggerThreshold={triggerThreshold}
-              selectedDistrict={selectedDistrict}
-              onSelectDistrict={handleSelectDistrict}
-              hazardsView={hazardsView}
-            />
-          )}
+      ) : isPanelOnly ? (
+        <div className="mt-4">
           <ExplorePanel
             layerId={activeLayer}
             data={data}
@@ -209,6 +197,38 @@ export default function ExploreView() {
             hazardsView={hazardsView}
             onHazardsViewChange={setHazardsView}
           />
+        </div>
+      ) : (
+        // Full-bleed map with the info panel floating as an overlay card on
+        // top of it (top-right), instead of the map and panel splitting the
+        // page into two fixed side-by-side columns -- a real GIS-app layout,
+        // same pattern as the msd-arch Nowcast reference. relative/absolute,
+        // not a grid: the map fills the whole real estate, the panel floats
+        // above it with its own bounded height and internal scroll.
+        <div className="relative mt-4">
+          <ExploreMap
+            geo={geo}
+            layerId={activeLayer}
+            data={data}
+            cropPick={cropPick}
+            triggerThreshold={triggerThreshold}
+            selectedDistrict={selectedDistrict}
+            onSelectDistrict={handleSelectDistrict}
+            hazardsView={hazardsView}
+          />
+          <div className="themed-scrollbar absolute right-3 top-3 z-[500] max-h-[calc(100%-1.5rem)] w-[calc(100%-1.5rem)] overflow-y-auto rounded-xl border border-soft bg-elev/95 p-4 shadow-card backdrop-blur-sm sm:w-[380px]">
+            <ExplorePanel
+              layerId={activeLayer}
+              data={data}
+              selectedDistrict={selectedDistrict}
+              cropPick={cropPick}
+              onCropPickChange={setCropPick}
+              triggerThreshold={triggerThreshold}
+              onTriggerThresholdChange={setTriggerThreshold}
+              hazardsView={hazardsView}
+              onHazardsViewChange={setHazardsView}
+            />
+          </div>
         </div>
       )}
     </div>

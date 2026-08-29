@@ -198,7 +198,6 @@ export default function ExploreMap({
 
   const mode = LAYERS[layerId].mode;
   const isChoropleth = mode === "choropleth";
-  const isPanelOnly = mode === "panel-only";
 
   const canalCenter = useMemo<[number, number] | null>(() => {
     const segs = data.water?.segments;
@@ -250,10 +249,13 @@ export default function ExploreMap({
   );
 
   return (
-    <div
-      className="isolate relative z-0 overflow-hidden rounded-xl border border-soft transition-[height] duration-500 ease-in-out"
-      style={{ height: isPanelOnly ? "110px" : "560px" }}
-    >
+    // Full-bleed: this component is now only ever rendered for real
+    // spatial layers (ExploreView.tsx keeps panel-only layers on a
+    // map-free, full-width panel instead), so it always takes the tall,
+    // near-full-viewport height -- the info panel floats as an overlay
+    // card on top of it, not a fixed side column that used to shrink the
+    // map to make room.
+    <div className="isolate relative z-0 h-[calc(100vh-160px)] min-h-[520px] overflow-hidden rounded-xl border border-soft">
       <MapContainer
         center={NATIONAL_CENTER}
         zoom={NATIONAL_ZOOM}
