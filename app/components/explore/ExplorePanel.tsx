@@ -1,10 +1,14 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import AlertCard from "../AlertCard";
 import ModelCard from "../ModelCard";
 import { R2Bar, AccuracyBar, YieldBar } from "../ChartBars";
-import { CROPS, Crop, LAYERS, LayerId } from "../../explore/layers";
-import type { DataBundle } from "../../explore/types";
+import ProvenanceLine from "../ProvenanceLine";
+import FarmSubmissionForm from "./FarmSubmissionForm";
+import { CROPS, Crop, LAYERS, LAYER_GROUPS, LayerId } from "../../explore/layers";
+import type { DataBundle, HistoricalEvent } from "../../explore/types";
+import { useAppLocale } from "../../i18n/LocaleProvider";
 
 const PROJECT_BLURB =
   "NAIP extends an existing satellite hazard-detection pipeline (MSG/SEVIRI + WRF/GFS, " +
@@ -13,6 +17,20 @@ const PROJECT_BLURB =
   "crop and water modules to close the loop into satellite-triggered parametric micro-" +
   "insurance and subsidy targeting. “From nowcasting to payout”: every module ladders " +
   "up to either an alert that reaches a farmer, or a payout/subsidy-targeting decision.";
+
+const PROJECT_BLURB_UR =
+  "NAIP ایک موجودہ سیٹلائٹ خطرہ شناخت کے نظام (MSG/SEVIRI + WRF/GFS، 15 منٹ کی رفتار — پالا، " +
+  "گرمی کی لہر، سردی کی لہر، اولے، آندھی، دھند، دھول کا طوفان، خشک سالی، UV) کو پنجاب کے تجرباتی " +
+  "علاقے سے پورے ملک تک وسیع کرتا ہے، اور اسے فصل و پانی کے نئے ماڈیولز سے جوڑ کر سیٹلائٹ بنیاد " +
+  "پر خودکار مائیکرو انشورنس اور سبسڈی کے فیصلوں تک لے جاتا ہے۔ ہر ماڈیول یا تو کسان تک پہنچنے " +
+  "والے الرٹ پر، یا معاوضے/سبسڈی کے فیصلے پر منتج ہوتا ہے۔";
+
+/** meta.group is a plain English label (e.g. "Hazard Monitoring") -- look up
+    its real Urdu translation from the same LAYER_GROUPS config the nav uses,
+    rather than duplicating the group labels here. */
+const GROUP_LABEL_UR: Record<string, string> = Object.fromEntries(
+  LAYER_GROUPS.map((g) => [g.label, g.labelUr])
+);
 
 const TIER_LABEL: Record<string, string> = {
   real_district_area: "real government data",
@@ -90,20 +108,23 @@ function HomeDetail({ data }: { data: DataBundle }) {
   const rows = data.hazards?.districts ?? [];
   const totalObservations = rows.reduce((s, d) => s + d.n_rows, 0);
   const districtCount = rows.length || 126;
+  const { locale } = useAppLocale();
+  const t = useTranslations("home");
   return (
     <div className="space-y-4">
       <div className="rounded-xl border border-soft bg-elev p-4">
-        <p className="text-xs leading-relaxed text-dim">{PROJECT_BLURB}</p>
+        <p className={`text-xs leading-relaxed text-dim ${locale === "ur" ? "urdu-text" : ""}`} dir={locale === "ur" ? "rtl" : undefined}>
+          {locale === "ur" ? PROJECT_BLURB_UR : PROJECT_BLURB}
+        </p>
       </div>
       <div className="grid grid-cols-2 gap-2">
-        <StatTile label="districts covered" value={districtCount ? districtCount.toLocaleString() : "…"} />
-        <StatTile label="real observations" value={totalObservations ? totalObservations.toLocaleString() : "…"} />
-        <StatTile label="real farm polygons" value="120" />
-        <StatTile label="districts with farm coverage" value="4" />
+        <StatTile label={t("statDistricts")} value={districtCount ? districtCount.toLocaleString() : "…"} />
+        <StatTile label={t("statObservations")} value={totalObservations ? totalObservations.toLocaleString() : "…"} />
+        <StatTile label={t("statFarms")} value="120" />
+        <StatTile label={t("statFarmDistricts")} value="4" />
       </div>
-      <p className="text-[11px] text-faint">
-        Pick a topic from the nav above — each one swaps what&apos;s drawn on this same map instead of taking you
-        to a new page.
+      <p className={`text-[11px] text-faint ${locale === "ur" ? "urdu-text" : ""}`} dir={locale === "ur" ? "rtl" : undefined}>
+        {t("hint")}
       </p>
     </div>
   );
@@ -134,6 +155,8 @@ function HazardsDetail({ data, district }: { data: DataBundle; district: string 
 }
 
 function CropStressDetail({ data, district }: { data: DataBundle; district: string | null }) {
+  const t = useTranslations();
+  const { locale } = useAppLocale();
   if (!district) return <EmptyHint>Click a district to see its stress signals.</EmptyHint>;
   const row = data.cropStress?.district_results.find((d) => d.district === district);
   if (!row) return <EmptyHint>{district} isn&apos;t covered by this screen.</EmptyHint>;
@@ -143,7 +166,15 @@ function CropStressDetail({ data, district }: { data: DataBundle; district: stri
       <Row k="Level anomaly points" v={String(row.n_points_level_anomaly)} />
       <Row k="Senescence-slope anomaly points" v={String(row.n_points_senescence_anomaly)} />
       <Row k="Flagged on both signs" v={row.district_flag_both_signals ? "yes" : "no"} />
-      <Caveat>This is a screen, not a diagnosis — it flags where to look closer, not what&apos;s wrong.</Caveat>
+      <Caveat>
+        {locale === "ur" ? (
+          <span dir="rtl" lang="ur" className="urdu-text">
+            {t("cropStressCaveat")}
+          </span>
+        ) : (
+          t("cropStressCaveat")
+        )}
+      </Caveat>
     </div>
   );
 }
@@ -452,6 +483,7 @@ const FORECAST_HAZARD_LABEL: Record<string, string> = {
 };
 
 function ForecastDetail({ data, district }: { data: DataBundle; district: string | null }) {
+  const { locale } = useAppLocale();
   if (!data.forecast) return <EmptyHint>Loading forecast…</EmptyHint>;
   const f = data.forecast;
   const stamp = (
@@ -492,7 +524,13 @@ function ForecastDetail({ data, district }: { data: DataBundle; district: string
             </span>
             {r.flag && <span className="pill tier-model rounded-full bg-secondary-500 px-2 py-0.5 text-[10px] font-bold uppercase text-white">Forecast flag</span>}
           </div>
-          <p className="mt-1 text-faint">{r.message_en}</p>
+          <p
+            className={`mt-1 text-faint ${locale === "ur" ? "urdu-text" : ""}`}
+            dir={locale === "ur" ? "rtl" : undefined}
+            lang={locale === "ur" ? "ur" : undefined}
+          >
+            {locale === "ur" ? r.message_ur : r.message_en}
+          </p>
           <p className="mt-1 text-[10px] text-faint">confidence {Math.round(r.confidence * 100)}% · {r.source}</p>
         </div>
       ))}
@@ -561,6 +599,79 @@ function ModelsDetail({ data }: { data: DataBundle }) {
   );
 }
 
+const STATUS_TONE_CLASS: Record<string, string> = {
+  high: "bg-accent-500 text-white",
+  moderate: "bg-secondary-500 text-white",
+  low: "bg-[#8c8878] text-white",
+};
+
+function EventCard({ event }: { event: HistoricalEvent }) {
+  return (
+    <div className="rounded-xl border border-soft bg-elev p-4">
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <div>
+          <h3 className="text-sm font-semibold text-main">{event.title}</h3>
+          <p className="mt-0.5 text-[11px] text-faint">{event.window}</p>
+        </div>
+        <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${STATUS_TONE_CLASS[event.status_tone]}`}>
+          {event.status}
+        </span>
+      </div>
+      <p className="mt-2 text-xs text-dim">{event.model_label}</p>
+
+      <div className="mt-3">
+        {event.kind === "single_metric" && (
+          <AccuracyBar label={`${event.metric_name} vs. ${event.metric_baseline_label}`} value={event.metric_value} baseline={event.metric_baseline_value} />
+        )}
+        {event.kind === "per_crop_directions" &&
+          CROPS.map((crop) => {
+            const r2 = event.per_crop_r2[crop];
+            if (!r2) return null;
+            return (
+              <div key={crop} className="mb-3">
+                <div className="mb-1 text-[11px] font-medium capitalize text-main">{crop}</div>
+                <R2Bar crop={event.directions.original} r2={r2.original} />
+                <R2Bar crop={event.directions.A} r2={r2.A} />
+                <R2Bar crop={event.directions.B} r2={r2.B} />
+              </div>
+            );
+          })}
+        {event.kind === "yield_directions" &&
+          event.rows.map((r) => <YieldBar key={r.label} label={r.label} modelR2={r.model_r2} naiveR2={r.naive_r2} />)}
+      </div>
+
+      {"metric_detail" in event && <p className="mt-2 text-[11px] text-faint">{event.metric_detail}</p>}
+
+      <div className="mt-3 space-y-2 text-[11px] leading-relaxed">
+        <div>
+          <span className="font-medium text-dim">How this was measured — </span>
+          <span className="text-faint">{event.how_measured}</span>
+        </div>
+        <div className="rounded-lg border border-secondary-500/40 bg-secondary-soft p-2.5 text-dim">
+          <span className="font-medium">Limits of this comparison — </span>
+          {event.limits}
+        </div>
+      </div>
+
+      <ProvenanceLine source={`Ground truth: ${event.ground_truth_source}`} updated={event.source_doc} />
+    </div>
+  );
+}
+
+function HistoryDetail({ data }: { data: DataBundle }) {
+  if (!data.historicalEvents) return <EmptyHint>Loading historical events…</EmptyHint>;
+  return (
+    <div className="space-y-4">
+      <div className="rounded-xl border border-soft bg-elev p-4">
+        <p className="text-xs leading-relaxed text-dim">{data.historicalEvents.generated_note}</p>
+      </div>
+      {data.historicalEvents.events.map((e) => (
+        <EventCard key={e.id} event={e} />
+      ))}
+    </div>
+  );
+}
+
 export default function ExplorePanel({
   layerId,
   data,
@@ -579,13 +690,29 @@ export default function ExplorePanel({
   onTriggerThresholdChange: (t: "national" | "demo") => void;
 }) {
   const meta = LAYERS[layerId];
+  const { locale } = useAppLocale();
+  const groupLabel = GROUP_LABEL_UR[meta.group] ?? meta.group;
 
   return (
     <div className="flex flex-col gap-4">
       <div>
-        {meta.group && <div className="font-mono text-[10.5px] uppercase tracking-wide text-faint">{meta.group}</div>}
-        <h2 className="mt-0.5 text-base font-semibold text-main">{meta.label}</h2>
-        <p className="mt-1.5 max-w-[42ch] text-xs leading-relaxed text-dim">{meta.about}</p>
+        {meta.group && (
+          <div className={`font-mono text-[10.5px] uppercase tracking-wide text-faint ${locale === "ur" ? "urdu-text normal-case" : ""}`}>
+            {locale === "ur" ? groupLabel : meta.group}
+          </div>
+        )}
+        <h2
+          className={`mt-0.5 text-base font-semibold text-main ${locale === "ur" ? "urdu-text" : ""}`}
+          dir={locale === "ur" ? "rtl" : undefined}
+        >
+          {locale === "ur" ? meta.labelUr : meta.label}
+        </h2>
+        <p
+          className={`mt-1.5 max-w-[42ch] text-xs leading-relaxed text-dim ${locale === "ur" ? "urdu-text" : ""}`}
+          dir={locale === "ur" ? "rtl" : undefined}
+        >
+          {locale === "ur" ? meta.aboutUr : meta.about}
+        </p>
       </div>
 
       {layerId === "home" && <HomeDetail data={data} />}
@@ -605,6 +732,8 @@ export default function ExplorePanel({
       )}
       {layerId === "forecast" && <ForecastDetail data={data} district={selectedDistrict} />}
       {layerId === "models" && <ModelsDetail data={data} />}
+      {layerId === "history" && <HistoryDetail data={data} />}
+      {layerId === "register" && <FarmSubmissionForm />}
       {layerId === "locust" && (
         <div className="space-y-3">
           {(data.locust?.regions ?? []).map((r) => (

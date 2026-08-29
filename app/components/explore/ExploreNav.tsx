@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import { LAYER_GROUPS, LAYERS, LayerId } from "../../explore/layers";
+import { useAppLocale } from "../../i18n/LocaleProvider";
+import { useTranslations } from "next-intl";
 
 /** Same <details>/<summary> click-to-toggle + click-outside-to-close pattern
     as the old site Nav.tsx's Dropdown, but each item calls onSelect(layerId)
@@ -19,6 +21,7 @@ function NavDropdown({
   onSelect: (id: LayerId) => void;
 }) {
   const detailsRef = useRef<HTMLDetailsElement>(null);
+  const { locale } = useAppLocale();
 
   useEffect(() => {
     const el = detailsRef.current;
@@ -35,9 +38,9 @@ function NavDropdown({
       <summary
         className={`flex list-none cursor-pointer select-none items-center gap-1 whitespace-nowrap rounded px-2.5 py-1.5 font-mono text-[11px] uppercase tracking-wide transition-colors [&::-webkit-details-marker]:hidden ${
           active ? "text-accent-500" : "text-faint hover:text-dim"
-        }`}
+        } ${locale === "ur" ? "urdu-text normal-case" : ""}`}
       >
-        {group.label}
+        {locale === "ur" ? group.labelUr : group.label}
         <svg width="8" height="8" viewBox="0 0 8 8" className="mt-px opacity-70">
           <path d="M1 2.5 4 5.5 7 2.5" stroke="currentColor" fill="none" strokeWidth="1.2" />
         </svg>
@@ -55,9 +58,9 @@ function NavDropdown({
               }}
               className={`flex w-full items-center justify-between gap-3 px-3 py-1.5 text-left font-mono text-[11px] uppercase tracking-wide ${
                 isActive ? "bg-accent-soft text-accent-500" : "text-dim hover:bg-elev-2 hover:text-main"
-              }`}
+              } ${locale === "ur" ? "urdu-text normal-case" : ""}`}
             >
-              {meta.label}
+              {locale === "ur" ? meta.labelUr : meta.label}
               {meta.mode !== "choropleth" && (
                 <span className="text-[9px] normal-case tracking-normal text-faint">
                   {meta.mode === "panel-only" ? "panel" : "zoom"}
@@ -71,6 +74,36 @@ function NavDropdown({
   );
 }
 
+/** Top-right EN/UR toggle, matching the WRIP reference pattern. Switches
+    which bilingual string every layer label/about/caveat renders -- see
+    Track T (i18n). Page direction/layout never flips (see globals.css). */
+function LanguageToggle() {
+  const { locale, setLocale } = useAppLocale();
+  const t = useTranslations("toggle");
+  return (
+    <div className="ml-2 flex shrink-0 items-center rounded-full border border-soft bg-elev p-0.5 font-mono text-[10px] font-semibold uppercase tracking-wide">
+      <button
+        onClick={() => setLocale("en")}
+        aria-pressed={locale === "en"}
+        className={`rounded-full px-2 py-1 transition-colors ${
+          locale === "en" ? "bg-accent-500 text-white" : "text-faint hover:text-dim"
+        }`}
+      >
+        {t("en")}
+      </button>
+      <button
+        onClick={() => setLocale("ur")}
+        aria-pressed={locale === "ur"}
+        className={`rounded-full px-2 py-1 transition-colors ${
+          locale === "ur" ? "bg-accent-500 text-white" : "text-faint hover:text-dim"
+        }`}
+      >
+        {t("ur")}
+      </button>
+    </div>
+  );
+}
+
 export default function ExploreNav({
   activeLayer,
   onSelect,
@@ -78,6 +111,7 @@ export default function ExploreNav({
   activeLayer: LayerId;
   onSelect: (id: LayerId) => void;
 }) {
+  const { locale } = useAppLocale();
   return (
     <header className="sticky top-0 z-[1000] -mx-4 border-b border-soft bg-app/95 px-4 backdrop-blur">
       <div className="flex flex-wrap items-center gap-3 py-2.5">
@@ -94,9 +128,9 @@ export default function ExploreNav({
                   onClick={() => onSelect(id)}
                   className={`whitespace-nowrap rounded px-2.5 py-1.5 font-mono text-[11px] uppercase tracking-wide transition-colors ${
                     active ? "text-accent-500" : "text-faint hover:text-dim"
-                  }`}
+                  } ${locale === "ur" ? "urdu-text normal-case" : ""}`}
                 >
-                  {group.label}
+                  {locale === "ur" ? group.labelUr : group.label}
                 </button>
               );
             }
@@ -112,22 +146,24 @@ export default function ExploreNav({
           })}
         </nav>
 
+        <LanguageToggle />
+
         {/* mobile fallback: a native select covers every layer in one control */}
         <select
-          className="ml-auto block flex-1 rounded-lg border border-app bg-elev px-2.5 py-1.5 font-mono text-[11px] uppercase tracking-wide text-dim sm:hidden"
+          className="block w-full basis-full rounded-lg border border-app bg-elev px-2.5 py-1.5 font-mono text-[11px] uppercase tracking-wide text-dim sm:hidden"
           value={activeLayer}
           onChange={(e) => onSelect(e.target.value as LayerId)}
         >
           {LAYER_GROUPS.map((group) =>
             group.standalone ? (
               <option key={group.label} value={group.layers[0]}>
-                {group.label}
+                {locale === "ur" ? group.labelUr : group.label}
               </option>
             ) : (
-              <optgroup key={group.label} label={group.label}>
+              <optgroup key={group.label} label={locale === "ur" ? group.labelUr : group.label}>
                 {group.layers.map((id) => (
                   <option key={id} value={id}>
-                    {LAYERS[id].label}
+                    {locale === "ur" ? LAYERS[id].labelUr : LAYERS[id].label}
                   </option>
                 ))}
               </optgroup>

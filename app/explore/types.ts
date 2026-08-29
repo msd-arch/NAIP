@@ -231,6 +231,62 @@ export interface ForecastData {
   alerts: ForecastAlert[];
 }
 
+export interface HistoricalEventSingleMetric {
+  id: string;
+  hazard_type: string;
+  title: string;
+  window: string;
+  model_label: string;
+  kind: "single_metric";
+  metric_name: string;
+  metric_value: number;
+  metric_baseline_value: number;
+  metric_baseline_label: string;
+  metric_detail: string;
+  status: string;
+  status_tone: "high" | "moderate" | "low";
+  ground_truth_source: string;
+  how_measured: string;
+  limits: string;
+  source_doc: string;
+}
+export interface HistoricalEventPerCropDirections {
+  id: string;
+  hazard_type: string;
+  title: string;
+  window: string;
+  model_label: string;
+  kind: "per_crop_directions";
+  directions: { original: string; A: string; B: string };
+  per_crop_r2: Record<string, { original: number; A: number; B: number }>;
+  status: string;
+  status_tone: "high" | "moderate" | "low";
+  ground_truth_source: string;
+  how_measured: string;
+  limits: string;
+  source_doc: string;
+}
+export interface HistoricalEventYieldDirections {
+  id: string;
+  hazard_type: string;
+  title: string;
+  window: string;
+  model_label: string;
+  kind: "yield_directions";
+  rows: { label: string; model_r2: number; naive_r2: number }[];
+  status: string;
+  status_tone: "high" | "moderate" | "low";
+  ground_truth_source: string;
+  how_measured: string;
+  limits: string;
+  source_doc: string;
+}
+export type HistoricalEvent = HistoricalEventSingleMetric | HistoricalEventPerCropDirections | HistoricalEventYieldDirections;
+export interface HistoricalEventsData {
+  generated_note: string;
+  events: HistoricalEvent[];
+}
+
 export interface DataBundle {
   hazards: DistrictHazardSummary | null;
   forecast: ForecastData | null;
@@ -250,4 +306,5 @@ export interface DataBundle {
   crossYear: CrossYearResults | null;
   yieldResults: YieldResults | null;
   models: ModelsSummary | null;
+  historicalEvents: HistoricalEventsData | null;
 }

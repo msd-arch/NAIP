@@ -30,6 +30,7 @@ const EMPTY_BUNDLE: DataBundle = {
   crossYear: null,
   yieldResults: null,
   models: null,
+  historicalEvents: null,
 };
 
 /** The whole product lives on this one screen now: a persistent map + a nav
@@ -66,6 +67,7 @@ export default function ExploreView() {
       j("trigger_summary_national.json"),
       j("trigger_summary_demo.json"),
       j("forecast_alerts.json"),
+      j("historical_events.json"),
     ]).then(
       ([
         hazards,
@@ -86,6 +88,7 @@ export default function ExploreView() {
         triggerSummaryNational,
         triggerSummaryDemo,
         forecast,
+        historicalEvents,
       ]) => {
         setData({
           hazards,
@@ -106,6 +109,7 @@ export default function ExploreView() {
           models,
           triggerSummaryNational,
           triggerSummaryDemo,
+          historicalEvents,
         });
       }
     );

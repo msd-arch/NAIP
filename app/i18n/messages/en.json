@@ -1,0 +1,17 @@
+{
+  "toggle": {
+    "en": "EN",
+    "ur": "UR"
+  },
+  "home": {
+    "statDistricts": "districts covered",
+    "statObservations": "real observations",
+    "statFarms": "real farm polygons",
+    "statFarmDistricts": "districts with farm coverage",
+    "hint": "Pick a topic from the nav above — each one swaps what's drawn on this same map instead of taking you to a new page."
+  },
+  "cropStressCaveat": "This is a screen, not a diagnosis — it flags where to look closer, not what's wrong.",
+  "coverage": {
+    "label": "Some content on this page is not yet translated into Urdu — model numbers and technical notes stay in English for now."
+  }
+}

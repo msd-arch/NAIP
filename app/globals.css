@@ -132,3 +132,16 @@ input[type="range"] { accent-color: #4a8f3c; }
   border-top: 1px dashed var(--border-soft);
   padding-top: 0.375rem;
 }
+
+/* Track T (i18n): Urdu text runs right-to-left and right-aligned wherever it
+   appears, but the page SHELL stays LTR/unmirrored in both languages -- the
+   map, nav position, grid layout, charts and numbers never flip. Scoping
+   dir="rtl" to text spans only (never document.documentElement.dir) avoids
+   the real risk full-page mirroring poses to Leaflet's own positioning
+   (no official RTL support) and the nav dropdown's left-anchored absolute
+   positioning. */
+.urdu-text {
+  font-family: "Noto Nastaliq Urdu", "Noto Sans Arabic", "Segoe UI", sans-serif;
+  line-height: 2.1;
+  unicode-bidi: isolate;
+}
