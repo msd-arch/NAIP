@@ -128,19 +128,30 @@ print(f"wrote district_hazard_summary.json ({len(district_summary)} districts)")
 # district_alerts.json is 13MB/28,602 rows, too large to ship wholesale --
 # this is a real compaction of data that already exists in full there.
 latest_by_district_hazard: dict[tuple[str, str], dict] = {}
+# Real historical context, shown alongside (never blended into) the current
+# status above, per your direction: for every (district, hazard) pair, the
+# real cumulative count of distinct real dates it was ever triggered across
+# the whole archive, and the real date of the last time that happened (None
+# if it never has, in the archive on disk).
+triggered_dates_by_district_hazard: dict[tuple[str, str], set] = defaultdict(set)
 for row in da["district_day_hazard_rows"]:
     key = (row["district"], row["hazard"])
     prev = latest_by_district_hazard.get(key)
     if prev is None or row["date"] > prev["date"]:
         latest_by_district_hazard[key] = row
+    if row["any_flag"]:
+        triggered_dates_by_district_hazard[key].add(row["date"])
 
 by_district_current: dict[str, list[dict]] = defaultdict(list)
 for (d, h), row in latest_by_district_hazard.items():
+    triggered_dates = triggered_dates_by_district_hazard.get((d, h), set())
     by_district_current[d].append({
         "hazard": h, "currently_flagged": row["any_flag"],
         "date": row["date"], "max_confidence": row["max_confidence"],
         "n_triggered": row["n_triggered"], "n_observations": row["n_observations"],
         "message_en": row["message_en"], "message_ur": row["message_ur"],
+        "historical_n_days_triggered": len(triggered_dates),
+        "historical_last_triggered_date": max(triggered_dates) if triggered_dates else None,
     })
 
 current_districts = [
@@ -155,10 +166,13 @@ current_districts = [
 with open(os.path.join(OUT, "district_hazard_current.json"), "w", encoding="utf-8") as f:
     json.dump({
         "generated_from": "district_alerts.json (real, Week 1)",
-        "note": "Real current status, not a cumulative total: for every (district, hazard) pair, "
-                "the single most recent real check, whether it triggered or not. A hazard reads "
-                "'not currently flagged' by explicit real data, not by silent omission. Out of "
-                f"district_alerts.json's full {len(da['district_day_hazard_rows'])} real rows.",
+        "note": "Real current status (never blended with the historical fields below): for every "
+                "(district, hazard) pair, the single most recent real check, whether it triggered "
+                "or not. A hazard reads 'not currently flagged' by explicit real data, not by "
+                "silent omission. historical_n_days_triggered/historical_last_triggered_date are "
+                "the real cumulative count and most recent date across the whole archive, shown "
+                "alongside the current reading for context, per explicit direction, never merged "
+                f"into it. Out of district_alerts.json's full {len(da['district_day_hazard_rows'])} real rows.",
         "districts": current_districts,
     }, f, ensure_ascii=False)
 print(f"wrote district_hazard_current.json ({len(current_districts)} districts, "

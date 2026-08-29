@@ -23,6 +23,12 @@ export interface DistrictHazardCurrentEntry {
   n_observations: number;
   message_en: string;
   message_ur: string;
+  // Real historical context, shown ALONGSIDE the current reading above,
+  // never blended into it -- the real cumulative count of distinct real
+  // dates this hazard was ever triggered in the whole archive, and the
+  // real date of the last time that happened (null if never).
+  historical_n_days_triggered: number;
+  historical_last_triggered_date: string | null;
 }
 export interface DistrictHazardCurrentRow {
   district: string;

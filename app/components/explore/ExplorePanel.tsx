@@ -216,6 +216,21 @@ function LiveHazardsWindow({ data, district }: { data: DataBundle; district: str
               as of {h.date} · confidence {Math.round(h.max_confidence * 100)}%
             </p>
           </div>
+          {/* Real historical context, shown alongside the live reading above,
+              never blended into it -- a separate, clearly-labeled line, per
+              explicit direction, so "flagged now" and "how often has this
+              ever happened" can never be mistaken for the same number. */}
+          <p className="mt-2 border-t border-soft pt-1.5 text-[10px] text-faint">
+            Historically: {h.historical_n_days_triggered === 0
+              ? "never triggered in the real archive on disk"
+              : (
+                <>
+                  triggered on <span className="tnum">{h.historical_n_days_triggered}</span> real day
+                  {h.historical_n_days_triggered === 1 ? "" : "s"} in the archive, last on{" "}
+                  <span className="tnum">{h.historical_last_triggered_date}</span>
+                </>
+              )}
+          </p>
         </div>
       ))}
     </div>
