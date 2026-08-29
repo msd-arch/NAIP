@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import ExploreNav from "./ExploreNav";
-import type { Crop, LayerId } from "../../explore/layers";
+import { LAYERS, type Crop, type LayerId } from "../../explore/layers";
 import type { DataBundle } from "../../explore/types";
 
 const ExploreMap = dynamic(() => import("./ExploreMap"), { ssr: false });
@@ -13,6 +13,7 @@ const BASE = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 const EMPTY_BUNDLE: DataBundle = {
   hazards: null,
+  hazardMessages: null,
   forecast: null,
   drought: null,
   cropStress: null,
@@ -43,6 +44,10 @@ export default function ExploreView() {
   const [selectedDistrict, setSelectedDistrict] = useState<string | null>(null);
   const [cropPick, setCropPick] = useState<Crop>("wheat");
   const [triggerThreshold, setTriggerThreshold] = useState<"national" | "demo">("national");
+  // Hazards page carries two windows (live vs. 72h forecast) instead of the
+  // forecast layer being a separate nav item -- this toggle picks which one
+  // the map's own choropleth coloring reflects; the panel shows both.
+  const [hazardsView, setHazardsView] = useState<"live" | "forecast">("live");
 
   useEffect(() => {
     fetch(`${BASE}/data/pk_districts.geojson`).then((r) => r.json()).then(setGeo);
@@ -68,6 +73,7 @@ export default function ExploreView() {
       j("trigger_summary_demo.json"),
       j("forecast_alerts.json"),
       j("historical_events.json"),
+      j("district_hazard_messages.json"),
     ]).then(
       ([
         hazards,
@@ -89,9 +95,11 @@ export default function ExploreView() {
         triggerSummaryDemo,
         forecast,
         historicalEvents,
+        hazardMessages,
       ]) => {
         setData({
           hazards,
+          hazardMessages,
           forecast,
           drought,
           cropStress,
@@ -124,6 +132,13 @@ export default function ExploreView() {
     setSelectedDistrict((prev) => (prev === name ? null : name));
   }, []);
 
+  // panel-only layers (About, History, Irrigation/CrossYear/Yield, Farm
+  // Data) have no real spatial content -- give the panel the FULL width
+  // instead of squeezing it into the map layout's fixed 360px column (the
+  // real cause of the excessive-scroll complaint on these pages). Every
+  // other mode keeps the original map + narrow-panel split.
+  const isPanelOnly = LAYERS[activeLayer].mode === "panel-only";
+
   return (
     <div>
       <ExploreNav activeLayer={activeLayer} onSelect={handleSelectLayer} />
@@ -131,16 +146,19 @@ export default function ExploreView() {
       {!geo ? (
         <p className="mt-4 text-sm text-dim">Loading...</p>
       ) : (
-        <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-[1fr_360px]">
-          <ExploreMap
-            geo={geo}
-            layerId={activeLayer}
-            data={data}
-            cropPick={cropPick}
-            triggerThreshold={triggerThreshold}
-            selectedDistrict={selectedDistrict}
-            onSelectDistrict={handleSelectDistrict}
-          />
+        <div className={`mt-4 grid grid-cols-1 gap-4 ${isPanelOnly ? "" : "lg:grid-cols-[1fr_360px]"}`}>
+          {!isPanelOnly && (
+            <ExploreMap
+              geo={geo}
+              layerId={activeLayer}
+              data={data}
+              cropPick={cropPick}
+              triggerThreshold={triggerThreshold}
+              selectedDistrict={selectedDistrict}
+              onSelectDistrict={handleSelectDistrict}
+              hazardsView={hazardsView}
+            />
+          )}
           <ExplorePanel
             layerId={activeLayer}
             data={data}
@@ -149,6 +167,8 @@ export default function ExploreView() {
             onCropPickChange={setCropPick}
             triggerThreshold={triggerThreshold}
             onTriggerThresholdChange={setTriggerThreshold}
+            hazardsView={hazardsView}
+            onHazardsViewChange={setHazardsView}
           />
         </div>
       )}

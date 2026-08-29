@@ -1,7 +1,11 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useCallback, useEffect, useState } from "react";
 import { CROPS, Crop } from "../../explore/layers";
+import type { RegisteredFarm } from "./FarmRegistryMap";
+
+const FarmRegistryMap = dynamic(() => import("./FarmRegistryMap"), { ssr: false });
 
 const API_BASE = "http://localhost:8420";
 
@@ -16,6 +20,12 @@ interface SuccessResult {
   farm_id: string;
   farmer_id: string;
   district: string;
+}
+interface LookupResult {
+  found: boolean;
+  masked_cnic?: string;
+  n_real_farms?: number;
+  districts?: string[];
 }
 
 function StatTile({ label, value }: { label: string; value: string }) {
@@ -39,21 +49,7 @@ function formatCnicInput(raw: string): string {
   return [p1, p2, p3].filter(Boolean).join("-");
 }
 
-/** Real Farm Data submission page: writes a real farmer identity + a new
-    farm record through register_farmer_submission() (db_registry.py), the
-    already-built, already-live Postgres write path -- via a local-only
-    HTTP bridge (submission_server.py), never a browser-side DB credential
-    (see that script's own docstring for why: this dashboard is a fully
-    static export, and a static bundle's JS is public forever).
-
-    Write-only by design, confirmed before building: the raw CNIC/phone
-    submitted here is never rendered back to this screen or any other --
-    success shows a masked reference (last CNIC digit, real farm_id/
-    farmer_id UUIDs) only. */
-export default function FarmSubmissionForm() {
-  const [summary, setSummary] = useState<Summary | null>(null);
-  const [summaryError, setSummaryError] = useState<string | null>(null);
-
+function RegistrationForm({ onRegistered }: { onRegistered: () => void }) {
   const [farmerName, setFarmerName] = useState("");
   const [cnic, setCnic] = useState("");
   const [phone, setPhone] = useState("");
@@ -65,24 +61,6 @@ export default function FarmSubmissionForm() {
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<SuccessResult | null>(null);
   const [error, setError] = useState<string | null>(null);
-
-  const fetchSummary = useCallback(() => {
-    fetch(`${API_BASE}/api/summary`)
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.success) {
-          setSummary(d);
-          setSummaryError(null);
-        } else {
-          setSummaryError(d.error || "real error loading summary");
-        }
-      })
-      .catch(() => setSummaryError("Local Farm Registry server not reachable (localhost:8420) — start it with `python submission_server.py`."));
-  }, []);
-
-  useEffect(() => {
-    fetchSummary();
-  }, [fetchSummary]);
 
   const clientError = (): string | null => {
     if (!farmerName.trim()) return "Farmer name is required.";
@@ -117,7 +95,7 @@ export default function FarmSubmissionForm() {
       if (data.success) {
         setResult(data);
         setFarmerName(""); setCnic(""); setPhone(""); setLat(""); setLon(""); setAreaHa("");
-        fetchSummary();
+        onRegistered();
       } else {
         setError(data.error || "Submission failed for an unknown real reason.");
       }
@@ -137,29 +115,7 @@ export default function FarmSubmissionForm() {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="rounded-lg border border-secondary-500/40 bg-secondary-soft p-3 text-[11px] leading-relaxed text-dim">
-        <span className="font-medium">Dev-only feature — </span>
-        real submissions only work while the local Farm Registry server is running
-        (<code>python submission_server.py</code>) alongside <code>npm run dev</code>. It cannot
-        reach the live database from the public GitHub Pages deployment — that credential is
-        deliberately never shipped to the browser bundle.
-      </div>
-
-      <div>
-        <h3 className="text-sm font-semibold text-main">Real Farm Registry coverage</h3>
-        {summary ? (
-          <div className="mt-2 grid grid-cols-2 gap-2">
-            <StatTile label="real farms with identity" value={String(summary.n_real_farms_with_identity)} />
-            <StatTile label="real farms pending" value={String(summary.n_real_farms_pending)} />
-            <StatTile label="real farms total" value={String(summary.n_real_farms_total)} />
-            <StatTile label="synthetic (context only, never blended)" value={String(summary.n_synthetic_farms_total_for_context_only)} />
-          </div>
-        ) : (
-          <p className="mt-2 text-xs text-faint">{summaryError ?? "Loading…"}</p>
-        )}
-      </div>
-
+    <div className="space-y-3">
       <form onSubmit={handleSubmit} className="space-y-3 rounded-xl border border-soft bg-elev p-4">
         <h3 className="text-sm font-semibold text-main">Register a real farm</h3>
 
@@ -171,21 +127,22 @@ export default function FarmSubmissionForm() {
           />
         </label>
 
-        <label className="block text-xs">
-          <span className="text-dim">CNIC (5-7-1 format)</span>
-          <input
-            className="mt-1 w-full rounded-lg border border-app bg-elev-2 px-2.5 py-1.5 text-xs text-main tnum"
-            value={cnic} onChange={(e) => setCnic(formatCnicInput(e.target.value))} placeholder="12345-1234567-1"
-          />
-        </label>
-
-        <label className="block text-xs">
-          <span className="text-dim">Phone number</span>
-          <input
-            className="mt-1 w-full rounded-lg border border-app bg-elev-2 px-2.5 py-1.5 text-xs text-main tnum"
-            value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="03001234567"
-          />
-        </label>
+        <div className="grid grid-cols-2 gap-2">
+          <label className="block text-xs">
+            <span className="text-dim">CNIC (5-7-1 format)</span>
+            <input
+              className="mt-1 w-full rounded-lg border border-app bg-elev-2 px-2.5 py-1.5 text-xs text-main tnum"
+              value={cnic} onChange={(e) => setCnic(formatCnicInput(e.target.value))} placeholder="12345-1234567-1"
+            />
+          </label>
+          <label className="block text-xs">
+            <span className="text-dim">Phone number</span>
+            <input
+              className="mt-1 w-full rounded-lg border border-app bg-elev-2 px-2.5 py-1.5 text-xs text-main tnum"
+              value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="03001234567"
+            />
+          </label>
+        </div>
 
         <label className="block text-xs">
           <span className="text-dim">Declared crop</span>
@@ -208,7 +165,7 @@ export default function FarmSubmissionForm() {
             An approximate square footprint is generated around this point, sized to your declared
             area — not a drawn true boundary.
           </p>
-          <div className="mt-1 grid grid-cols-2 gap-2">
+          <div className="mt-1 grid grid-cols-3 gap-2">
             <input
               className="rounded-lg border border-app bg-elev-2 px-2.5 py-1.5 text-xs text-main tnum"
               value={lat} onChange={(e) => setLat(e.target.value)} placeholder="lat, e.g. 31.55"
@@ -217,16 +174,12 @@ export default function FarmSubmissionForm() {
               className="rounded-lg border border-app bg-elev-2 px-2.5 py-1.5 text-xs text-main tnum"
               value={lon} onChange={(e) => setLon(e.target.value)} placeholder="lon, e.g. 74.35"
             />
+            <input
+              className="rounded-lg border border-app bg-elev-2 px-2.5 py-1.5 text-xs text-main tnum"
+              value={areaHa} onChange={(e) => setAreaHa(e.target.value)} placeholder="area, ha"
+            />
           </div>
         </div>
-
-        <label className="block text-xs">
-          <span className="text-dim">Approximate farm area (hectares)</span>
-          <input
-            className="mt-1 w-full rounded-lg border border-app bg-elev-2 px-2.5 py-1.5 text-xs text-main tnum"
-            value={areaHa} onChange={(e) => setAreaHa(e.target.value)} placeholder="e.g. 2.5"
-          />
-        </label>
 
         {error && (
           <div className="rounded-lg border border-critical/40 bg-critical/10 p-2.5 text-xs text-critical">{error}</div>
@@ -254,6 +207,175 @@ export default function FarmSubmissionForm() {
           <p className="text-[11px] text-faint tnum">farmer_id: {result.farmer_id}</p>
         </div>
       )}
+    </div>
+  );
+}
+
+/** A farmer looking up their OWN registration by CNIC or phone -- not a
+    farm-ID lookup (real farm_id UUIDs aren't something a farmer would ever
+    know or type). Returns a real, minimal, masked summary only -- see
+    lookup_farmer()'s own docstring for why this stays consistent with the
+    page's write-only display design even on the read side. */
+function FindMyRegistration() {
+  const [mode, setMode] = useState<"cnic" | "phone">("cnic");
+  const [value, setValue] = useState("");
+  const [result, setResult] = useState<LookupResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [searching, setSearching] = useState(false);
+
+  const search = async () => {
+    setError(null);
+    setResult(null);
+    const q = mode === "cnic" ? `cnic=${encodeURIComponent(value)}` : `phone=${encodeURIComponent(value)}`;
+    setSearching(true);
+    try {
+      const res = await fetch(`${API_BASE}/api/lookup?${q}`);
+      const data = await res.json();
+      if (data.success) setResult(data);
+      else setError(data.error || "Lookup failed for an unknown real reason.");
+    } catch {
+      setError("Local Farm Registry server not reachable (localhost:8420).");
+    } finally {
+      setSearching(false);
+    }
+  };
+
+  return (
+    <div className="rounded-xl border border-soft bg-elev p-4">
+      <h3 className="text-sm font-semibold text-main">Find my registration</h3>
+      <p className="mt-1 text-[11px] text-faint">
+        Look up by your own CNIC or phone number — never by an internal farm ID.
+      </p>
+      <div className="mt-2 flex gap-2 text-[11px]">
+        <button
+          onClick={() => { setMode("cnic"); setValue(""); setResult(null); }}
+          className={`rounded-full border px-2.5 py-1 ${mode === "cnic" ? "border-accent-500 bg-accent-soft text-accent-500 font-semibold" : "border-soft text-dim"}`}
+        >
+          By CNIC
+        </button>
+        <button
+          onClick={() => { setMode("phone"); setValue(""); setResult(null); }}
+          className={`rounded-full border px-2.5 py-1 ${mode === "phone" ? "border-accent-500 bg-accent-soft text-accent-500 font-semibold" : "border-soft text-dim"}`}
+        >
+          By phone
+        </button>
+      </div>
+      <div className="mt-2 flex gap-2">
+        <input
+          className="flex-1 rounded-lg border border-app bg-elev-2 px-2.5 py-1.5 text-xs text-main tnum"
+          value={value}
+          onChange={(e) => setValue(mode === "cnic" ? formatCnicInput(e.target.value) : e.target.value)}
+          placeholder={mode === "cnic" ? "12345-1234567-1" : "03001234567"}
+        />
+        <button
+          onClick={search} disabled={searching || !value}
+          className="rounded-lg bg-accent-500 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-white disabled:opacity-50"
+        >
+          {searching ? "…" : "Search"}
+        </button>
+      </div>
+      {error && <p className="mt-2 text-xs text-critical">{error}</p>}
+      {result && (
+        result.found ? (
+          <div className="mt-3 rounded-lg bg-elev-2 p-2.5 text-xs">
+            <p className="text-dim">
+              Found — CNIC on file <span className="tnum text-main">{result.masked_cnic}</span>
+            </p>
+            <p className="mt-1 text-dim">
+              {result.n_real_farms} real farm{result.n_real_farms === 1 ? "" : "s"} registered:{" "}
+              <span className="text-main">{result.districts?.join(", ")}</span>
+            </p>
+          </div>
+        ) : (
+          <p className="mt-3 text-xs text-faint">No real registration found for that {mode === "cnic" ? "CNIC" : "phone number"}.</p>
+        )
+      )}
+    </div>
+  );
+}
+
+/** Real Farm Data submission page: writes a real farmer identity + a new
+    farm record through register_farmer_submission() (db_registry.py), the
+    already-built, already-live Postgres write path -- via a local-only
+    HTTP bridge (submission_server.py), never a browser-side DB credential
+    (see that script's own docstring for why: this dashboard is a fully
+    static export, and a static bundle's JS is public forever).
+
+    Write-only by design, confirmed before building: the raw CNIC/phone
+    submitted here is never rendered back to this screen or any other --
+    success shows a masked reference (last CNIC digit, real farm_id/
+    farmer_id UUIDs) only. Layout: the registration form renders first and
+    full-height, immediately visible without scrolling -- the coverage
+    summary, real farm map, and lookup panel sit alongside it, not above it. */
+export default function FarmSubmissionForm() {
+  const [summary, setSummary] = useState<Summary | null>(null);
+  const [summaryError, setSummaryError] = useState<string | null>(null);
+  const [farms, setFarms] = useState<RegisteredFarm[]>([]);
+
+  const fetchSummary = useCallback(() => {
+    fetch(`${API_BASE}/api/summary`)
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.success) {
+          setSummary(d);
+          setSummaryError(null);
+        } else {
+          setSummaryError(d.error || "real error loading summary");
+        }
+      })
+      .catch(() => setSummaryError("Local Farm Registry server not reachable (localhost:8420) — start it with `python submission_server.py`."));
+    fetch(`${API_BASE}/api/farms`)
+      .then((r) => r.json())
+      .then((d) => { if (d.success) setFarms(d.farms); })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    fetchSummary();
+  }, [fetchSummary]);
+
+  return (
+    <div className="space-y-3">
+      <div className="rounded-lg border border-secondary-500/40 bg-secondary-soft p-3 text-[11px] leading-relaxed text-dim">
+        <span className="font-medium">Dev-only feature — </span>
+        real submissions only work while the local Farm Registry server is running
+        (<code>python submission_server.py</code>) alongside <code>npm run dev</code>. It cannot
+        reach the live database from the public GitHub Pages deployment — that credential is
+        deliberately never shipped to the browser bundle.
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[420px_1fr]">
+        <RegistrationForm onRegistered={fetchSummary} />
+
+        <div className="space-y-3">
+          <div>
+            <h3 className="text-sm font-semibold text-main">Real Farm Registry coverage</h3>
+            {summary ? (
+              <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                <StatTile label="real farms with identity" value={String(summary.n_real_farms_with_identity)} />
+                <StatTile label="real farms pending" value={String(summary.n_real_farms_pending)} />
+                <StatTile label="real farms total" value={String(summary.n_real_farms_total)} />
+                <StatTile label="synthetic (context only, never blended)" value={String(summary.n_synthetic_farms_total_for_context_only)} />
+              </div>
+            ) : (
+              <p className="mt-2 text-xs text-faint">{summaryError ?? "Loading…"}</p>
+            )}
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold text-main">Registered farms</h3>
+            <p className="mt-0.5 text-[10px] text-faint">
+              Every real, identity-linked farm ({farms.length} shown) — never a synthetic farm, never a raw
+              identity field.
+            </p>
+            <div className="mt-2 h-[320px]">
+              <FarmRegistryMap farms={farms} />
+            </div>
+          </div>
+
+          <FindMyRegistration />
+        </div>
+      </div>
     </div>
   );
 }

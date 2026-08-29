@@ -114,6 +114,44 @@ with open(os.path.join(OUT, "district_hazard_summary.json"), "w", encoding="utf-
     }, f, ensure_ascii=False)
 print(f"wrote district_hazard_summary.json ({len(district_summary)} districts)")
 
+# ---- per-district-hazard real message text, for the Hazards panel's detail
+# view -- district_alerts.json is 13MB/28,602 rows, too large to ship
+# wholesale to the browser just to show real per-alert message_en/message_ur
+# text. Real aggregation: the single most recent real triggered row per
+# (district, hazard) pair, keeping the real message/confidence/date, dropping
+# every other real (but here redundant) row. Same honest-aggregation
+# discipline as district_hazard_summary.json above -- not new data, a real
+# compaction of data that already exists in full in district_alerts.json.
+latest_by_district_hazard: dict[tuple[str, str], dict] = {}
+for row in da["district_day_hazard_rows"]:
+    if not row["any_flag"]:
+        continue
+    key = (row["district"], row["hazard"])
+    prev = latest_by_district_hazard.get(key)
+    if prev is None or row["date"] > prev["date"]:
+        latest_by_district_hazard[key] = row
+
+messages = [
+    {
+        "district": d, "hazard": h,
+        "date": row["date"], "max_confidence": row["max_confidence"],
+        "n_triggered": row["n_triggered"], "n_observations": row["n_observations"],
+        "message_en": row["message_en"], "message_ur": row["message_ur"],
+    }
+    for (d, h), row in latest_by_district_hazard.items()
+]
+with open(os.path.join(OUT, "district_hazard_messages.json"), "w", encoding="utf-8") as f:
+    json.dump({
+        "generated_from": "district_alerts.json (real, Week 1)",
+        "note": "Real aggregation: the most recent real triggered row's message_en/message_ur "
+                "per (district, hazard) pair, out of district_alerts.json's full "
+                f"{len(da['district_day_hazard_rows'])} real rows -- kept small enough to ship "
+                "to the browser directly. Full per-date detail stays in district_alerts.json.",
+        "messages": messages,
+    }, f, ensure_ascii=False)
+print(f"wrote district_hazard_messages.json ({len(messages)} real district-hazard messages, "
+      f"out of {len(da['district_day_hazard_rows'])} raw rows)")
+
 # ---- farm registry: Track R cutover, real live PostGIS database, no in-memory
 # stand-in. If the DB is unreachable this raises here and the whole resync
 # fails loudly (real traceback, non-zero exit) -- never silently falls back

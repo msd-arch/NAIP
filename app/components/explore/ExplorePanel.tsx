@@ -130,26 +130,174 @@ function HomeDetail({ data }: { data: DataBundle }) {
   );
 }
 
-function HazardsDetail({ data, district }: { data: DataBundle; district: string | null }) {
+// Real, static agronomic reference text per hazard type -- what each one
+// physically means and why it matters for farming, not just the raw label.
+// Written from this project's own real detector definitions (hazards.py's
+// 11 detectors + the real residue-burning classifier), not per-alert data.
+const HAZARD_INFO: Record<string, string> = {
+  frost: "Crop-surface temperature drops to/below freezing overnight under clear, calm skies. Can damage or kill flowering fruit trees, vegetables, and young Rabi-season growth. Response: irrigate before a frost night (wet soil holds heat overnight).",
+  heat_wave: "Sustained unusually high temperatures over multiple days. Stresses crops during flowering/grain-fill (can abort flowers, reduce grain weight), raises irrigation demand and livestock heat stress.",
+  cold_wave: "Sustained unusually low temperatures (not necessarily freezing) over multiple days. Slows growth and germination, raises livestock cold stress and fodder demand.",
+  hail: "Ice pellets from a severe thunderstorm updraft. Can shred leaves, strip fruit/flowers, and flatten standing wheat or cotton in minutes — one of the fastest-acting real crop-damage hazards here.",
+  thunderstorm: "Severe convective storm — strong updrafts, lightning, gusty wind, heavy rain. Risk of crop lodging, structural damage, and danger to outdoor field work/livestock.",
+  fog: "Near-surface cloud cutting visibility, common in winter over the Indus plains. Reduces sunlight reaching crops, delays spraying/harvesting, and is a real road-safety hazard for moving produce.",
+  dust_storm: "Strong wind lifting soil/sand, common pre-monsoon and in arid regions. Can bury young seedlings and damage flowering crops; also cuts visibility for field work and transport.",
+  cloud_burst: "Extremely intense, localized rain from explosive vertical cloud growth in a short window. Real flash-flood risk to low-lying fields — can cause severe waterlogging in minutes.",
+  heavy_rain: "Sustained intense rainfall. Risk of waterlogging, root damage, and delayed field access/harvest; can compound with the separate national flood-risk screen.",
+  uv_index: "Elevated surface UV under clear, high-solar-elevation conditions. Mainly an outdoor-labour safety signal (sunburn/heat exposure for field workers), not a direct crop-damage hazard.",
+  residue_burning: "Real thermal hotspots consistent with post-harvest crop-residue burning. A land-management/air-quality signal (smoke, regional haze) rather than a threat to the burning farmer's own current crop.",
+};
+
+const FORECAST_HAZARD_LABEL: Record<string, string> = {
+  frost: "Frost", heat_wave: "Heat wave", cold_wave: "Cold wave",
+};
+
+function HazardWindowToggle({ view, onChange }: { view: "live" | "forecast"; onChange: (v: "live" | "forecast") => void }) {
+  return (
+    <div className="flex gap-2 text-[11px]">
+      <button
+        onClick={() => onChange("live")}
+        className={`rounded-full border px-2.5 py-1 transition-colors ${view === "live" ? "border-accent-500 bg-accent-soft text-accent-500 font-semibold" : "border-soft text-dim"}`}
+      >
+        Live window
+      </button>
+      <button
+        onClick={() => onChange("forecast")}
+        className={`rounded-full border px-2.5 py-1 transition-colors ${view === "forecast" ? "border-accent-500 bg-accent-soft text-accent-500 font-semibold" : "border-soft text-dim"}`}
+      >
+        Forecast window (72h)
+      </button>
+    </div>
+  );
+}
+
+function LiveHazardsWindow({ data, district }: { data: DataBundle; district: string | null }) {
   if (!district) return <EmptyHint>Click a district on the map to see its detected hazards.</EmptyHint>;
   const row = data.hazards?.districts.find((d) => d.district === district);
   if (!row) return <EmptyHint>No hazard data for {district}.</EmptyHint>;
   const entries = Object.entries(row.hazards_triggered).sort((a, b) => b[1] - a[1]);
+  const { locale } = useAppLocale();
   return (
-    <div className="rounded-xl border border-soft bg-elev p-4">
+    <div className="space-y-2">
+      <div className="rounded-xl border border-soft bg-elev p-4">
+        <h3 className="text-sm font-semibold text-main">{district}</h3>
+        <p className="mt-1 text-xs text-dim">
+          {row.n_triggered_rows} hazard alert{row.n_triggered_rows === 1 ? "" : "s"} found here (across the real
+          archive on disk)
+        </p>
+      </div>
+      {entries.length === 0 && <EmptyHint>Nothing detected here.</EmptyHint>}
+      {entries.map(([hazard, n]) => {
+        const msg = data.hazardMessages?.messages.find((m) => m.district === district && m.hazard === hazard);
+        return (
+          <div key={hazard} className="rounded-lg border border-soft bg-elev p-3 text-xs">
+            <div className="flex items-center justify-between">
+              <span className="font-medium capitalize text-main">{hazard.replace(/_/g, " ")}</span>
+              <span className="tnum text-[10px] text-faint" title="how many separate 15-min observations flagged this hazard, not a magnitude/severity number">
+                flagged in {n} observation{n === 1 ? "" : "s"}
+              </span>
+            </div>
+            {HAZARD_INFO[hazard] && <p className="mt-1.5 text-[11px] leading-relaxed text-dim">{HAZARD_INFO[hazard]}</p>}
+            {msg && (
+              <div className="mt-2 rounded-md bg-elev-2 p-2">
+                <p
+                  className={`text-[11px] leading-relaxed text-dim ${locale === "ur" ? "urdu-text" : ""}`}
+                  dir={locale === "ur" ? "rtl" : undefined}
+                >
+                  {locale === "ur" ? msg.message_ur : msg.message_en}
+                </p>
+                <p className="mt-1 text-[10px] text-faint">
+                  most recent: {msg.date} · confidence {Math.round(msg.max_confidence * 100)}%
+                </p>
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function ForecastWindow({ data, district }: { data: DataBundle; district: string | null }) {
+  const { locale } = useAppLocale();
+  if (!data.forecast) return <EmptyHint>Loading forecast…</EmptyHint>;
+  const f = data.forecast;
+  const stamp = (
+    <div className="mt-1 text-[11px] text-faint">
+      Real GFS cycle: <span className="tnum text-dim">{new Date(f.gfs_cycle_utc).toUTCString()}</span>
+      <LastComputed iso={f.last_computed_utc} note={f.gfs_update_cadence_note} />
+    </div>
+  );
+
+  if (!district) {
+    return (
+      <div className="space-y-3">
+        <div className="rounded-xl border border-soft bg-elev p-4">
+          <div className="flex justify-between text-xs">
+            <span className="text-dim">Districts with any forecast flag</span>
+            <span className="tnum font-semibold text-main">{f.n_flagged} / {f.n_districts}</span>
+          </div>
+        </div>
+        {f.heat_wave_high_flag_rate_caveat && <Caveat>{f.heat_wave_high_flag_rate_caveat}</Caveat>}
+        <EmptyHint>Click a district to see its 3-day forecast detail.</EmptyHint>
+        {stamp}
+      </div>
+    );
+  }
+
+  const rows = f.alerts.filter((a) => a.district === district);
+  return (
+    <div className="space-y-2">
       <h3 className="text-sm font-semibold text-main">{district}</h3>
-      <p className="mt-1 text-xs text-dim">
-        {row.n_triggered_rows} hazard alert{row.n_triggered_rows === 1 ? "" : "s"} found here
-      </p>
-      <ul className="mt-3 space-y-1 text-xs">
-        {entries.map(([hazard, n]) => (
-          <li key={hazard} className="flex justify-between border-b border-soft py-1">
-            <span className="text-dim">{hazard.replace(/_/g, " ")}</span>
-            <span className="tnum font-medium">{n}</span>
-          </li>
-        ))}
-        {entries.length === 0 && <li className="text-faint">Nothing detected here.</li>}
-      </ul>
+      {rows.map((r, i) => (
+        <div key={i} className={`rounded-lg border p-3 text-xs ${r.flag ? "border-secondary-500/50 bg-secondary-soft" : "border-soft bg-elev"}`}>
+          <div className="flex items-center justify-between">
+            <span className="font-medium text-main">
+              {FORECAST_HAZARD_LABEL[r.forecast_hazard] ?? r.forecast_hazard}
+              {r.window_days ? ` (${r.window_days[0]} → ${r.window_days[r.window_days.length - 1]})` : ` — ${r.valid_date}`}
+            </span>
+            {r.flag && <span className="pill tier-model rounded-full bg-secondary-500 px-2 py-0.5 text-[10px] font-bold uppercase text-white">Forecast flag</span>}
+          </div>
+          {HAZARD_INFO[r.forecast_hazard] && <p className="mt-1 text-[11px] leading-relaxed text-dim">{HAZARD_INFO[r.forecast_hazard]}</p>}
+          <p
+            className={`mt-1 text-faint ${locale === "ur" ? "urdu-text" : ""}`}
+            dir={locale === "ur" ? "rtl" : undefined}
+            lang={locale === "ur" ? "ur" : undefined}
+          >
+            {locale === "ur" ? r.message_ur : r.message_en}
+          </p>
+          <p className="mt-1 text-[10px] text-faint">confidence {Math.round(r.confidence * 100)}% · {r.source}</p>
+        </div>
+      ))}
+      {rows.length === 0 && <EmptyHint>No forecast rows for {district}.</EmptyHint>}
+      {f.heat_wave_high_flag_rate_caveat && rows.some((r) => r.forecast_hazard === "heat_wave" && r.flag) && (
+        <Caveat>{f.heat_wave_high_flag_rate_caveat}</Caveat>
+      )}
+      <Caveat>{f.cross_check_caveat} {f.cloud_proxy_substitution_note}</Caveat>
+      {stamp}
+    </div>
+  );
+}
+
+function HazardsDetail({
+  data,
+  district,
+  hazardsView,
+  onHazardsViewChange,
+}: {
+  data: DataBundle;
+  district: string | null;
+  hazardsView: "live" | "forecast";
+  onHazardsViewChange: (v: "live" | "forecast") => void;
+}) {
+  return (
+    <div className="space-y-3">
+      <HazardWindowToggle view={hazardsView} onChange={onHazardsViewChange} />
+      {hazardsView === "live" ? (
+        <LiveHazardsWindow data={data} district={district} />
+      ) : (
+        <ForecastWindow data={data} district={district} />
+      )}
     </div>
   );
 }
@@ -478,72 +626,6 @@ function TriggerDetail({
   );
 }
 
-const FORECAST_HAZARD_LABEL: Record<string, string> = {
-  frost: "Frost", heat_wave: "Heat wave", cold_wave: "Cold wave",
-};
-
-function ForecastDetail({ data, district }: { data: DataBundle; district: string | null }) {
-  const { locale } = useAppLocale();
-  if (!data.forecast) return <EmptyHint>Loading forecast…</EmptyHint>;
-  const f = data.forecast;
-  const stamp = (
-    <div className="mt-1 text-[11px] text-faint">
-      Real GFS cycle: <span className="tnum text-dim">{new Date(f.gfs_cycle_utc).toUTCString()}</span>
-      <LastComputed iso={f.last_computed_utc} note={f.gfs_update_cadence_note} />
-    </div>
-  );
-
-  if (!district) {
-    return (
-      <div className="space-y-3">
-        <div className="rounded-xl border border-soft bg-elev p-4">
-          <div className="flex justify-between text-xs">
-            <span className="text-dim">Districts with any forecast flag</span>
-            <span className="tnum font-semibold text-main">{f.n_flagged} / {f.n_districts}</span>
-          </div>
-        </div>
-        {f.heat_wave_high_flag_rate_caveat && (
-          <Caveat>{f.heat_wave_high_flag_rate_caveat}</Caveat>
-        )}
-        <EmptyHint>Click a district to see its 3-day forecast detail.</EmptyHint>
-        {stamp}
-      </div>
-    );
-  }
-
-  const rows = f.alerts.filter((a) => a.district === district);
-  return (
-    <div className="space-y-2">
-      <h3 className="text-sm font-semibold text-main">{district}</h3>
-      {rows.map((r, i) => (
-        <div key={i} className={`rounded-lg border p-3 text-xs ${r.flag ? "border-secondary-500/50 bg-secondary-soft" : "border-soft bg-elev"}`}>
-          <div className="flex items-center justify-between">
-            <span className="font-medium text-main">
-              {FORECAST_HAZARD_LABEL[r.forecast_hazard] ?? r.forecast_hazard}
-              {r.window_days ? ` (${r.window_days[0]} → ${r.window_days[r.window_days.length - 1]})` : ` — ${r.valid_date}`}
-            </span>
-            {r.flag && <span className="pill tier-model rounded-full bg-secondary-500 px-2 py-0.5 text-[10px] font-bold uppercase text-white">Forecast flag</span>}
-          </div>
-          <p
-            className={`mt-1 text-faint ${locale === "ur" ? "urdu-text" : ""}`}
-            dir={locale === "ur" ? "rtl" : undefined}
-            lang={locale === "ur" ? "ur" : undefined}
-          >
-            {locale === "ur" ? r.message_ur : r.message_en}
-          </p>
-          <p className="mt-1 text-[10px] text-faint">confidence {Math.round(r.confidence * 100)}% · {r.source}</p>
-        </div>
-      ))}
-      {rows.length === 0 && <EmptyHint>No forecast rows for {district}.</EmptyHint>}
-      {f.heat_wave_high_flag_rate_caveat && rows.some((r) => r.forecast_hazard === "heat_wave" && r.flag) && (
-        <Caveat>{f.heat_wave_high_flag_rate_caveat}</Caveat>
-      )}
-      <Caveat>{f.cross_check_caveat} {f.cloud_proxy_substitution_note}</Caveat>
-      {stamp}
-    </div>
-  );
-}
-
 function ModelsDetail({ data }: { data: DataBundle }) {
   if (!data.models) return <EmptyHint>Loading model summaries…</EmptyHint>;
   return (
@@ -555,46 +637,48 @@ function ModelsDetail({ data }: { data: DataBundle }) {
         Every model output below is reported against a real baseline, with sample size and coverage limitations
         stated plainly — nothing here is smoothed over for a better-looking number.
       </p>
-      <ModelCard
-        name="National Crop-Share Model"
-        version="Trained on real satellite images and real government crop data"
-        confidenceLabel="moderate"
-        trainedOn="Learns from how fields look in satellite images across a growing season, matched against real government crop records."
-        comparison={[
-          { label: "Wheat", value: 0.581 },
-          { label: "Cotton", value: 0.507 },
-          { label: "Rice", value: 0.420 },
-          { label: "Sugarcane", value: -1.12, negative: true },
-        ]}
-      >
-        Works well for wheat, cotton, and rice. Sugarcane&apos;s guess isn&apos;t reliable.
-      </ModelCard>
-      <ModelCard
-        name="Fire Detector"
-        version="Trained on real satellite heat data, tested on a year it had never seen"
-        confidenceLabel="moderate"
-        trainedOn="Looks at heat patterns in satellite images, without using location as a shortcut."
-        comparison={[
-          { label: "Trained model", value: 0.354 },
-          { label: "Simple rule", value: 0.002, isBaseline: true },
-        ]}
-      >
-        The trained model catches far more real fires than the simple rule does.
-      </ModelCard>
-      {data.flood && (
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         <ModelCard
-          name="Flood Risk Model"
-          version="Uses satellite radar, water maps, and real rainfall data"
+          name="National Crop-Share Model"
+          version="Trained on real satellite images and real government crop data"
           confidenceLabel="moderate"
-          trainedOn="Trained on a real flood event, tested on a different real flood year it had never seen."
+          trainedOn="Learns from how fields look in satellite images across a growing season, matched against real government crop records."
           comparison={[
-            { label: "Trained model", value: data.flood.real_fair_test_validation.v3_model_deployed.f1 },
-            { label: "Simple rule", value: 0.143, isBaseline: true },
+            { label: "Wheat", value: 0.581 },
+            { label: "Cotton", value: 0.507 },
+            { label: "Rice", value: 0.420 },
+            { label: "Sugarcane", value: -1.12, negative: true },
           ]}
         >
-          Out of every 100 places flagged as flooded, about 19 really were.
+          Works well for wheat, cotton, and rice. Sugarcane&apos;s guess isn&apos;t reliable.
         </ModelCard>
-      )}
+        <ModelCard
+          name="Fire Detector"
+          version="Trained on real satellite heat data, tested on a year it had never seen"
+          confidenceLabel="moderate"
+          trainedOn="Looks at heat patterns in satellite images, without using location as a shortcut."
+          comparison={[
+            { label: "Trained model", value: 0.354 },
+            { label: "Simple rule", value: 0.002, isBaseline: true },
+          ]}
+        >
+          The trained model catches far more real fires than the simple rule does.
+        </ModelCard>
+        {data.flood && (
+          <ModelCard
+            name="Flood Risk Model"
+            version="Uses satellite radar, water maps, and real rainfall data"
+            confidenceLabel="moderate"
+            trainedOn="Trained on a real flood event, tested on a different real flood year it had never seen."
+            comparison={[
+              { label: "Trained model", value: data.flood.real_fair_test_validation.v3_model_deployed.f1 },
+              { label: "Simple rule", value: 0.143, isBaseline: true },
+            ]}
+          >
+            Out of every 100 places flagged as flooded, about 19 really were.
+          </ModelCard>
+        )}
+      </div>
     </div>
   );
 }
@@ -665,9 +749,11 @@ function HistoryDetail({ data }: { data: DataBundle }) {
       <div className="rounded-xl border border-soft bg-elev p-4">
         <p className="text-xs leading-relaxed text-dim">{data.historicalEvents.generated_note}</p>
       </div>
-      {data.historicalEvents.events.map((e) => (
-        <EventCard key={e.id} event={e} />
-      ))}
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+        {data.historicalEvents.events.map((e) => (
+          <EventCard key={e.id} event={e} />
+        ))}
+      </div>
     </div>
   );
 }
@@ -680,6 +766,8 @@ export default function ExplorePanel({
   onCropPickChange,
   triggerThreshold,
   onTriggerThresholdChange,
+  hazardsView,
+  onHazardsViewChange,
 }: {
   layerId: LayerId;
   data: DataBundle;
@@ -688,6 +776,8 @@ export default function ExplorePanel({
   onCropPickChange: (c: Crop) => void;
   triggerThreshold: "national" | "demo";
   onTriggerThresholdChange: (t: "national" | "demo") => void;
+  hazardsView: "live" | "forecast";
+  onHazardsViewChange: (v: "live" | "forecast") => void;
 }) {
   const meta = LAYERS[layerId];
   const { locale } = useAppLocale();
@@ -716,7 +806,9 @@ export default function ExplorePanel({
       </div>
 
       {layerId === "home" && <HomeDetail data={data} />}
-      {layerId === "hazards" && <HazardsDetail data={data} district={selectedDistrict} />}
+      {layerId === "hazards" && (
+        <HazardsDetail data={data} district={selectedDistrict} hazardsView={hazardsView} onHazardsViewChange={onHazardsViewChange} />
+      )}
       {layerId === "cropstress" && <CropStressDetail data={data} district={selectedDistrict} />}
       {layerId === "drought" && <DroughtDetail data={data} district={selectedDistrict} />}
       {layerId === "flood" && <FloodDetail data={data} district={selectedDistrict} />}
@@ -730,7 +822,6 @@ export default function ExplorePanel({
       {layerId === "trigger" && (
         <TriggerDetail data={data} district={selectedDistrict} threshold={triggerThreshold} onThresholdChange={onTriggerThresholdChange} />
       )}
-      {layerId === "forecast" && <ForecastDetail data={data} district={selectedDistrict} />}
       {layerId === "models" && <ModelsDetail data={data} />}
       {layerId === "history" && <HistoryDetail data={data} />}
       {layerId === "register" && <FarmSubmissionForm />}

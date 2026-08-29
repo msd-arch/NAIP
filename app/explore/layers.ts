@@ -53,9 +53,9 @@ export const LAYERS: Record<LayerId, LayerMeta> = {
     labelUr: "قومی خطرات",
     mode: "choropleth",
     about:
-      "Every 15 minutes the satellite pipeline checks all 126 districts for 11 hazard types — frost, heat wave, hail, fog, dust storms and more. Darker districts have more active alerts right now.",
+      "Every 15 minutes the satellite pipeline checks all 126 districts for 11 hazard types — frost, heat wave, hail, fog, dust storms and more. Switch between the Live window (what's happening now) and the Forecast window (a real 72h GFS outlook for frost/heat/cold) below.",
     aboutUr:
-      "ہر 15 منٹ بعد سیٹلائٹ پائپ لائن تمام 126 اضلاع کو 11 اقسام کے خطرات کے لیے چیک کرتی ہے — پالا، گرمی کی لہر، اولے، دھند، دھول کے طوفان اور دیگر۔ گہرے رنگ کے اضلاع میں اس وقت زیادہ فعال الرٹس ہیں۔",
+      "ہر 15 منٹ بعد سیٹلائٹ پائپ لائن تمام 126 اضلاع کو 11 اقسام کے خطرات کے لیے چیک کرتی ہے — پالا، گرمی کی لہر، اولے، دھند، دھول کے طوفان اور دیگر۔ نیچے لائیو ونڈو (ابھی کیا ہو رہا ہے) اور پیش گوئی ونڈو (اگلے 72 گھنٹوں کی GFS پیش گوئی) کے درمیان سوئچ کریں۔",
   },
   locust: {
     id: "locust",
@@ -243,7 +243,6 @@ export const LAYER_GROUPS: LayerGroup[] = [
     layers: ["cropmodel", "irrigation", "crossyear", "yield"],
   },
   { label: "Insurance Engine", labelUr: "انشورنس نظام", layers: ["exposure", "trigger"] },
-  { label: "Forecast", labelUr: "پیش گوئی", layers: ["forecast"], standalone: true },
   { label: "History", labelUr: "تاریخی واقعات", layers: ["history"], standalone: true },
   { label: "Farm Data", labelUr: "فارم ڈیٹا", layers: ["register"], standalone: true },
   { label: "About", labelUr: "تعارف", layers: ["models"], standalone: true },

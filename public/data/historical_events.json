@@ -2,25 +2,6 @@
   "generated_note": "Hand-curated from this project's own real validation status reports (naip/docs/STATUS_WEEK*.md), not a raw model-output export. Every number here was checked directly against the cited source document, not restated from memory. This page shows cross-year/cross-event generalization tests of models already trained against genuinely independent real ground truth from the start (FIRMS, IOM/NDMA, FAO, MNFSR) -- it is not a proxy-trained model being checked against real events for the first time.",
   "events": [
     {
-      "id": "fire_2021_replay",
-      "hazard_type": "fire",
-      "title": "Fire detector — 2021 replay",
-      "window": "2021-11-01 to 2021-11-15 (15 real dates, national bbox)",
-      "model_label": "Track E/K thermal-only GBT fire classifier — unchanged, persisted checkpoint, no retraining",
-      "kind": "single_metric",
-      "metric_name": "F1",
-      "metric_value": 0.354,
-      "metric_baseline_value": 0.002,
-      "metric_baseline_label": "Rule-based det_residue_burning() (unchanged), same 2021 full grid",
-      "metric_detail": "Precision 0.230 (vs. 0.245 on the original 2023 test), recall 0.763 (vs. 0.587), ROC-AUC 0.786 (vs. 0.737). The 2021 comparison uses the full 15-date grid vs. the original's narrower 3-date test split — a harder bar, not an easier one.",
-      "status": "confirmed generalizes",
-      "status_tone": "high",
-      "ground_truth_source": "NASA FIRMS VIIRS active-fire hotspots, national bbox, 15 real dates, 50km/±1-day tolerance (83,066 real hotspot rows pulled for the window)",
-      "how_measured": "The persisted 2023-trained model (never retrained) was replayed against a real, entirely unseen 2021 burning season — a genuinely different year, selected because it had the highest real FIRMS hotspot density of four candidate years checked (2020/2021/2022/2024). Labels came from the same real FIRMS cross-reference methodology used for the original 2023 dataset.",
-      "limits": "Two real years is real, useful evidence of generalization, not permanent proof across every possible burning-season condition. Both years share the same national bbox and the same MSG sensor/product — a third year, or a genuinely different region, would still add real information.",
-      "source_doc": "naip/docs/STATUS_WEEK19.md"
-    },
-    {
       "id": "flood_2024_fair_test",
       "hazard_type": "flood",
       "title": "Flood risk model — 2024 fair test",
@@ -38,6 +19,25 @@
       "how_measured": "This is the exact fair, labeled, full-2024 test that caught the rejected v2 attempt's failure (a real, independently verified negative result from Week 14) — same methodology reused to test v3's real precipitation-feature addition. v3's real permutation importance confirms precip_anomaly_pct is the single highest-importance feature (0.128), not noise: mean anomaly for flooded vs. not-flooded points is +216.4% vs. +94.6%, in the physically expected direction.",
       "limits": "Absolute precision (0.190) means most 'flooded' predictions on a genuinely new year are still wrong more often than right — this is real, meaningful improvement over the original (0.134) and the rejected v2 (0.107), not a solved problem. A live-replay run the same week found 9 flagged districts with real precipitation anomalies in the opposite direction from the training data's own correlation — a genuine, unresolved open question, not smoothed over.",
       "source_doc": "naip/docs/STATUS_WEEK26.md (numbers), naip/docs/STATUS_WEEK27.md (deployment)"
+    },
+    {
+      "id": "fire_2021_replay",
+      "hazard_type": "fire",
+      "title": "Fire detector — 2021 replay",
+      "window": "2021-11-01 to 2021-11-15 (15 real dates, national bbox)",
+      "model_label": "Track E/K thermal-only GBT fire classifier — unchanged, persisted checkpoint, no retraining",
+      "kind": "single_metric",
+      "metric_name": "F1",
+      "metric_value": 0.354,
+      "metric_baseline_value": 0.002,
+      "metric_baseline_label": "Rule-based det_residue_burning() (unchanged), same 2021 full grid",
+      "metric_detail": "Precision 0.230 (vs. 0.245 on the original 2023 test), recall 0.763 (vs. 0.587), ROC-AUC 0.786 (vs. 0.737). The 2021 comparison uses the full 15-date grid vs. the original's narrower 3-date test split — a harder bar, not an easier one.",
+      "status": "confirmed generalizes",
+      "status_tone": "high",
+      "ground_truth_source": "NASA FIRMS VIIRS active-fire hotspots, national bbox, 15 real dates, 50km/±1-day tolerance (83,066 real hotspot rows pulled for the window)",
+      "how_measured": "The persisted 2023-trained model (never retrained) was replayed against a real, entirely unseen 2021 burning season — a genuinely different year, selected because it had the highest real FIRMS hotspot density of four candidate years checked (2020/2021/2022/2024). Labels came from the same real FIRMS cross-reference methodology used for the original 2023 dataset.",
+      "limits": "Two real years is real, useful evidence of generalization, not permanent proof across every possible burning-season condition. Both years share the same national bbox and the same MSG sensor/product — a third year, or a genuinely different region, would still add real information.",
+      "source_doc": "naip/docs/STATUS_WEEK19.md"
     },
     {
       "id": "locust_2020_backtest",

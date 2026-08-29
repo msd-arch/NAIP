@@ -2846,7 +2846,7 @@
       "max_confidence": 0.7,
       "n_observations": 1,
       "n_triggered": 1,
-      "message_en": "Cloud top cooling 15.5 K in 15 min -- explosive vertical development.",
+      "message_en": "Cloud top cooling 15.4 K in 15 min -- explosive vertical development.",
       "message_ur": "طوفانی بارش کا فوری خطرہ",
       "lat": 34.1605847255359,
       "lon": 73.19202830806569
@@ -2924,7 +2924,7 @@
       "max_confidence": 0.0,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Not enough clear-sky multi-day skin-temperature data (5 of 5 available frames excluded as cloud-contaminated).",
+      "message_en": "Not enough clear-sky multi-day skin-temperature data (3 of 3 available frames excluded as cloud-contaminated).",
       "message_ur": "ناکافی صاف آسمان ڈیٹا",
       "lat": 34.1605847255359,
       "lon": 73.19202830806569
@@ -2950,7 +2950,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +1.4 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +9.5 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 34.1605847255359,
       "lon": 73.19202830806569
@@ -8744,12 +8744,12 @@
       "district": "Attock",
       "date": "20260829",
       "hazard": "cloud_burst",
-      "any_flag": true,
-      "max_confidence": 0.7,
+      "any_flag": false,
+      "max_confidence": 0.2,
       "n_observations": 1,
-      "n_triggered": 1,
-      "message_en": "Cloud top cooling 13.6 K in 15 min -- explosive vertical development.",
-      "message_ur": "طوفانی بارش کا فوری خطرہ",
+      "n_triggered": 0,
+      "message_en": "STUBBED: nearest available frame pair is 15 min apart (need <=20 min); this archive's cadence is too coarse to evaluate a genuine rate-of-change here. Detector logic is real and will fire once 15-min cadence MSG data is supplied.",
+      "message_ur": "ناکافی وقتی ریزولوشن -- 15 منٹ کے تسلسل والا ڈیٹا درکار ہے",
       "lat": 33.4813328137528,
       "lon": 72.33571528950687
     },
@@ -8761,7 +8761,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 9.3 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 9.4 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 33.4813328137528,
       "lon": 72.33571528950687
@@ -8826,7 +8826,7 @@
       "max_confidence": 0.0,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Not enough clear-sky multi-day skin-temperature data (5 of 5 available frames excluded as cloud-contaminated).",
+      "message_en": "Not enough clear-sky multi-day skin-temperature data (3 of 3 available frames excluded as cloud-contaminated).",
       "message_ur": "ناکافی صاف آسمان ڈیٹا",
       "lat": 33.4813328137528,
       "lon": 72.33571528950687
@@ -8835,12 +8835,12 @@
       "district": "Attock",
       "date": "20260829",
       "hazard": "heavy_rain",
-      "any_flag": true,
-      "max_confidence": 0.55,
+      "any_flag": false,
+      "max_confidence": 0.45,
       "n_observations": 1,
-      "n_triggered": 1,
-      "message_en": "Persistent very-cold cloud top across 2/8 available frames today -- IR-only proxy, not a direct rain-rate measurement. Runway flooding/braking-action advisory; waterlogging and flood risk, irrigation deferral guidance.",
-      "message_ur": "شدید بارش اور سیلاب کا خطرہ",
+      "n_triggered": 0,
+      "message_en": "1/8 frames cold enough -- below persistence bar.",
+      "message_ur": "شدید بارش کی علامت نہیں",
       "lat": 33.4813328137528,
       "lon": 72.33571528950687
     },
@@ -8852,7 +8852,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +16.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +5.3 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 33.4813328137528,
       "lon": 72.33571528950687
@@ -11712,7 +11712,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 21.8 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 21.5 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 26.255203421584145,
       "lon": 65.47340353192104
@@ -11777,7 +11777,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 25.9 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 25.3 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 26.255203421584145,
       "lon": 65.47340353192104
@@ -11803,7 +11803,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +1.3 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +1.1 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 26.255203421584145,
       "lon": 65.47340353192104
@@ -17705,7 +17705,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +3.6 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +2.8 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 24.721969980491448,
       "lon": 68.83381906213141
@@ -20565,7 +20565,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 14.3 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 14.2 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 29.71385204590936,
       "lon": 72.98734982630414
@@ -20630,7 +20630,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 14.7 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 14.8 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 29.71385204590936,
       "lon": 72.98734982630414
@@ -20656,7 +20656,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -1.6 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -1.8 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 29.71385204590936,
       "lon": 72.98734982630414
@@ -23516,7 +23516,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 16.7 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 16.5 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 29.15722905712583,
       "lon": 71.83899955313666
@@ -23581,7 +23581,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 17.4 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 17.5 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 29.15722905712583,
       "lon": 71.83899955313666
@@ -23607,7 +23607,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -1.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -1.7 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 29.15722905712583,
       "lon": 71.83899955313666
@@ -26532,7 +26532,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 9.0 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 9.1 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 34.69535097783778,
       "lon": 71.50247232158031
@@ -26558,7 +26558,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -1.1 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -2.1 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 34.69535097783778,
       "lon": 71.50247232158031
@@ -29418,7 +29418,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 11.6 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 11.5 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 32.80469584713567,
       "lon": 70.62129594655778
@@ -29483,7 +29483,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 12.8 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 12.3 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 32.80469584713567,
       "lon": 70.62129594655778
@@ -29509,7 +29509,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +1.0 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +1.4 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 32.80469584713567,
       "lon": 70.62129594655778
@@ -32369,7 +32369,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 18.3 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 18.2 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 29.878322635269203,
       "lon": 69.54557969336798
@@ -32434,7 +32434,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 23.2 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 22.7 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 29.878322635269203,
       "lon": 69.54557969336798
@@ -32460,7 +32460,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -0.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -0.3 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 29.878322635269203,
       "lon": 69.54557969336798
@@ -35320,7 +35320,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 5.9 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 3.5 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 34.78436694594193,
       "lon": 73.10999976000136
@@ -35385,7 +35385,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 1.4 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 2.4 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 34.78436694594193,
       "lon": 73.10999976000136
@@ -35411,7 +35411,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +4.9 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +2.7 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 34.78436694594193,
       "lon": 73.10999976000136
@@ -38271,7 +38271,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 14.2 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 13.8 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 31.580208782076056,
       "lon": 71.45658387044473
@@ -38362,7 +38362,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +0.7 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +0.0 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 31.580208782076056,
       "lon": 71.45658387044473
@@ -41287,7 +41287,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 8.5 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 8.4 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 34.45091928795438,
       "lon": 72.4883443099026
@@ -41313,7 +41313,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -3.0 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -2.7 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 34.45091928795438,
       "lon": 72.4883443099026
@@ -44173,7 +44173,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 22.5 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 22.4 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 28.87739069025333,
       "lon": 63.74029386634663
@@ -44238,7 +44238,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 31.2 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 29.6 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 28.87739069025333,
       "lon": 63.74029386634663
@@ -44264,7 +44264,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +0.6 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +1.5 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 28.87739069025333,
       "lon": 63.74029386634663
@@ -47124,7 +47124,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 12.4 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 12.0 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 32.81478333618123,
       "lon": 72.47731221100592
@@ -47189,7 +47189,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 12.8 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 13.2 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 32.81478333618123,
       "lon": 72.47731221100592
@@ -47215,7 +47215,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -2.0 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -4.0 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 32.81478333618123,
       "lon": 72.47731221100592
@@ -50075,7 +50075,7 @@
       "max_confidence": 0.0,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Not enough clear-sky multi-day night skin-temperature data (2 of 2 available frames excluded as cloud-contaminated).",
+      "message_en": "Not enough clear-sky multi-day night skin-temperature data (4 of 4 available frames excluded as cloud-contaminated).",
       "message_ur": "ناکافی صاف آسمان ڈیٹا",
       "lat": 34.19233482303397,
       "lon": 71.70912216994965
@@ -50140,7 +50140,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 11.0 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 10.8 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 34.19233482303397,
       "lon": 71.70912216994965
@@ -53026,7 +53026,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 3.3 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 3.4 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 36.118821869290485,
       "lon": 72.42661125111606
@@ -53091,7 +53091,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 6.3 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 6.7 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 36.118821869290485,
       "lon": 72.42661125111606
@@ -53117,7 +53117,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +7.6 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +1.1 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 36.118821869290485,
       "lon": 72.42661125111606
@@ -55977,7 +55977,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 21.6 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 21.4 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 26.759217238863204,
       "lon": 67.64464122249369
@@ -56042,7 +56042,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 25.8 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 25.0 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 26.759217238863204,
       "lon": 67.64464122249369
@@ -56068,7 +56068,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -2.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -1.1 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 26.759217238863204,
       "lon": 67.64464122249369
@@ -58928,7 +58928,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 21.4 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 21.1 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 28.97707671343281,
       "lon": 69.12499679264064
@@ -58993,7 +58993,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 24.0 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 23.8 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 28.97707671343281,
       "lon": 69.12499679264064
@@ -59019,7 +59019,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +0.4 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -0.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 28.97707671343281,
       "lon": 69.12499679264064
@@ -61879,7 +61879,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 17.0 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 17.2 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 29.737037213746095,
       "lon": 70.15720188888301
@@ -61944,7 +61944,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 17.1 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 17.0 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 29.737037213746095,
       "lon": 70.15720188888301
@@ -61970,7 +61970,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +1.9 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +1.8 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 29.737037213746095,
       "lon": 70.15720188888301
@@ -64830,7 +64830,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 13.4 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 13.3 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 31.85139122217311,
       "lon": 70.74179274934062
@@ -64895,7 +64895,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 16.2 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 16.3 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 31.85139122217311,
       "lon": 70.74179274934062
@@ -64921,7 +64921,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -1.1 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -1.8 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 31.85139122217311,
       "lon": 70.74179274934062
@@ -70732,7 +70732,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 12.9 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 12.7 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 31.199605971371717,
       "lon": 73.09325166145219
@@ -70823,7 +70823,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -2.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -2.4 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 31.199605971371717,
       "lon": 73.09325166145219
@@ -79585,7 +79585,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 21.1 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 20.9 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 27.843898461033294,
       "lon": 69.530602382916
@@ -79676,7 +79676,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -4.1 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -4.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 27.843898461033294,
       "lon": 69.530602382916
@@ -91389,7 +91389,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 19.6 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 19.3 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 25.403053323845104,
       "lon": 63.26325114763529
@@ -91454,7 +91454,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 23.0 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 22.5 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 25.403053323845104,
       "lon": 63.26325114763529
@@ -91480,7 +91480,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +2.8 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +2.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 25.403053323845104,
       "lon": 63.26325114763529
@@ -94340,7 +94340,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 11.6 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 11.5 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 31.985829168595675,
       "lon": 73.4554526384932
@@ -94405,7 +94405,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 13.0 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 12.8 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 31.985829168595675,
       "lon": 73.4554526384932
@@ -94431,7 +94431,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -5.0 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -4.6 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 31.985829168595675,
       "lon": 73.4554526384932
@@ -97291,7 +97291,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 8.4 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 6.3 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 33.35624555284625,
       "lon": 70.85190696653112
@@ -97316,7 +97316,7 @@
       "any_flag": true,
       "max_confidence": 0.75,
       "n_observations": 8,
-      "n_triggered": 2,
+      "n_triggered": 3,
       "message_en": "Small positive IR3.9-IR10.8 difference (2.6 K) over a spatially coherent low-lying area -- classic radiative/advective fog signature. Visibility/ceiling below landing minima. Favourable-for-disease dew conditions; delay spraying until fog clears.",
       "message_ur": "دھند کا امکان (IR3.9-IR10.8 = 2.6 K)۔ رن وے کی مرئیت کم ہو سکتی ہے",
       "lat": 33.35624555284625,
@@ -97356,7 +97356,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 13.0 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 12.6 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 33.35624555284625,
       "lon": 70.85190696653112
@@ -97382,7 +97382,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +0.3 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +0.5 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 33.35624555284625,
       "lon": 70.85190696653112
@@ -100225,12 +100225,12 @@
       "district": "Haripur",
       "date": "20260829",
       "hazard": "cloud_burst",
-      "any_flag": true,
-      "max_confidence": 0.7,
+      "any_flag": false,
+      "max_confidence": 0.2,
       "n_observations": 1,
-      "n_triggered": 1,
-      "message_en": "Cloud top cooling 10.2 K in 15 min -- explosive vertical development.",
-      "message_ur": "طوفانی بارش کا فوری خطرہ",
+      "n_triggered": 0,
+      "message_en": "STUBBED: nearest available frame pair is 15 min apart (need <=20 min); this archive's cadence is too coarse to evaluate a genuine rate-of-change here. Detector logic is real and will fire once 15-min cadence MSG data is supplied.",
+      "message_ur": "ناکافی وقتی ریزولوشن -- 15 منٹ کے تسلسل والا ڈیٹا درکار ہے",
       "lat": 34.056230397373064,
       "lon": 72.86682900047666
     },
@@ -100242,7 +100242,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 9.1 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 9.3 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 34.056230397373064,
       "lon": 72.86682900047666
@@ -100293,9 +100293,9 @@
       "any_flag": true,
       "max_confidence": 0.65,
       "n_observations": 8,
-      "n_triggered": 3,
-      "message_en": "Persistent very-cold top co-located with a small-particle glaciation signal (OT=-2.8 K, glaciation=0.61). Airframe damage risk -- wider exclusion buffer than ordinary convection. Immediate crop-loss warning for standing crops.",
-      "message_ur": "اولوں کا خطرہ (OT=-2.8 K، glaciation=0.61)۔ فصلوں کو فوری نقصان کا انتباہ",
+      "n_triggered": 2,
+      "message_en": "Persistent very-cold top co-located with a small-particle glaciation signal (OT=-2.4 K, glaciation=0.62). Airframe damage risk -- wider exclusion buffer than ordinary convection. Immediate crop-loss warning for standing crops.",
+      "message_ur": "اولوں کا خطرہ (OT=-2.4 K، glaciation=0.62)۔ فصلوں کو فوری نقصان کا انتباہ",
       "lat": 34.056230397373064,
       "lon": 72.86682900047666
     },
@@ -100307,7 +100307,7 @@
       "max_confidence": 0.0,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Not enough clear-sky multi-day skin-temperature data (5 of 5 available frames excluded as cloud-contaminated).",
+      "message_en": "Not enough clear-sky multi-day skin-temperature data (3 of 3 available frames excluded as cloud-contaminated).",
       "message_ur": "ناکافی صاف آسمان ڈیٹا",
       "lat": 34.056230397373064,
       "lon": 72.86682900047666
@@ -100320,7 +100320,7 @@
       "max_confidence": 0.55,
       "n_observations": 1,
       "n_triggered": 1,
-      "message_en": "Persistent very-cold cloud top across 5/8 available frames today -- IR-only proxy, not a direct rain-rate measurement. Runway flooding/braking-action advisory; waterlogging and flood risk, irrigation deferral guidance.",
+      "message_en": "Persistent very-cold cloud top across 3/8 available frames today -- IR-only proxy, not a direct rain-rate measurement. Runway flooding/braking-action advisory; waterlogging and flood risk, irrigation deferral guidance.",
       "message_ur": "شدید بارش اور سیلاب کا خطرہ",
       "lat": 34.056230397373064,
       "lon": 72.86682900047666
@@ -100333,7 +100333,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +17.4 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +20.1 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 34.056230397373064,
       "lon": 72.86682900047666
@@ -106144,7 +106144,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 17.6 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 17.5 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 25.386847921402374,
       "lon": 68.4882872626284
@@ -106209,7 +106209,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 19.0 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 18.8 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 25.386847921402374,
       "lon": 68.4882872626284
@@ -106235,7 +106235,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -4.9 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -4.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 25.386847921402374,
       "lon": 68.4882872626284
@@ -109082,7 +109082,7 @@
       "max_confidence": 0.7,
       "n_observations": 1,
       "n_triggered": 1,
-      "message_en": "Cloud top cooling 10.9 K in 15 min -- explosive vertical development.",
+      "message_en": "Cloud top cooling 24.7 K in 15 min -- explosive vertical development.",
       "message_ur": "طوفانی بارش کا فوری خطرہ",
       "lat": 33.65251601109561,
       "lon": 73.0536948268538
@@ -109095,7 +109095,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 7.2 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 7.1 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 33.65251601109561,
       "lon": 73.0536948268538
@@ -109157,11 +109157,11 @@
       "date": "20260829",
       "hazard": "heat_wave",
       "any_flag": false,
-      "max_confidence": 0.33,
+      "max_confidence": 0.0,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 7.6 C -- below heat-wave persistence threshold.",
-      "message_ur": "گرمی کی لہر کی علامت نہیں",
+      "message_en": "Not enough clear-sky multi-day skin-temperature data (3 of 3 available frames excluded as cloud-contaminated).",
+      "message_ur": "ناکافی صاف آسمان ڈیٹا",
       "lat": 33.65251601109561,
       "lon": 73.0536948268538
     },
@@ -109186,7 +109186,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -4.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +4.8 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 33.65251601109561,
       "lon": 73.0536948268538
@@ -112046,7 +112046,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 22.7 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 22.3 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 28.079200745318197,
       "lon": 68.45319087854767
@@ -112111,7 +112111,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 24.2 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 24.3 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 28.079200745318197,
       "lon": 68.45319087854767
@@ -112137,7 +112137,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -2.6 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -2.9 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 28.079200745318197,
       "lon": 68.45319087854767
@@ -114997,7 +114997,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 22.5 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 22.2 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 28.283821923384817,
       "lon": 68.3340524148427
@@ -115062,7 +115062,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 24.4 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 24.5 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 28.283821923384817,
       "lon": 68.3340524148427
@@ -115088,7 +115088,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -5.3 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -5.5 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 28.283821923384817,
       "lon": 68.3340524148427
@@ -117948,7 +117948,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 21.8 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 21.1 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 25.695123882818304,
       "lon": 67.91125596801001
@@ -118013,7 +118013,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 24.5 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 24.2 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 25.695123882818304,
       "lon": 67.91125596801001
@@ -120899,7 +120899,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 22.0 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 21.7 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 28.38893189918296,
       "lon": 67.58195004112467
@@ -120964,7 +120964,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 23.6 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 23.2 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 28.38893189918296,
       "lon": 67.58195004112467
@@ -123941,7 +123941,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -2.7 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -3.0 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 31.315772269135394,
       "lon": 72.29915913133668
@@ -126801,7 +126801,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 11.0 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 10.6 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 32.75677108475934,
       "lon": 73.18117515608306
@@ -126892,7 +126892,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -5.8 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -5.7 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 32.75677108475934,
       "lon": 73.18117515608306
@@ -129752,7 +129752,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 20.0 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 19.4 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 29.141862834270082,
       "lon": 67.78317012459577
@@ -129817,7 +129817,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 23.4 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 23.1 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 29.141862834270082,
       "lon": 67.78317012459577
@@ -129843,7 +129843,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +0.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +0.3 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 29.141862834270082,
       "lon": 67.78317012459577
@@ -132703,7 +132703,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 17.1 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 16.6 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 28.86860302433158,
       "lon": 66.68662305433648
@@ -132768,7 +132768,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 27.6 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 26.6 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 28.86860302433158,
       "lon": 66.68662305433648
@@ -132794,7 +132794,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +0.0 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +0.7 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 28.86860302433158,
       "lon": 66.68662305433648
@@ -135719,7 +135719,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 16.1 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 16.0 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 25.048921961704227,
       "lon": 67.25176617081596
@@ -135745,7 +135745,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +5.0 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +3.0 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 25.048921961704227,
       "lon": 67.25176617081596
@@ -138605,7 +138605,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 9.9 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 9.8 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 33.059435338492555,
       "lon": 71.08746748937716
@@ -138670,7 +138670,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 13.9 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 13.6 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 33.059435338492555,
       "lon": 71.08746748937716
@@ -138696,7 +138696,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +0.7 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +0.3 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 33.059435338492555,
       "lon": 71.08746748937716
@@ -141556,7 +141556,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 21.1 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 20.9 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 28.178160777797537,
       "lon": 69.38141703613834
@@ -141647,7 +141647,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -4.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -3.7 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 28.178160777797537,
       "lon": 69.38141703613834
@@ -147458,7 +147458,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 20.2 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 19.7 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 25.979166383372352,
       "lon": 63.200672288751605
@@ -147523,7 +147523,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 24.6 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 23.9 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 25.979166383372352,
       "lon": 63.200672288751605
@@ -147549,7 +147549,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +4.8 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +4.5 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 25.979166383372352,
       "lon": 63.200672288751605
@@ -150409,7 +150409,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 19.7 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 19.8 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 26.8551437884378,
       "lon": 68.98577019557749
@@ -150474,7 +150474,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 20.0 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 19.9 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 26.8551437884378,
       "lon": 68.98577019557749
@@ -150500,7 +150500,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +0.5 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -0.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 26.8551437884378,
       "lon": 68.98577019557749
@@ -153451,7 +153451,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -1.1 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -1.0 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 30.35528727902074,
       "lon": 71.91468452184928
@@ -156311,7 +156311,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 23.0 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 22.3 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 28.026011114981085,
       "lon": 64.87944971354493
@@ -156376,7 +156376,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 24.3 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 24.5 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 28.026011114981085,
       "lon": 64.87944971354493
@@ -156402,7 +156402,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +7.0 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +5.6 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 28.026011114981085,
       "lon": 64.87944971354493
@@ -162213,7 +162213,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 14.1 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 13.5 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 32.14174826697029,
       "lon": 72.03716631718115
@@ -162278,7 +162278,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 14.2 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 14.1 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 32.14174826697029,
       "lon": 72.03716631718115
@@ -162304,7 +162304,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -2.0 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -2.3 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 32.14174826697029,
       "lon": 72.03716631718115
@@ -165164,7 +165164,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 23.8 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 23.2 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 27.20113851571389,
       "lon": 66.68632009201552
@@ -165229,7 +165229,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 34.4 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 33.6 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 27.20113851571389,
       "lon": 66.68632009201552
@@ -165255,7 +165255,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -4.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -3.4 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 27.20113851571389,
       "lon": 66.68632009201552
@@ -168115,7 +168115,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 5.4 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 6.4 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 33.87816532481627,
       "lon": 71.04531456080079
@@ -168177,11 +168177,11 @@
       "date": "20260829",
       "hazard": "heat_wave",
       "any_flag": false,
-      "max_confidence": 0.33,
+      "max_confidence": 0.0,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 6.7 C -- below heat-wave persistence threshold.",
-      "message_ur": "گرمی کی لہر کی علامت نہیں",
+      "message_en": "Not enough clear-sky multi-day skin-temperature data (2 of 3 available frames excluded as cloud-contaminated).",
+      "message_ur": "ناکافی صاف آسمان ڈیٹا",
       "lat": 33.87816532481627,
       "lon": 71.04531456080079
     },
@@ -168206,7 +168206,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +4.7 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +3.6 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 33.87816532481627,
       "lon": 71.04531456080079
@@ -171066,7 +171066,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 7.6 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 8.3 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 33.418824943554064,
       "lon": 71.5366026095573
@@ -171157,7 +171157,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +6.8 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +12.5 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 33.418824943554064,
       "lon": 71.5366026095573
@@ -176968,7 +176968,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 20.8 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 20.4 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 29.568958221108144,
       "lon": 68.88747489694028
@@ -177033,7 +177033,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 26.7 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 26.4 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 29.568958221108144,
       "lon": 68.88747489694028
@@ -177059,7 +177059,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -1.0 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -1.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 29.568958221108144,
       "lon": 68.88747489694028
@@ -179919,7 +179919,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 9.7 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 9.8 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 33.62449227750573,
       "lon": 70.40444482790119
@@ -179984,7 +179984,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 10.1 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 10.5 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 33.62449227750573,
       "lon": 70.40444482790119
@@ -180010,7 +180010,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +2.4 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +0.8 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 33.62449227750573,
       "lon": 70.40444482790119
@@ -185821,7 +185821,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 12.3 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 12.0 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 32.529343689538536,
       "lon": 70.81695770905547
@@ -185886,7 +185886,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 12.3 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 12.2 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 32.529343689538536,
       "lon": 70.81695770905547
@@ -185912,7 +185912,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +3.1 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +2.4 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 32.529343689538536,
       "lon": 70.81695770905547
@@ -188772,7 +188772,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 18.3 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 18.1 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 25.78761000262494,
       "lon": 66.61044026238578
@@ -188837,7 +188837,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 20.4 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 20.2 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 25.78761000262494,
       "lon": 66.61044026238578
@@ -188863,7 +188863,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -0.6 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -1.7 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 25.78761000262494,
       "lon": 66.61044026238578
@@ -191723,7 +191723,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 16.8 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 16.3 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 30.912794164007494,
       "lon": 71.24379157898795
@@ -191814,7 +191814,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -1.9 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -2.1 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 30.912794164007494,
       "lon": 71.24379157898795
@@ -194674,7 +194674,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 15.9 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 15.7 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 29.6947473198121,
       "lon": 71.73476503298319
@@ -194739,7 +194739,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 16.7 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 16.8 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 29.6947473198121,
       "lon": 71.73476503298319
@@ -194765,7 +194765,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -1.9 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -2.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 29.6947473198121,
       "lon": 71.73476503298319
@@ -197625,7 +197625,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 18.3 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 17.8 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 30.264281575920926,
       "lon": 68.73050867303363
@@ -197690,7 +197690,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 21.6 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 21.2 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 30.264281575920926,
       "lon": 68.73050867303363
@@ -200576,7 +200576,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 7.6 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 7.3 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 34.81995197010533,
       "lon": 71.84807095601087
@@ -200641,7 +200641,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 8.9 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 9.1 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 34.81995197010533,
       "lon": 71.84807095601087
@@ -203527,7 +203527,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 8.2 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 8.3 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 34.490702704742134,
       "lon": 71.90262504844601
@@ -203618,7 +203618,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -3.8 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -3.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 34.490702704742134,
       "lon": 71.90262504844601
@@ -206478,7 +206478,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 11.9 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 11.8 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 32.380949633723084,
       "lon": 73.42640461875796
@@ -206543,7 +206543,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 12.6 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 12.5 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 32.380949633723084,
       "lon": 73.42640461875796
@@ -206569,7 +206569,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -5.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -4.4 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 32.380949633723084,
       "lon": 73.42640461875796
@@ -209429,7 +209429,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 5.7 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 5.6 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 34.66967253689031,
       "lon": 73.34549478620973
@@ -209494,7 +209494,7 @@
       "max_confidence": 0.0,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Not enough clear-sky multi-day skin-temperature data (5 of 5 available frames excluded as cloud-contaminated).",
+      "message_en": "Not enough clear-sky multi-day skin-temperature data (3 of 3 available frames excluded as cloud-contaminated).",
       "message_ur": "ناکافی صاف آسمان ڈیٹا",
       "lat": 34.66967253689031,
       "lon": 73.34549478620973
@@ -209520,7 +209520,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +10.1 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +9.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 34.66967253689031,
       "lon": 73.34549478620973
@@ -212380,7 +212380,7 @@
       "max_confidence": 0.0,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Not enough clear-sky multi-day night skin-temperature data (1 of 2 available frames excluded as cloud-contaminated).",
+      "message_en": "Not enough clear-sky multi-day night skin-temperature data (3 of 4 available frames excluded as cloud-contaminated).",
       "message_ur": "ناکافی صاف آسمان ڈیٹا",
       "lat": 34.29048771185018,
       "lon": 72.12951391041531
@@ -212445,7 +212445,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 9.6 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 9.7 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 34.29048771185018,
       "lon": 72.12951391041531
@@ -212471,7 +212471,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -4.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -3.8 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 34.29048771185018,
       "lon": 72.12951391041531
@@ -215331,7 +215331,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 18.7 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 18.2 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 29.719127222019086,
       "lon": 66.91459776236731
@@ -215396,7 +215396,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 28.3 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 27.7 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 29.719127222019086,
       "lon": 66.91459776236731
@@ -215422,7 +215422,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -0.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +0.1 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 29.719127222019086,
       "lon": 66.91459776236731
@@ -218347,7 +218347,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 20.1 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 20.0 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 25.8206183400661,
       "lon": 68.41778750435569
@@ -218373,7 +218373,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -4.1 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -3.9 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 25.8206183400661,
       "lon": 68.41778750435569
@@ -221216,12 +221216,12 @@
       "district": "Mianwali",
       "date": "20260829",
       "hazard": "cloud_burst",
-      "any_flag": true,
-      "max_confidence": 0.7,
+      "any_flag": false,
+      "max_confidence": 0.2,
       "n_observations": 1,
-      "n_triggered": 1,
-      "message_en": "Cloud top cooling 12.3 K in 15 min -- explosive vertical development.",
-      "message_ur": "طوفانی بارش کا فوری خطرہ",
+      "n_triggered": 0,
+      "message_en": "STUBBED: nearest available frame pair is 15 min apart (need <=20 min); this archive's cadence is too coarse to evaluate a genuine rate-of-change here. Detector logic is real and will fire once 15-min cadence MSG data is supplied.",
+      "message_ur": "ناکافی وقتی ریزولوشن -- 15 منٹ کے تسلسل والا ڈیٹا درکار ہے",
       "lat": 32.640365000796535,
       "lon": 71.51977277971432
     },
@@ -221233,7 +221233,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 12.5 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 11.7 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 32.640365000796535,
       "lon": 71.51977277971432
@@ -221298,7 +221298,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 6.8 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 4.8 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 32.640365000796535,
       "lon": 71.51977277971432
@@ -221324,7 +221324,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +0.7 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +9.7 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 32.640365000796535,
       "lon": 71.51977277971432
@@ -224249,7 +224249,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 14.8 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 14.7 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 25.22578109140304,
       "lon": 69.1864815369011
@@ -224275,7 +224275,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -3.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -2.8 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 25.22578109140304,
       "lon": 69.1864815369011
@@ -227135,7 +227135,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 8.4 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 8.2 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 34.395923647311605,
       "lon": 71.38243453761203
@@ -227200,7 +227200,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 10.0 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 10.2 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 34.395923647311605,
       "lon": 71.38243453761203
@@ -227226,7 +227226,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +0.4 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -0.4 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 34.395923647311605,
       "lon": 71.38243453761203
@@ -230177,7 +230177,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -1.7 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -1.5 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 29.915989031052323,
       "lon": 71.38805588266719
@@ -233037,7 +233037,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 16.7 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 16.4 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 30.770812553546975,
       "lon": 69.9196119125459
@@ -233102,7 +233102,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 21.5 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 21.0 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 30.770812553546975,
       "lon": 69.9196119125459
@@ -233128,7 +233128,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -0.5 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -0.6 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 30.770812553546975,
       "lon": 69.9196119125459
@@ -235988,7 +235988,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 17.2 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 17.0 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 29.87050121809338,
       "lon": 70.94840767380421
@@ -244841,7 +244841,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 22.4 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 22.1 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 28.577938681107945,
       "lon": 68.17483870785871
@@ -244932,7 +244932,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -4.0 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -3.9 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 28.577938681107945,
       "lon": 68.17483870785871
@@ -247792,7 +247792,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 22.1 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 21.8 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 26.816012979751623,
       "lon": 68.14261222490089
@@ -247857,7 +247857,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 23.9 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 24.0 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 26.816012979751623,
       "lon": 68.14261222490089
@@ -247883,7 +247883,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -3.1 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -3.6 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 26.816012979751623,
       "lon": 68.14261222490089
@@ -250743,7 +250743,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 21.9 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 21.8 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 26.272782618303935,
       "lon": 68.39749418172028
@@ -250834,7 +250834,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -2.5 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -2.6 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 26.272782618303935,
       "lon": 68.39749418172028
@@ -253694,7 +253694,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 11.5 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 11.6 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 32.9054178025012,
       "lon": 70.18032140546671
@@ -253759,7 +253759,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 10.4 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 10.0 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 32.9054178025012,
       "lon": 70.18032140546671
@@ -253785,7 +253785,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +4.4 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +2.7 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 32.9054178025012,
       "lon": 70.18032140546671
@@ -256645,7 +256645,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 5.9 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 7.0 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 33.88460336750447,
       "lon": 71.96471589336815
@@ -256670,7 +256670,7 @@
       "any_flag": true,
       "max_confidence": 0.75,
       "n_observations": 8,
-      "n_triggered": 1,
+      "n_triggered": 2,
       "message_en": "Small positive IR3.9-IR10.8 difference (2.2 K) over a spatially coherent low-lying area -- classic radiative/advective fog signature. Visibility/ceiling below landing minima. Favourable-for-disease dew conditions; delay spraying until fog clears.",
       "message_ur": "دھند کا امکان (IR3.9-IR10.8 = 2.2 K)۔ رن وے کی مرئیت کم ہو سکتی ہے",
       "lat": 33.88460336750447,
@@ -256707,11 +256707,11 @@
       "date": "20260829",
       "hazard": "heat_wave",
       "any_flag": false,
-      "max_confidence": 0.33,
+      "max_confidence": 0.0,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 2.7 C -- below heat-wave persistence threshold.",
-      "message_ur": "گرمی کی لہر کی علامت نہیں",
+      "message_en": "Not enough clear-sky multi-day skin-temperature data (2 of 3 available frames excluded as cloud-contaminated).",
+      "message_ur": "ناکافی صاف آسمان ڈیٹا",
       "lat": 33.88460336750447,
       "lon": 71.96471589336815
     },
@@ -256736,7 +256736,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +4.0 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +12.0 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 33.88460336750447,
       "lon": 71.96471589336815
@@ -259596,7 +259596,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 22.5 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 21.9 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 29.37106828007525,
       "lon": 65.81661972402063
@@ -259661,7 +259661,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 34.1 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 33.2 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 29.37106828007525,
       "lon": 65.81661972402063
@@ -262547,7 +262547,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 13.4 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 13.2 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 30.749666998637263,
       "lon": 73.61217517041936
@@ -262612,7 +262612,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 13.3 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 13.5 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 30.749666998637263,
       "lon": 73.61217517041936
@@ -265498,7 +265498,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 7.3 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 8.1 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 33.64380943858748,
       "lon": 71.23376269603138
@@ -265563,7 +265563,7 @@
       "max_confidence": 0.0,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Not enough clear-sky multi-day skin-temperature data (4 of 5 available frames excluded as cloud-contaminated).",
+      "message_en": "Not enough clear-sky multi-day skin-temperature data (3 of 3 available frames excluded as cloud-contaminated).",
       "message_ur": "ناکافی صاف آسمان ڈیٹا",
       "lat": 33.64380943858748,
       "lon": 71.23376269603138
@@ -265589,7 +265589,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +7.3 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +5.6 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 33.64380943858748,
       "lon": 71.23376269603138
@@ -268449,7 +268449,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 14.4 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 14.2 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 30.329316056853845,
       "lon": 73.20970895334304
@@ -268514,7 +268514,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 15.0 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 15.1 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 30.329316056853845,
       "lon": 73.20970895334304
@@ -268540,7 +268540,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -2.9 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -2.6 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 30.329316056853845,
       "lon": 73.20970895334304
@@ -271400,7 +271400,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 23.3 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 22.4 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 26.740202346432632,
       "lon": 64.23901530890942
@@ -271465,7 +271465,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 35.0 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 34.0 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 26.740202346432632,
       "lon": 64.23901530890942
@@ -271491,7 +271491,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -3.0 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -2.7 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 26.740202346432632,
       "lon": 64.23901530890942
@@ -274334,12 +274334,12 @@
       "district": "Peshawar",
       "date": "20260829",
       "hazard": "cloud_burst",
-      "any_flag": true,
-      "max_confidence": 0.7,
+      "any_flag": false,
+      "max_confidence": 0.2,
       "n_observations": 1,
-      "n_triggered": 1,
-      "message_en": "Cloud top cooling 10.1 K in 15 min -- explosive vertical development.",
-      "message_ur": "طوفانی بارش کا فوری خطرہ",
+      "n_triggered": 0,
+      "message_en": "STUBBED: nearest available frame pair is 15 min apart (need <=20 min); this archive's cadence is too coarse to evaluate a genuine rate-of-change here. Detector logic is real and will fire once 15-min cadence MSG data is supplied.",
+      "message_ur": "ناکافی وقتی ریزولوشن -- 15 منٹ کے تسلسل والا ڈیٹا درکار ہے",
       "lat": 33.9043530181635,
       "lon": 71.5685717969027
     },
@@ -274351,7 +274351,7 @@
       "max_confidence": 0.0,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Not enough clear-sky multi-day night skin-temperature data (2 of 2 available frames excluded as cloud-contaminated).",
+      "message_en": "Not enough clear-sky multi-day night skin-temperature data (4 of 4 available frames excluded as cloud-contaminated).",
       "message_ur": "ناکافی صاف آسمان ڈیٹا",
       "lat": 33.9043530181635,
       "lon": 71.5685717969027
@@ -274373,12 +274373,12 @@
       "district": "Peshawar",
       "date": "20260829",
       "hazard": "fog",
-      "any_flag": false,
-      "max_confidence": 0.6,
+      "any_flag": true,
+      "max_confidence": 0.75,
       "n_observations": 8,
-      "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 = 6.8 K -- outside the fog signature range.",
-      "message_ur": "دھند کی علامت نہیں",
+      "n_triggered": 2,
+      "message_en": "Small positive IR3.9-IR10.8 difference (2.2 K) over a spatially coherent low-lying area -- classic radiative/advective fog signature. Visibility/ceiling below landing minima. Favourable-for-disease dew conditions; delay spraying until fog clears.",
+      "message_ur": "دھند کا امکان (IR3.9-IR10.8 = 2.2 K)۔ رن وے کی مرئیت کم ہو سکتی ہے",
       "lat": 33.9043530181635,
       "lon": 71.5685717969027
     },
@@ -274416,7 +274416,7 @@
       "max_confidence": 0.0,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Not enough clear-sky multi-day skin-temperature data (5 of 5 available frames excluded as cloud-contaminated).",
+      "message_en": "Not enough clear-sky multi-day skin-temperature data (3 of 3 available frames excluded as cloud-contaminated).",
       "message_ur": "ناکافی صاف آسمان ڈیٹا",
       "lat": 33.9043530181635,
       "lon": 71.5685717969027
@@ -274442,7 +274442,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +9.0 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +5.1 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 33.9043530181635,
       "lon": 71.5685717969027
@@ -277302,7 +277302,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 16.0 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 15.7 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 30.77348400888996,
       "lon": 67.40923920210504
@@ -277367,7 +277367,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 26.0 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 24.4 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 30.77348400888996,
       "lon": 67.40923920210504
@@ -277393,7 +277393,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -0.5 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +0.1 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 30.77348400888996,
       "lon": 67.40923920210504
@@ -280253,7 +280253,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 21.9 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 21.5 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 27.4890070498502,
       "lon": 67.98464150835339
@@ -280318,7 +280318,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 25.1 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 25.0 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 27.4890070498502,
       "lon": 67.98464150835339
@@ -280344,7 +280344,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -6.4 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -6.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 27.4890070498502,
       "lon": 67.98464150835339
@@ -283204,7 +283204,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 19.4 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 18.8 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 30.67162307774291,
       "lon": 66.7476968546646
@@ -283269,7 +283269,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 29.7 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 28.8 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 30.67162307774291,
       "lon": 66.7476968546646
@@ -283295,7 +283295,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -0.7 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -0.9 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 30.67162307774291,
       "lon": 66.7476968546646
@@ -286155,7 +286155,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 16.3 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 16.0 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 31.005740183814446,
       "lon": 68.2450113307759
@@ -286220,7 +286220,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 29.5 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 28.1 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 31.005740183814446,
       "lon": 68.2450113307759
@@ -286246,7 +286246,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -0.9 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -0.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 31.005740183814446,
       "lon": 68.2450113307759
@@ -289106,7 +289106,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 19.8 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 19.1 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 30.123038875580413,
       "lon": 66.81282141190523
@@ -289171,7 +289171,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 29.7 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 28.6 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 30.123038875580413,
       "lon": 66.81282141190523
@@ -289197,7 +289197,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -0.7 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -0.4 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 30.123038875580413,
       "lon": 66.81282141190523
@@ -292057,7 +292057,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 18.9 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 18.6 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 28.524274232993303,
       "lon": 70.5136351971601
@@ -292148,7 +292148,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -3.9 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -3.5 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 28.524274232993303,
       "lon": 70.5136351971601
@@ -295008,7 +295008,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 19.8 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 19.6 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 29.10671443314065,
       "lon": 70.15043117103322
@@ -295073,7 +295073,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 20.4 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 20.3 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 29.10671443314065,
       "lon": 70.15043117103322
@@ -295099,7 +295099,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -0.5 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -1.0 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 29.10671443314065,
       "lon": 70.15043117103322
@@ -297959,7 +297959,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 8.8 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 8.5 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 33.50062131955731,
       "lon": 73.05597899440076
@@ -298024,7 +298024,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 7.6 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 6.3 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 33.50062131955731,
       "lon": 73.05597899440076
@@ -298050,7 +298050,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -4.7 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -4.3 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 33.50062131955731,
       "lon": 73.05597899440076
@@ -300910,7 +300910,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 14.9 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 14.8 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 30.543448630998675,
       "lon": 72.84147397277293
@@ -300975,7 +300975,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 15.8 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 15.7 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 30.543448630998675,
       "lon": 72.84147397277293
@@ -301001,7 +301001,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -2.9 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -2.5 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 30.543448630998675,
       "lon": 72.84147397277293
@@ -303861,7 +303861,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 17.3 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 17.2 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 25.953402304996988,
       "lon": 69.23325575602047
@@ -303926,7 +303926,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 18.5 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 18.4 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 25.953402304996988,
       "lon": 69.23325575602047
@@ -303952,7 +303952,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -4.0 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -3.8 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 25.953402304996988,
       "lon": 69.23325575602047
@@ -306812,7 +306812,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 13.0 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 13.2 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 32.01362803176926,
       "lon": 72.69376047833424
@@ -306877,7 +306877,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 13.6 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 13.7 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 32.01362803176926,
       "lon": 72.69376047833424
@@ -306903,7 +306903,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -3.3 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -3.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 32.01362803176926,
       "lon": 72.69376047833424
@@ -309763,7 +309763,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 6.9 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 6.1 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 34.82751209348109,
       "lon": 72.71689385428617
@@ -309828,7 +309828,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 7.0 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 7.2 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 34.82751209348109,
       "lon": 72.71689385428617
@@ -309854,7 +309854,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -2.9 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -4.5 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 34.82751209348109,
       "lon": 72.71689385428617
@@ -318616,7 +318616,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 22.0 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 21.6 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 27.8577398521839,
       "lon": 68.66895370840413
@@ -318681,7 +318681,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 22.9 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 22.7 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 27.8577398521839,
       "lon": 68.66895370840413
@@ -318707,7 +318707,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -3.5 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -3.4 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 27.8577398521839,
       "lon": 68.66895370840413
@@ -324518,7 +324518,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 18.0 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 17.7 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 29.80669330044533,
       "lon": 67.9238294640467
@@ -324583,7 +324583,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 23.6 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 22.9 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 29.80669330044533,
       "lon": 67.9238294640467
@@ -324609,7 +324609,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +2.5 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +3.4 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 29.80669330044533,
       "lon": 67.9238294640467
@@ -330420,7 +330420,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 13.7 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 13.6 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 32.01149043479542,
       "lon": 70.07105273312659
@@ -330485,7 +330485,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 18.5 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 18.4 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 32.01149043479542,
       "lon": 70.07105273312659
@@ -330511,7 +330511,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +1.1 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +0.5 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 32.01149043479542,
       "lon": 70.07105273312659
@@ -333371,7 +333371,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 21.5 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 21.4 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 27.521510752345886,
       "lon": 69.11615993430854
@@ -333462,7 +333462,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +0.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -0.1 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 27.521510752345886,
       "lon": 69.11615993430854
@@ -336387,7 +336387,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 9.9 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 10.3 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 34.14909286355751,
       "lon": 72.46411036861973
@@ -336413,7 +336413,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -5.7 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -4.6 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 34.14909286355751,
       "lon": 72.46411036861973
@@ -339273,7 +339273,7 @@
       "max_confidence": 0.0,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Not enough clear-sky multi-day night skin-temperature data (2 of 2 available frames excluded as cloud-contaminated).",
+      "message_en": "Not enough clear-sky multi-day night skin-temperature data (4 of 4 available frames excluded as cloud-contaminated).",
       "message_ur": "ناکافی صاف آسمان ڈیٹا",
       "lat": 35.22104858927527,
       "lon": 72.45014066670852
@@ -339338,7 +339338,7 @@
       "max_confidence": 0.0,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Not enough clear-sky multi-day skin-temperature data (5 of 5 available frames excluded as cloud-contaminated).",
+      "message_en": "Not enough clear-sky multi-day skin-temperature data (3 of 3 available frames excluded as cloud-contaminated).",
       "message_ur": "ناکافی صاف آسمان ڈیٹا",
       "lat": 35.22104858927527,
       "lon": 72.45014066670852
@@ -339364,7 +339364,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +20.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +8.6 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 35.22104858927527,
       "lon": 72.45014066670852
@@ -342224,7 +342224,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 16.9 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 16.8 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 25.440386667031124,
       "lon": 68.78524324414445
@@ -342289,7 +342289,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 16.8 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 16.6 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 25.440386667031124,
       "lon": 68.78524324414445
@@ -342315,7 +342315,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -4.3 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -3.5 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 25.440386667031124,
       "lon": 68.78524324414445
@@ -345175,7 +345175,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 15.2 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 15.1 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 24.885925465972228,
       "lon": 68.47381465968945
@@ -345240,7 +345240,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 16.5 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 16.3 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 24.885925465972228,
       "lon": 68.47381465968945
@@ -345266,7 +345266,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -5.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -4.1 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 24.885925465972228,
       "lon": 68.47381465968945
@@ -348126,7 +348126,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 12.3 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 12.2 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 32.17412320499081,
       "lon": 70.37629849614294
@@ -348191,7 +348191,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 11.7 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 10.2 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 32.17412320499081,
       "lon": 70.37629849614294
@@ -348217,7 +348217,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +1.3 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +4.9 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 32.17412320499081,
       "lon": 70.37629849614294
@@ -351142,7 +351142,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 9.9 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 9.7 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 24.90655343861673,
       "lon": 70.08578036861486
@@ -351168,7 +351168,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +2.7 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +2.4 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 24.90655343861673,
       "lon": 70.08578036861486
@@ -354093,7 +354093,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 14.3 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 14.5 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 24.60358755549684,
       "lon": 67.99278352700438
@@ -354119,7 +354119,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +2.4 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +2.3 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 24.60358755549684,
       "lon": 67.99278352700438
@@ -356979,7 +356979,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 14.0 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 13.8 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 30.893388889456435,
       "lon": 72.49197815106719
@@ -357044,7 +357044,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 14.4 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 14.6 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 30.893388889456435,
       "lon": 72.49197815106719
@@ -357070,7 +357070,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -1.3 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -1.8 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 30.893388889456435,
       "lon": 72.49197815106719
@@ -360021,7 +360021,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +0.8 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -0.3 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 25.37012575852144,
       "lon": 69.82726207102694
@@ -362881,7 +362881,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 6.2 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 5.8 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 35.24038735966931,
       "lon": 72.0300364941122
@@ -362946,7 +362946,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 2.4 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 2.3 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 35.24038735966931,
       "lon": 72.0300364941122
@@ -362972,7 +362972,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -0.1 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +0.9 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 35.24038735966931,
       "lon": 72.0300364941122
@@ -365923,7 +365923,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -2.4 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -2.3 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 30.024742542603743,
       "lon": 72.38113460647409
@@ -368783,7 +368783,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 18.3 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 17.9 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 31.286806375632537,
       "lon": 69.12697618736445
@@ -368848,7 +368848,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 26.6 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 25.8 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 31.286806375632537,
       "lon": 69.12697618736445
@@ -368874,7 +368874,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly -1.6 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly -1.2 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 31.286806375632537,
       "lon": 69.12697618736445
@@ -371734,7 +371734,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky night skin temp 16.5 C -- above cold-wave threshold.",
+      "message_en": "Mean clear-sky night skin temp 16.1 C -- above cold-wave threshold.",
       "message_ur": "سردی کی لہر کی علامت نہیں",
       "lat": 30.396383780214443,
       "lon": 67.55822150809755
@@ -371799,7 +371799,7 @@
       "max_confidence": 0.33,
       "n_observations": 1,
       "n_triggered": 0,
-      "message_en": "Mean clear-sky skin temp 25.3 C -- below heat-wave persistence threshold.",
+      "message_en": "Mean clear-sky skin temp 24.5 C -- below heat-wave persistence threshold.",
       "message_ur": "گرمی کی لہر کی علامت نہیں",
       "lat": 30.396383780214443,
       "lon": 67.55822150809755
@@ -371825,7 +371825,7 @@
       "max_confidence": 0.5,
       "n_observations": 8,
       "n_triggered": 0,
-      "message_en": "IR3.9-IR10.8 anomaly +0.0 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
+      "message_en": "IR3.9-IR10.8 anomaly +0.1 K vs. regional background -- below the hot-spot threshold. DEMO MODE: this archive is Kharif sowing season, not Punjab's real Oct-Nov burning season -- this cannot be a real burning-season detection.",
       "message_ur": "جلانے کی علامت نہیں۔ ڈیمو موڈ: یہ ڈیٹا اصل جلانے کے موسم (اکتوبر-نومبر) کا نہیں",
       "lat": 30.396383780214443,
       "lon": 67.55822150809755

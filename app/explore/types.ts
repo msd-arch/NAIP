@@ -11,6 +11,20 @@ export interface DistrictHazardRow {
   n_triggered_rows: number;
   hazards_triggered: Record<string, number>;
 }
+export interface DistrictHazardMessage {
+  district: string;
+  hazard: string;
+  date: string;
+  max_confidence: number;
+  n_triggered: number;
+  n_observations: number;
+  message_en: string;
+  message_ur: string;
+}
+export interface DistrictHazardMessages {
+  messages: DistrictHazardMessage[];
+}
+
 export interface DistrictHazardSummary {
   districts: DistrictHazardRow[];
 }
@@ -289,6 +303,7 @@ export interface HistoricalEventsData {
 
 export interface DataBundle {
   hazards: DistrictHazardSummary | null;
+  hazardMessages: DistrictHazardMessages | null;
   forecast: ForecastData | null;
   drought: DroughtNational | null;
   cropStress: CropStressScreen | null;

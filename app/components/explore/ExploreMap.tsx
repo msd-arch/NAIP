@@ -41,8 +41,15 @@ function styleForDistrict(
   layerId: LayerId,
   data: DataBundle,
   cropPick: Crop,
-  triggerThreshold: "national" | "demo"
+  triggerThreshold: "national" | "demo",
+  hazardsView: "live" | "forecast" = "live"
 ): DistrictStyleResult {
+  if (layerId === "hazards" && hazardsView === "forecast") {
+    const rows = (data.forecast?.alerts ?? []).filter((a) => a.district === name && a.flag);
+    if (rows.length === 0) return { fillColor: NODATA, fillOpacity: 0.35, tooltip: `${name}: no forecast flag in the next 72h` };
+    const hazards = [...new Set(rows.map((r) => r.forecast_hazard))].join(", ");
+    return { fillColor: "#8a6d3f", fillOpacity: Math.min(0.9, 0.4 + rows.length * 0.12), tooltip: `${name}: ${hazards} forecast in the next 72h` };
+  }
   if (layerId === "hazards" || layerId === "home") {
     const rows = data.hazards?.districts ?? [];
     const row = rows.find((d) => d.district === name);
@@ -156,6 +163,7 @@ export default function ExploreMap({
   triggerThreshold,
   selectedDistrict,
   onSelectDistrict,
+  hazardsView = "live",
 }: {
   geo: GeoJSON.FeatureCollection;
   layerId: LayerId;
@@ -164,6 +172,7 @@ export default function ExploreMap({
   triggerThreshold: "national" | "demo";
   selectedDistrict: string | null;
   onSelectDistrict: (name: string) => void;
+  hazardsView?: "live" | "forecast";
 }) {
   const geoJsonRef = useRef<any>(null);
   const selectRef = useRef(onSelectDistrict);
@@ -193,7 +202,7 @@ export default function ExploreMap({
       const feature = layer.feature as Feature<Geometry, any>;
       const name = feature.properties?.shapeName as string;
       const s = isChoropleth
-        ? styleForDistrict(name, layerId, data, cropPick, triggerThreshold)
+        ? styleForDistrict(name, layerId, data, cropPick, triggerThreshold, hazardsView)
         : EMPTY;
       const selected = name === selectedDistrict;
       layer.setStyle({
@@ -205,7 +214,7 @@ export default function ExploreMap({
       layer.unbindTooltip();
       layer.bindTooltip(s.tooltip, { sticky: true });
     });
-  }, [layerId, data, cropPick, triggerThreshold, selectedDistrict, isChoropleth]);
+  }, [layerId, data, cropPick, triggerThreshold, selectedDistrict, isChoropleth, hazardsView]);
 
   const onEachFeature = useMemo(
     () => (feature: Feature<Geometry, any>, layer: any) => {
