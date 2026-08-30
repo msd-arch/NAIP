@@ -6,10 +6,11 @@ import { MapContainer, TileLayer, GeoJSON, Polyline, CircleMarker, Tooltip, useM
 import type { Feature, Geometry } from "geojson";
 import type { Crop, LayerId } from "../../explore/layers";
 import { LAYERS } from "../../explore/layers";
-import type { CropStressDistrict, DataBundle, DistrictHazardCurrentEntry } from "../../explore/types";
+import type { CropStressDistrict, DataBundle, DistrictHazardCurrentEntry, ExposureRow } from "../../explore/types";
 import { formatDate } from "../../lib/formatDate";
 import HazardPopupContent from "./HazardPopupContent";
 import CropStressPopupContent from "./CropStressPopupContent";
+import ExposurePopupContent from "./ExposurePopupContent";
 
 const NATIONAL_CENTER: [number, number] = [30.3753, 69.3451];
 const NATIONAL_ZOOM = 5;
@@ -220,11 +221,13 @@ export default function ExploreMap({
   const [popupState, setPopupState] = useState<
     | { kind: "hazards"; district: string; hazards: DistrictHazardCurrentEntry[] }
     | { kind: "cropstress"; district: string; row: CropStressDistrict }
+    | { kind: "exposure"; district: string; rows: ExposureRow[] }
     | null
   >(null);
   useEffect(() => {
     if (popupState?.kind === "hazards" && (layerId !== "hazards" || hazardsView !== "live")) setPopupState(null);
     if (popupState?.kind === "cropstress" && layerId !== "cropstress") setPopupState(null);
+    if (popupState?.kind === "exposure" && layerId !== "exposure") setPopupState(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [layerId, hazardsView]);
 
@@ -303,6 +306,16 @@ export default function ExploreMap({
         if (curLayerId === "cropstress") {
           const row = curData.cropStress?.district_results.find((d) => d.district === name);
           setPopupState(row && row.n_points > 0 ? { kind: "cropstress", district: name, row } : null);
+          return;
+        }
+
+        // Real Exposure Risk popup: only for districts with 1+ real rows
+        // in the top-50 scored events -- the other ~97 districts aren't
+        // ruled safe, they're just not in this list (same real limitation
+        // ExposureDetail's side-panel text already states), so no popup.
+        if (curLayerId === "exposure") {
+          const rows = curData.exposure?.top_exposure_events.filter((e) => e.district === name) ?? [];
+          setPopupState(rows.length > 0 ? { kind: "exposure", district: name, rows } : null);
           return;
         }
 
@@ -408,8 +421,10 @@ export default function ExploreMap({
             </button>
             {popupState.kind === "hazards" ? (
               <HazardPopupContent key={popupState.district} district={popupState.district} hazards={popupState.hazards} />
-            ) : (
+            ) : popupState.kind === "cropstress" ? (
               <CropStressPopupContent key={popupState.district} district={popupState.district} row={popupState.row} />
+            ) : (
+              <ExposurePopupContent key={popupState.district} district={popupState.district} rows={popupState.rows} />
             )}
           </div>
         </div>
