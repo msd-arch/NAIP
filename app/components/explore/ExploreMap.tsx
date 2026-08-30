@@ -6,11 +6,12 @@ import { MapContainer, TileLayer, GeoJSON, Polyline, CircleMarker, Tooltip, useM
 import type { Feature, Geometry } from "geojson";
 import type { Crop, LayerId } from "../../explore/layers";
 import { LAYERS } from "../../explore/layers";
-import type { CropStressDistrict, DataBundle, DistrictHazardCurrentEntry, ExposureRow } from "../../explore/types";
+import type { CropStressDistrict, DataBundle, DistrictHazardCurrentEntry, ExposureRow, FloodDistrictResult } from "../../explore/types";
 import { formatDate } from "../../lib/formatDate";
 import HazardPopupContent from "./HazardPopupContent";
 import CropStressPopupContent from "./CropStressPopupContent";
 import ExposurePopupContent from "./ExposurePopupContent";
+import FloodPopupContent from "./FloodPopupContent";
 
 const NATIONAL_CENTER: [number, number] = [30.3753, 69.3451];
 const NATIONAL_ZOOM = 5;
@@ -222,12 +223,14 @@ export default function ExploreMap({
     | { kind: "hazards"; district: string; hazards: DistrictHazardCurrentEntry[] }
     | { kind: "cropstress"; district: string; row: CropStressDistrict }
     | { kind: "exposure"; district: string; rows: ExposureRow[] }
+    | { kind: "flood"; district: string; row: FloodDistrictResult }
     | null
   >(null);
   useEffect(() => {
     if (popupState?.kind === "hazards" && (layerId !== "hazards" || hazardsView !== "live")) setPopupState(null);
     if (popupState?.kind === "cropstress" && layerId !== "cropstress") setPopupState(null);
     if (popupState?.kind === "exposure" && layerId !== "exposure") setPopupState(null);
+    if (popupState?.kind === "flood" && layerId !== "flood") setPopupState(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [layerId, hazardsView]);
 
@@ -316,6 +319,15 @@ export default function ExploreMap({
         if (curLayerId === "exposure") {
           const rows = curData.exposure?.top_exposure_events.filter((e) => e.district === name) ?? [];
           setPopupState(rows.length > 0 ? { kind: "exposure", district: name, rows } : null);
+          return;
+        }
+
+        // Real Flood Risk Screen popup: only when this real district has a
+        // real model score -- a null score means the district fell
+        // outside the real Sentinel-1/CHIRPS coverage this pass.
+        if (curLayerId === "flood") {
+          const row = curData.flood?.district_results.find((d) => d.district === name);
+          setPopupState(row && row.mean_model_score != null ? { kind: "flood", district: name, row } : null);
           return;
         }
 
@@ -423,8 +435,10 @@ export default function ExploreMap({
               <HazardPopupContent key={popupState.district} district={popupState.district} hazards={popupState.hazards} />
             ) : popupState.kind === "cropstress" ? (
               <CropStressPopupContent key={popupState.district} district={popupState.district} row={popupState.row} />
-            ) : (
+            ) : popupState.kind === "exposure" ? (
               <ExposurePopupContent key={popupState.district} district={popupState.district} rows={popupState.rows} />
+            ) : (
+              <FloodPopupContent key={popupState.district} district={popupState.district} row={popupState.row} />
             )}
           </div>
         </div>
