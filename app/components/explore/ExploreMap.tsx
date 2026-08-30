@@ -6,9 +6,10 @@ import { MapContainer, TileLayer, GeoJSON, Polyline, CircleMarker, Tooltip, useM
 import type { Feature, Geometry } from "geojson";
 import type { Crop, LayerId } from "../../explore/layers";
 import { LAYERS } from "../../explore/layers";
-import type { DataBundle, DistrictHazardCurrentEntry } from "../../explore/types";
+import type { CropStressDistrict, DataBundle, DistrictHazardCurrentEntry } from "../../explore/types";
 import { formatDate } from "../../lib/formatDate";
 import HazardPopupContent from "./HazardPopupContent";
+import CropStressPopupContent from "./CropStressPopupContent";
 
 const NATIONAL_CENTER: [number, number] = [30.3753, 69.3451];
 const NATIONAL_ZOOM = 5;
@@ -198,20 +199,31 @@ export default function ExploreMap({
     selectRef.current = onSelectDistrict;
   }, [onSelectDistrict]);
 
-  // Real hazard-animation popup, docked to the left edge of the map (not
-  // anchored to the clicked district's lat/lng). Anchoring to the click
-  // point via Leaflet's own L.popup() looked right for a small card, but
-  // Leaflet's autoPan then yanked the whole map to keep it on screen --
-  // for a district near the map's edge this could pan/zoom the map so far
-  // that neither the clicked district nor useful map context stayed
-  // visible (real user report). A fixed-position panel means the map
-  // never moves to accommodate the popup, so map and popup are always
+  // Real per-district animation popup, docked to the left edge of the map
+  // (not anchored to the clicked district's lat/lng). Anchoring to the
+  // click point via Leaflet's own L.popup() looked right for a small
+  // card, but Leaflet's autoPan then yanked the whole map to keep it on
+  // screen -- for a district near the map's edge this could pan/zoom the
+  // map so far that neither the clicked district nor useful map context
+  // stayed visible (real user report). A fixed-position panel means the
+  // map never moves to accommodate the popup, so map and popup are always
   // both on screen together. setPopupState itself has a stable identity
   // (a React guarantee for useState setters), so the memoized click
   // handler below can call it directly with no stale-closure ref needed.
-  const [popupState, setPopupState] = useState<{ district: string; hazards: DistrictHazardCurrentEntry[] } | null>(null);
+  // A discriminated union rather than two separate state variables --
+  // only one of Hazards/Crop Stress can have an open popup at a time
+  // (they're different nav layers), so one slot with a `kind` tag keeps
+  // that invariant structural instead of needing to remember to clear
+  // the other state on every layer switch.
+  const [popupState, setPopupState] = useState<
+    | { kind: "hazards"; district: string; hazards: DistrictHazardCurrentEntry[] }
+    | { kind: "cropstress"; district: string; row: CropStressDistrict }
+    | null
+  >(null);
   useEffect(() => {
-    if (layerId !== "hazards" || hazardsView !== "live") setPopupState(null);
+    if (popupState?.kind === "hazards" && (layerId !== "hazards" || hazardsView !== "live")) setPopupState(null);
+    if (popupState?.kind === "cropstress" && layerId !== "cropstress") setPopupState(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [layerId, hazardsView]);
 
   // onEachFeature (below) only runs once, when the GeoJSON layer is first
@@ -265,18 +277,29 @@ export default function ExploreMap({
         const name = feature.properties?.shapeName as string;
         selectRef.current(name);
 
+        const { layerId: curLayerId, hazardsView: curHazardsView, data: curData } = popupCtxRef.current;
+
         // Real hazard-animation popup: only for the National Hazards Live
         // window, and only when this real district has 1+ real currently-
         // flagged hazards -- an unflagged district has nothing to animate,
         // so it gets the existing side-panel behavior only, no popup.
-        const { layerId: curLayerId, hazardsView: curHazardsView, data: curData } = popupCtxRef.current;
-        if (curLayerId !== "hazards" || curHazardsView !== "live") {
-          setPopupState(null);
+        if (curLayerId === "hazards" && curHazardsView === "live") {
+          const row = curData.hazardCurrent?.districts.find((d) => d.district === name);
+          const flagged = row?.hazards.filter((h) => h.currently_flagged) ?? [];
+          setPopupState(flagged.length > 0 ? { kind: "hazards", district: name, hazards: flagged } : null);
           return;
         }
-        const row = curData.hazardCurrent?.districts.find((d) => d.district === name);
-        const flagged = row?.hazards.filter((h) => h.currently_flagged) ?? [];
-        setPopupState(flagged.length > 0 ? { district: name, hazards: flagged } : null);
+
+        // Real Crop Stress Screen popup: only when this real district is
+        // covered by the screen at all (n_points > 0) -- an uncovered
+        // district has no real signal to animate.
+        if (curLayerId === "cropstress") {
+          const row = curData.cropStress?.district_results.find((d) => d.district === name);
+          setPopupState(row && row.n_points > 0 ? { kind: "cropstress", district: name, row } : null);
+          return;
+        }
+
+        setPopupState(null);
       });
     },
     []
@@ -376,7 +399,11 @@ export default function ExploreMap({
             >
               ×
             </button>
-            <HazardPopupContent key={popupState.district} district={popupState.district} hazards={popupState.hazards} />
+            {popupState.kind === "hazards" ? (
+              <HazardPopupContent key={popupState.district} district={popupState.district} hazards={popupState.hazards} />
+            ) : (
+              <CropStressPopupContent key={popupState.district} district={popupState.district} row={popupState.row} />
+            )}
           </div>
         </div>
       )}
