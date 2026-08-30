@@ -265,7 +265,13 @@ function ForecastWindow({ data, district }: { data: DataBundle; district: string
     );
   }
 
-  const rows = f.alerts.filter((a) => a.district === district);
+  // Flagged rows first, same scanning convenience as the Live window --
+  // and every row gets an explicit, unambiguous badge either way, so a
+  // real "checked, not flagged" result never reads as a live warning just
+  // because its hazard name and real explainer text are still shown.
+  const rows = [...f.alerts.filter((a) => a.district === district)].sort(
+    (a, b) => Number(b.flag) - Number(a.flag)
+  );
   return (
     <div className="space-y-2">
       <h3 className="text-sm font-semibold text-main">{district}</h3>
@@ -278,17 +284,23 @@ function ForecastWindow({ data, district }: { data: DataBundle; district: string
                 ? ` (${formatDate(r.window_days[0])} → ${formatDate(r.window_days[r.window_days.length - 1])})`
                 : ` — ${formatDate(r.valid_date)}`}
             </span>
-            {r.flag && <span className="pill tier-model rounded-full bg-secondary-500 px-2 py-0.5 text-[10px] font-bold uppercase text-white">Forecast flag</span>}
+            <span
+              className={`rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide ${r.flag ? "bg-secondary-500 text-white" : "text-faint"}`}
+            >
+              {r.flag ? "Forecast flag" : "No risk forecast"}
+            </span>
           </div>
           {HAZARD_INFO[r.forecast_hazard] && <p className="mt-1 text-[11px] leading-relaxed text-dim">{HAZARD_INFO[r.forecast_hazard]}</p>}
-          <p
-            className={`mt-1 text-faint ${locale === "ur" ? "urdu-text" : ""}`}
-            dir={locale === "ur" ? "rtl" : undefined}
-            lang={locale === "ur" ? "ur" : undefined}
-          >
-            {locale === "ur" ? r.message_ur : r.message_en}
-          </p>
-          <p className="mt-1 text-[10px] text-faint">confidence {Math.round(r.confidence * 100)}% · {r.source}</p>
+          <div className="mt-2 rounded-md bg-elev-2 p-2">
+            <p
+              className={`text-faint ${locale === "ur" ? "urdu-text" : ""}`}
+              dir={locale === "ur" ? "rtl" : undefined}
+              lang={locale === "ur" ? "ur" : undefined}
+            >
+              {locale === "ur" ? r.message_ur : r.message_en}
+            </p>
+            <p className="mt-1 text-[10px] text-faint">confidence {Math.round(r.confidence * 100)}% · {r.source}</p>
+          </div>
         </div>
       ))}
       {rows.length === 0 && <EmptyHint>No forecast rows for {district}.</EmptyHint>}
