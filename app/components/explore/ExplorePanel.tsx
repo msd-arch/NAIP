@@ -781,6 +781,8 @@ export default function ExplorePanel({
   selectedDistrict,
   cropPick,
   onCropPickChange,
+  canalPick,
+  onCanalPickChange,
   triggerThreshold,
   onTriggerThresholdChange,
   hazardsView,
@@ -791,6 +793,8 @@ export default function ExplorePanel({
   selectedDistrict: string | null;
   cropPick: Crop;
   onCropPickChange: (c: Crop) => void;
+  canalPick: string;
+  onCanalPickChange: (id: string) => void;
   triggerThreshold: "national" | "demo";
   onTriggerThresholdChange: (t: "national" | "demo") => void;
   hazardsView: "live" | "forecast";
@@ -890,11 +894,43 @@ export default function ExplorePanel({
         </div>
       )}
       {layerId === "canal" && data.water && (
-        <div className="rounded-xl border border-soft bg-elev p-4">
-          <h3 className="text-sm font-semibold text-main">{data.water.canal_name}</h3>
-          <Row k="Head stress index" v={data.water.head_vs_tail.head_stress_index.toFixed(3)} />
-          <Row k="Tail stress index" v={data.water.head_vs_tail.tail_stress_index.toFixed(3)} />
-          <Row k="Flow direction" v={data.water.head_vs_tail.flow_direction_verdict} />
+        <div className="space-y-3">
+          <div className="flex flex-wrap gap-1.5">
+            {data.water.canals.map((c) => (
+              <button
+                key={c.canal_id}
+                onClick={() => onCanalPickChange(c.canal_id)}
+                className={`rounded-full border px-2.5 py-1 text-[11px] transition-colors ${
+                  c.canal_id === canalPick
+                    ? "border-accent-500 bg-accent-soft text-accent-500 font-semibold"
+                    : "border-soft text-dim hover:text-main"
+                }`}
+              >
+                {c.canal_name}
+              </button>
+            ))}
+          </div>
+          {(() => {
+            const canal = data.water!.canals.find((c) => c.canal_id === canalPick) ?? data.water!.canals[0];
+            if (!canal) return <EmptyHint>No canal data.</EmptyHint>;
+            return (
+              <div className="rounded-xl border border-soft bg-elev p-4">
+                <h3 className="text-sm font-semibold text-main">{canal.canal_name}</h3>
+                <Row k="Real OSM length" v={canal.geometry_source.match(/([\d.]+) km total/)?.[1] ? `${canal.geometry_source.match(/([\d.]+) km total/)?.[1]} km` : "n/a"} />
+                <Row k="Segments with valid index" v={`${canal.n_segments_with_valid_index} / ${canal.n_segments}`} />
+                <Row
+                  k="Head stress index"
+                  v={canal.head_vs_tail.head_stress_index != null ? canal.head_vs_tail.head_stress_index.toFixed(3) : "n/a"}
+                />
+                <Row
+                  k="Tail stress index"
+                  v={canal.head_vs_tail.tail_stress_index != null ? canal.head_vs_tail.tail_stress_index.toFixed(3) : "n/a"}
+                />
+                <Row k="Flow direction (real SRTM check)" v={canal.head_vs_tail.flow_direction_verdict} />
+                <Caveat>{canal.scope}</Caveat>
+              </div>
+            );
+          })()}
         </div>
       )}
     </div>

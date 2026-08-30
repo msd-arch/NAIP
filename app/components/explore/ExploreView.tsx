@@ -57,6 +57,7 @@ export default function ExploreView() {
   const [activeLayer, setActiveLayer] = useState<LayerId>("home");
   const [selectedDistrict, setSelectedDistrict] = useState<string | null>(null);
   const [cropPick, setCropPick] = useState<Crop>("wheat");
+  const [canalPick, setCanalPick] = useState<string>("muridke_distributary");
   const [triggerThreshold, setTriggerThreshold] = useState<"national" | "demo">("national");
   // Hazards page carries two windows (live vs. 72h forecast) instead of the
   // forecast layer being a separate nav item -- this toggle picks which one
@@ -192,6 +193,8 @@ export default function ExploreView() {
             selectedDistrict={selectedDistrict}
             cropPick={cropPick}
             onCropPickChange={setCropPick}
+            canalPick={canalPick}
+            onCanalPickChange={setCanalPick}
             triggerThreshold={triggerThreshold}
             onTriggerThresholdChange={setTriggerThreshold}
             hazardsView={hazardsView}
@@ -211,6 +214,7 @@ export default function ExploreView() {
             layerId={activeLayer}
             data={data}
             cropPick={cropPick}
+            canalPick={canalPick}
             triggerThreshold={triggerThreshold}
             selectedDistrict={selectedDistrict}
             onSelectDistrict={handleSelectDistrict}
@@ -223,6 +227,8 @@ export default function ExploreView() {
               selectedDistrict={selectedDistrict}
               cropPick={cropPick}
               onCropPickChange={setCropPick}
+              canalPick={canalPick}
+              onCanalPickChange={setCanalPick}
               triggerThreshold={triggerThreshold}
               onTriggerThresholdChange={setTriggerThreshold}
               hazardsView={hazardsView}

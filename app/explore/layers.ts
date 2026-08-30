@@ -86,9 +86,9 @@ export const LAYERS: Record<LayerId, LayerMeta> = {
     labelUr: "نہر میں پانی کی کمی",
     mode: "zoom-canal",
     about:
-      "Water in a canal gets used up as it travels, so the far end usually gets less than the start. This zooms into the Muridke Distributary and tracks that head-to-tail difference.",
+      "Water in a canal gets used up as it travels, so the far end usually gets less than the start. Pick any of the real named canals below to see its own head-to-tail difference.",
     aboutUr:
-      "نہر میں پانی سفر کے دوران استعمال ہوتا رہتا ہے، اس لیے دور والے سرے کو عموماً کم پانی ملتا ہے۔ یہ مریدکے ڈسٹری بیوٹری پر مرکوز ہو کر یہ فرق دکھاتا ہے۔",
+      "نہر میں پانی سفر کے دوران استعمال ہوتا رہتا ہے، اس لیے دور والے سرے کو عموماً کم پانی ملتا ہے۔ نیچے دی گئی اصل نہروں میں سے کوئی بھی منتخب کریں تاکہ اس کا اپنا سرے سے سرے تک فرق دیکھا جا سکے۔",
   },
   flood: {
     id: "flood",

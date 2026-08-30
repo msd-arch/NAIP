@@ -101,15 +101,26 @@ export interface WaterStressSegment {
   stress_index: number | null;
   elevation_m_srtm: number | null;
 }
-export interface WaterStress {
+export interface CanalWaterStress {
+  canal_id: string;
   canal_name: string;
+  scope: string;
+  geometry_source: string;
+  et_source: string;
+  stress_index_definition: string;
   n_segments: number;
+  n_segments_with_valid_index: number;
   segments: WaterStressSegment[];
   head_vs_tail: {
-    head_dist_km: number; head_stress_index: number; head_elevation_m_srtm: number;
-    tail_dist_km: number; tail_stress_index: number; tail_elevation_m_srtm: number;
+    head_dist_km: number; head_stress_index: number | null; head_elevation_m_srtm: number | null;
+    tail_dist_km: number; tail_stress_index: number | null; tail_elevation_m_srtm: number | null;
     flow_direction_verdict: string;
   };
+}
+export interface WaterStress {
+  scope: string;
+  n_canals: number;
+  canals: CanalWaterStress[];
 }
 
 export interface LocustRegion {

@@ -179,6 +179,7 @@ export default function ExploreMap({
   layerId,
   data,
   cropPick,
+  canalPick,
   triggerThreshold,
   selectedDistrict,
   onSelectDistrict,
@@ -188,6 +189,7 @@ export default function ExploreMap({
   layerId: LayerId;
   data: DataBundle;
   cropPick: Crop;
+  canalPick: string;
   triggerThreshold: "national" | "demo";
   selectedDistrict: string | null;
   onSelectDistrict: (name: string) => void;
@@ -239,12 +241,17 @@ export default function ExploreMap({
   const mode = LAYERS[layerId].mode;
   const isChoropleth = mode === "choropleth";
 
+  const activeCanal = useMemo(
+    () => data.water?.canals.find((c) => c.canal_id === canalPick) ?? data.water?.canals[0] ?? null,
+    [data.water, canalPick]
+  );
+
   const canalCenter = useMemo<[number, number] | null>(() => {
-    const segs = data.water?.segments;
+    const segs = activeCanal?.segments;
     if (!segs || segs.length === 0) return null;
     const mid = segs[Math.floor(segs.length / 2)];
     return [mid.lat, mid.lon];
-  }, [data.water]);
+  }, [activeCanal]);
 
   // reapply style + tooltip imperatively whenever the active layer/data/selection
   // changes -- the GeoJSON's `data` prop identity never changes, so Leaflet never
@@ -363,10 +370,10 @@ export default function ExploreMap({
           />
         )}
 
-        {mode === "zoom-canal" && data.water && (
+        {mode === "zoom-canal" && activeCanal && (
           <>
-            <Polyline positions={data.water.segments.map((s) => [s.lat, s.lon] as [number, number])} color="#4a8f3c88" weight={2} />
-            {data.water.segments.map((s) => (
+            <Polyline positions={activeCanal.segments.map((s) => [s.lat, s.lon] as [number, number])} color="#4a8f3c88" weight={2} />
+            {activeCanal.segments.map((s) => (
               <CircleMarker
                 key={s.segment_id}
                 center={[s.lat, s.lon]}

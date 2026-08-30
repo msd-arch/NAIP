@@ -67,7 +67,8 @@ interface DroughtNational {
   district_results: DroughtDistrict[];
 }
 
-interface WaterStress {
+interface CanalWaterStress {
+  canal_id: string;
   canal_name: string;
   scope: string;
   geometry_source: string;
@@ -81,15 +82,23 @@ interface WaterStress {
     stress_index: number | null; elevation_m_srtm: number | null;
   }>;
   head_vs_tail: {
-    head_dist_km: number; head_stress_index: number; head_elevation_m_srtm: number;
-    tail_dist_km: number; tail_stress_index: number; tail_elevation_m_srtm: number;
+    head_dist_km: number; head_stress_index: number | null; head_elevation_m_srtm: number | null;
+    tail_dist_km: number; tail_stress_index: number | null; tail_elevation_m_srtm: number | null;
     flow_direction_verdict: string;
   };
-  flow_direction_check: {
-    source: string; elevation_head_m: number; elevation_tail_m: number;
-    total_drop_m: number; span_km: number; slope_m_per_km: number;
-    correlation_dist_vs_elevation: number; verdict: string;
-  };
+}
+
+// This unlinked legacy page (superseded by the Explore view's own
+// multi-canal picker) still fetches the same real water_stress.json --
+// now a real multi-canal file (extended from the original one-canal-only
+// scope, see the Explore view's Canal Water Stress panel for the current
+// per-canal picker). Kept simple here: shows the first real canal
+// (Muridke, the original) rather than duplicating a picker UI on a route
+// nothing links to anymore.
+interface WaterStress {
+  scope: string;
+  n_canals: number;
+  canals: CanalWaterStress[];
 }
 
 function NdviCompareBar({ district }: { district: DroughtDistrict }) {
@@ -131,34 +140,38 @@ export default function WaterStressPage() {
   }, []);
 
   if (!data) return <p className="text-sm text-dim">Loading...</p>;
+  const canal = data.canals[0];
+  if (!canal) return <p className="text-sm text-dim">No canal data.</p>;
 
-  const { head_vs_tail: hvt } = data;
+  const { head_vs_tail: hvt } = canal;
 
   return (
     <div>
-      <h1 id="canal-water-stress" className="scroll-mt-20 text-xl font-semibold">Water Stress &mdash; {data.canal_name}</h1>
+      <h1 id="canal-water-stress" className="scroll-mt-20 text-xl font-semibold">Water Stress &mdash; {canal.canal_name}</h1>
       <p className="mt-2 text-sm text-dim">
         Water in a canal gets used up as it travels, so the far end (the &ldquo;tail&rdquo;)
         usually gets less water than the start (the &ldquo;head&rdquo;). This tracks that
-        difference along the canal.
+        difference along the canal. {data.n_canals > 1 && (
+          <>The current Explore view now covers {data.n_canals} real canals; this older page only ever shows the first one.</>
+        )}
       </p>
 
       <div className="mt-4 rounded-xl border border-soft bg-elev p-4">
         <div className="mt-1 grid grid-cols-2 gap-4 text-center sm:grid-cols-4">
-          <Stat label="Head elevation" value={`${hvt.head_elevation_m_srtm}m`} />
-          <Stat label="Head stress" value={hvt.head_stress_index.toFixed(3)} />
-          <Stat label="Tail elevation" value={`${hvt.tail_elevation_m_srtm}m`} />
-          <Stat label="Tail stress" value={hvt.tail_stress_index.toFixed(3)} />
+          <Stat label="Head elevation" value={hvt.head_elevation_m_srtm != null ? `${hvt.head_elevation_m_srtm}m` : "n/a"} />
+          <Stat label="Head stress" value={hvt.head_stress_index != null ? hvt.head_stress_index.toFixed(3) : "n/a"} />
+          <Stat label="Tail elevation" value={hvt.tail_elevation_m_srtm != null ? `${hvt.tail_elevation_m_srtm}m` : "n/a"} />
+          <Stat label="Tail stress" value={hvt.tail_stress_index != null ? hvt.tail_stress_index.toFixed(3) : "n/a"} />
         </div>
       </div>
 
       <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
         <div className="rounded-xl border border-soft bg-elev p-4">
           <h2 className="mb-2 text-sm font-semibold">Head-to-tail profile</h2>
-          <SegmentProfileChart segments={data.segments} />
+          <SegmentProfileChart segments={canal.segments} />
           <p className="mt-2 text-xs text-faint">Higher number = drier, more stressed section of canal.</p>
         </div>
-        <CanalMap segments={data.segments} />
+        <CanalMap segments={canal.segments} />
       </div>
 
       <hr className="mt-10 border-soft" />
