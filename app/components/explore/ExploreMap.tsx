@@ -1,14 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
-import { createRoot, type Root } from "react-dom/client";
-import L from "leaflet";
+import { useEffect, useMemo, useRef, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, GeoJSON, Polyline, CircleMarker, Tooltip, useMap } from "react-leaflet";
 import type { Feature, Geometry } from "geojson";
 import type { Crop, LayerId } from "../../explore/layers";
 import { LAYERS } from "../../explore/layers";
-import type { DataBundle } from "../../explore/types";
+import type { DataBundle, DistrictHazardCurrentEntry } from "../../explore/types";
 import { formatDate } from "../../lib/formatDate";
 import HazardPopupContent from "./HazardPopupContent";
 
@@ -200,6 +198,22 @@ export default function ExploreMap({
     selectRef.current = onSelectDistrict;
   }, [onSelectDistrict]);
 
+  // Real hazard-animation popup, docked to the left edge of the map (not
+  // anchored to the clicked district's lat/lng). Anchoring to the click
+  // point via Leaflet's own L.popup() looked right for a small card, but
+  // Leaflet's autoPan then yanked the whole map to keep it on screen --
+  // for a district near the map's edge this could pan/zoom the map so far
+  // that neither the clicked district nor useful map context stayed
+  // visible (real user report). A fixed-position panel means the map
+  // never moves to accommodate the popup, so map and popup are always
+  // both on screen together. setPopupState itself has a stable identity
+  // (a React guarantee for useState setters), so the memoized click
+  // handler below can call it directly with no stale-closure ref needed.
+  const [popupState, setPopupState] = useState<{ district: string; hazards: DistrictHazardCurrentEntry[] } | null>(null);
+  useEffect(() => {
+    if (layerId !== "hazards" || hazardsView !== "live") setPopupState(null);
+  }, [layerId, hazardsView]);
+
   // onEachFeature (below) only runs once, when the GeoJSON layer is first
   // created -- the layer is never recreated on re-render (see the comment
   // on the restyle effect), so its click handler's closure would otherwise
@@ -247,7 +261,7 @@ export default function ExploreMap({
 
   const onEachFeature = useMemo(
     () => (feature: Feature<Geometry, any>, layer: any) => {
-      layer.on("click", (e: any) => {
+      layer.on("click", () => {
         const name = feature.properties?.shapeName as string;
         selectRef.current(name);
 
@@ -256,42 +270,13 @@ export default function ExploreMap({
         // flagged hazards -- an unflagged district has nothing to animate,
         // so it gets the existing side-panel behavior only, no popup.
         const { layerId: curLayerId, hazardsView: curHazardsView, data: curData } = popupCtxRef.current;
-        if (curLayerId !== "hazards" || curHazardsView !== "live") return;
+        if (curLayerId !== "hazards" || curHazardsView !== "live") {
+          setPopupState(null);
+          return;
+        }
         const row = curData.hazardCurrent?.districts.find((d) => d.district === name);
         const flagged = row?.hazards.filter((h) => h.currently_flagged) ?? [];
-        if (flagged.length === 0) return;
-
-        const map = (e.target as any)?._map;
-        if (!map) return;
-
-        const container = document.createElement("div");
-        const root: Root = createRoot(container);
-
-        const popup = L.popup({ maxWidth: 300, className: "hazard-popup-wrap" })
-          .setLatLng(e.latlng)
-          .setContent(container)
-          .openOn(map);
-
-        // Real bug this fixes: Leaflet measures the popup content's width
-        // synchronously when opened, but React's createRoot().render() is
-        // async -- Leaflet was locking in an inline width from a still-
-        // empty container (as little as 51px), then never remeasuring once
-        // the real content (menu list, or the canvas animation) actually
-        // painted a moment later. A ResizeObserver on the real rendered
-        // content calls popup.update() (Leaflet's own real resize API)
-        // every time its real size changes -- covers the initial async
-        // mount AND later menu <-> detail-view transitions, which change
-        // height substantially (back button, canvas, real message text).
-        const resizeObserver = new ResizeObserver(() => popup.update());
-        resizeObserver.observe(container);
-        root.render(<HazardPopupContent district={name} hazards={flagged} />);
-
-        popup.on("remove", () => {
-          resizeObserver.disconnect();
-          // real cleanup -- unmount deferred a tick so React doesn't warn
-          // about unmounting mid-render if this fires synchronously
-          setTimeout(() => root.unmount(), 0);
-        });
+        setPopupState(flagged.length > 0 ? { district: name, hazards: flagged } : null);
       });
     },
     []
@@ -380,6 +365,21 @@ export default function ExploreMap({
 
         <FlyAndSize layerId={layerId} canalCenter={canalCenter} />
       </MapContainer>
+
+      {popupState && (
+        <div className="pointer-events-none absolute inset-y-3 left-3 z-[500] flex items-start">
+          <div className="pointer-events-auto max-h-full w-[280px] overflow-y-auto themed-scrollbar rounded-xl border border-soft bg-elev p-3 shadow-lg">
+            <button
+              onClick={() => setPopupState(null)}
+              aria-label="Close"
+              className="float-right -mr-1 -mt-1 flex h-6 w-6 items-center justify-center rounded-full text-dim hover:bg-elev-2"
+            >
+              ×
+            </button>
+            <HazardPopupContent key={popupState.district} district={popupState.district} hazards={popupState.hazards} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
