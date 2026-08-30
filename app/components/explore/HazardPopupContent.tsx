@@ -26,7 +26,7 @@ export default function HazardPopupContent({
   const active = hazards.find((h) => h.hazard === selected) ?? null;
 
   return (
-    <div className="w-[260px] font-sans">
+    <div className="w-full min-w-0 font-sans">
       <div className="mb-2 flex items-center gap-1.5">
         {active && hazards.length > 1 && (
           <button

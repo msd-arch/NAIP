@@ -24,7 +24,7 @@ export default function CropStressPopupContent({ district, row }: { district: st
   const { locale } = useAppLocale();
 
   return (
-    <div className="w-[260px] font-sans">
+    <div className="w-full min-w-0 font-sans">
       <h4 className="mb-2 text-sm font-semibold text-main">{district}</h4>
 
       <div className="mb-3">

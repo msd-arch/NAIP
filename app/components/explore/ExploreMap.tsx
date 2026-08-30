@@ -391,7 +391,7 @@ export default function ExploreMap({
 
       {popupState && (
         <div className="pointer-events-none absolute inset-y-3 left-3 z-[500] flex items-start">
-          <div className="pointer-events-auto max-h-full w-[280px] overflow-y-auto themed-scrollbar rounded-xl border border-soft bg-elev p-3 shadow-lg">
+          <div className="pointer-events-auto max-h-full w-[280px] min-w-0 shrink-0 overflow-y-auto overflow-x-hidden themed-scrollbar rounded-xl border border-soft bg-elev p-3 shadow-lg">
             <button
               onClick={() => setPopupState(null)}
               aria-label="Close"

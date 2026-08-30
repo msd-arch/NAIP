@@ -146,7 +146,7 @@ export default function CropStressCanvas({
   return (
     <canvas
       ref={canvasRef}
-      style={{ width, height }}
+      style={{ width: "100%", height }}
       className="block w-full rounded-lg border border-soft"
       aria-label={kind === "level" ? "level anomaly point map" : "senescence-slope browning animation"}
     />
