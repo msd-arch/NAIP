@@ -844,6 +844,15 @@ export default function ExplorePanel({
       {layerId === "register" && <FarmSubmissionForm />}
       {layerId === "locust" && (
         <div className="space-y-3">
+          <div className="caveat-banner">
+            <strong>What stays fixed across every region:</strong> the same two real
+            thresholds and the same confidence formula are applied everywhere --
+            soil favorable at anomaly &ge; 0.02 m&sup3;/m&sup3;, vegetation "not
+            browning" at NDVI delta &ge; -0.05, and confidence = 0.35 base +0.30 if
+            soil favorable +0.30 if not browning. Only the live satellite readings
+            each region feeds into that fixed formula actually vary -- shown below
+            per region, not the formula itself.
+          </div>
           {(data.locust?.regions ?? []).map((r) => (
             <div key={r.region} className="rounded-xl border border-soft bg-elev p-4">
               <div className="flex items-center justify-between">
@@ -856,9 +865,25 @@ export default function ExplorePanel({
                   {r.breeding_risk_flag ? "Flagged" : "Not flagged"}
                 </span>
               </div>
-              <Row k="Soil damp enough?" v={r.soil_favorable_for_egglaying ? "Yes" : "No"} />
-              <Row k="Vegetation not browning much?" v={r.vegetation_not_browning ? "Yes" : "No"} />
-              <Row k="Confidence" v={`${Math.round(r.confidence * 100)}%`} />
+
+              <p className="provenance-line mt-1 !border-t-0 !pt-0 !mt-1">Live satellite readings (vary by region)</p>
+              <Row k="Soil moisture (recent)" v={r.sm_surface_m3m3 != null ? `${r.sm_surface_m3m3} m³/m³` : "n/a"} />
+              <Row k="Soil moisture anomaly" v={r.sm_surface_anomaly_m3m3 != null ? `${r.sm_surface_anomaly_m3m3 >= 0 ? "+" : ""}${r.sm_surface_anomaly_m3m3} m³/m³` : "n/a"} />
+              <Row k="NDVI (last 30d)" v={r.ndvi_recent_30d != null ? String(r.ndvi_recent_30d) : "n/a"} />
+              <Row k="NDVI (prior 30d)" v={r.ndvi_prior_30d != null ? String(r.ndvi_prior_30d) : "n/a"} />
+              <Row k="NDVI delta" v={r.ndvi_delta != null ? `${r.ndvi_delta >= 0 ? "+" : ""}${r.ndvi_delta}` : "n/a"} />
+
+              <p className="provenance-line mt-2 !border-t-0 !pt-0 !mt-1">Fixed formula applied to those readings</p>
+              <Row k="Soil damp enough? (anomaly &ge; 0.02)" v={r.soil_favorable_for_egglaying ? "Yes" : "No"} />
+              <Row k="Vegetation not browning? (delta &ge; -0.05)" v={r.vegetation_not_browning ? "Yes" : "No"} />
+              <div className="mt-2 rounded-lg bg-elev-2 px-3 py-2 text-[11px] text-dim">
+                <div className="flex items-center justify-between font-mono tnum">
+                  <span>0.35 base</span>
+                  <span>+ {r.soil_favorable_for_egglaying ? "0.30" : "0.00"} soil</span>
+                  <span>+ {r.vegetation_not_browning ? "0.30" : "0.00"} vegetation</span>
+                  <span className="font-semibold text-main">= {Math.round(r.confidence * 100)}%</span>
+                </div>
+              </div>
             </div>
           ))}
           <LastComputed iso={data.locust?.last_computed_utc} note={data.locust?.refresh_cadence_note} />
