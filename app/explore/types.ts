@@ -56,6 +56,7 @@ export interface DroughtDistrict {
 export interface DroughtNational {
   n_districts_covered: number;
   n_districts_flagged: number;
+  flag_threshold_percentile_this_year?: number;
   last_computed_utc?: string;
   refresh_cadence_note?: string;
   district_results: DroughtDistrict[];

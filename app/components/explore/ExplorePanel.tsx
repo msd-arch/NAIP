@@ -356,6 +356,15 @@ function DroughtDetail({ data, district }: { data: DataBundle; district: string 
   }
   const row = data.drought?.district_results.find((d) => d.district === district);
   if (!row) return <EmptyHint>{district} isn&apos;t covered by this signal.</EmptyHint>;
+  const ndviBand =
+    row.mean_current_ndvi < 0.15
+      ? "bare ground or minimal vegetation"
+      : row.mean_current_ndvi < 0.3
+      ? "sparse, stressed vegetation"
+      : row.mean_current_ndvi < 0.5
+      ? "moderate, healthy vegetation"
+      : "dense vegetation";
+  const pctThreshold = data.drought?.flag_threshold_percentile_this_year;
   return (
     <div className="rounded-xl border border-soft bg-elev p-4">
       <h3 className="text-sm font-semibold text-main">{district}</h3>
@@ -363,6 +372,33 @@ function DroughtDetail({ data, district }: { data: DataBundle; district: string 
       <Row k="NDVI usual for this time of year" v={row.mean_historical_ndvi.toFixed(3)} />
       <Row k="Z-score vs. own history" v={row.mean_z_score.toFixed(2)} />
       <Row k="Flagged" v={row.district_flag ? "yes — drier than usual" : "no"} />
+
+      <div className="mt-2 space-y-1.5 rounded-md bg-elev-2 p-2 text-[11px] leading-relaxed text-dim">
+        <p>
+          <strong className="text-main">NDVI</strong> (vegetation greenness, from satellite imagery) runs
+          roughly 0 to 1: near 0 is bare soil or water, 0.2&ndash;0.3 is sparse or stressed vegetation,
+          0.4&ndash;0.6 is moderate healthy vegetation, above 0.6 is dense growth.{" "}
+          {district}&apos;s current {row.mean_current_ndvi.toFixed(3)} reads as{" "}
+          <strong className="text-main">{ndviBand}</strong>.
+        </p>
+        <p>
+          <strong className="text-main">&ldquo;usual for this time of year&rdquo;</strong> is this same
+          district&apos;s own real satellite average for this month across a multi-year historical record
+          &mdash; not a national average, so a naturally dry district being compared to its own dry normal
+          won&apos;t get flagged just for being dry.
+        </p>
+        <p>
+          <strong className="text-main">Z-score</strong> is how many standard deviations today&apos;s NDVI
+          sits from that district&apos;s own historical average for this time of year: 0 is exactly
+          typical, positive is greener than usual, negative is drier than usual.{" "}
+          {pctThreshold != null && (
+            <>A district is flagged when its z-score falls in the driest ~10% of all districts nationally
+            this pass &mdash; currently around z &le; {pctThreshold.toFixed(2)}, a real threshold that
+            moves with the national distribution each run, not a fixed cutoff.</>
+          )}
+        </p>
+      </div>
+
       {stamp}
     </div>
   );
