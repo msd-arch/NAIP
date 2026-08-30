@@ -1,10 +1,10 @@
 {
-  "generated": "2026-08-29T20:28:37.111846",
-  "last_computed_utc": "2026-08-29T20:28:37.111846+00:00",
+  "generated": "2026-08-29T20:59:29.904490",
+  "last_computed_utc": "2026-08-29T20:59:29.904490+00:00",
   "refresh_cadence_note": "Part 3 ('make everything live'): re-evaluated as part of Track H's real ~15-min live nowcasting cycle (live_nowcast_cycle.py, gated by NAIP_ENABLE_TRIGGER_EVAL) whenever enabled -- a new trigger event from fresh live hazard data appears here without manual intervention. Reuses whatever crop-weight data currently exists in real_crop_mix.json (read, not recomputed every cycle -- crop shares only change when a new real MNFSR report or model retrain happens).",
   "threshold": 0.0216,
   "threshold_note": "Illustrative, chosen to produce a workable demo-week trigger count -- NOT actuarially calibrated against real loss/claims data (none exists accessibly for this project, same data-gap pattern as every other week).",
-  "n_source_rows": 344736,
+  "n_source_rows": 351792,
   "n_nonzero_exposure": 2465,
   "n_triggered": 23,
   "n_triggered_with_real_farms_matched": 1,
@@ -14,8 +14,8 @@
   "raast_note": "Raast (SBP instant-payment rail) is an integration point only, per architecture.md -- no real payment execution exists or is attempted here. This is a logged INTENT, not a transaction. No transaction ID, no money movement, nothing fabricated to look like a real payment record.",
   "top_triggers": [
     {
-      "event_id": "5f1adaf9-5b8c-4289-a0ce-cff06a1ec2a1",
-      "logged_at_utc": "2026-08-29T20:27:56.147979",
+      "event_id": "9699b18d-2e3f-4abd-b7ae-fb16f6ff7fec",
+      "logged_at_utc": "2026-08-29T20:58:33.563202",
       "trigger_rule": "exposure_score >= 0.0216 AND agronomically_plausible == true",
       "district": "Sialkot",
       "date": "20260827",
@@ -64,8 +64,8 @@
       }
     },
     {
-      "event_id": "459bf1b4-2220-4af2-b5e8-5327f720c695",
-      "logged_at_utc": "2026-08-29T20:27:59.527756",
+      "event_id": "1e395c21-21d3-43aa-9c98-caa6aa2ac6a8",
+      "logged_at_utc": "2026-08-29T20:58:36.215854",
       "trigger_rule": "exposure_score >= 0.0216 AND agronomically_plausible == true",
       "district": "Gujrat",
       "date": "20260827",
@@ -106,8 +106,8 @@
       }
     },
     {
-      "event_id": "2db9ec4f-4f27-4969-96b1-b7723a595afa",
-      "logged_at_utc": "2026-08-29T20:28:01.573796",
+      "event_id": "37a5b5bc-e409-4e78-8e82-5f29b738d0f0",
+      "logged_at_utc": "2026-08-29T20:58:38.996985",
       "trigger_rule": "exposure_score >= 0.0216 AND agronomically_plausible == true",
       "district": "Narowal",
       "date": "20260827",
@@ -148,8 +148,8 @@
       }
     },
     {
-      "event_id": "73cac968-73ee-49b2-b3b9-976954a5828a",
-      "logged_at_utc": "2026-08-29T20:28:03.249058",
+      "event_id": "79bc2f31-f44e-45a8-ae95-f02f3e18f9d2",
+      "logged_at_utc": "2026-08-29T20:58:41.457680",
       "trigger_rule": "exposure_score >= 0.0216 AND agronomically_plausible == true",
       "district": "Islamabad Capital Territory",
       "date": "20260827",
@@ -183,8 +183,8 @@
       }
     },
     {
-      "event_id": "9891ed50-a6f1-4225-8757-b9340ad079ab",
-      "logged_at_utc": "2026-08-29T20:28:04.951803",
+      "event_id": "54d2614f-4510-465a-b51e-c33904c99506",
+      "logged_at_utc": "2026-08-29T20:58:44.210807",
       "trigger_rule": "exposure_score >= 0.0216 AND agronomically_plausible == true",
       "district": "Sialkot",
       "date": "20260720",
@@ -233,8 +233,8 @@
       }
     },
     {
-      "event_id": "56674187-16c8-4a47-ac5a-a62e4ee2495a",
-      "logged_at_utc": "2026-08-29T20:28:06.665829",
+      "event_id": "45c0cc47-3528-457d-9e05-0190e9966f98",
+      "logged_at_utc": "2026-08-29T20:58:47.077707",
       "trigger_rule": "exposure_score >= 0.0216 AND agronomically_plausible == true",
       "district": "Abbottabad",
       "date": "20260827",
@@ -268,8 +268,8 @@
       }
     },
     {
-      "event_id": "59a1b617-c8d8-4742-bd2e-7dae5bd215e9",
-      "logged_at_utc": "2026-08-29T20:28:08.221937",
+      "event_id": "857d8c89-b8e5-4b2f-895b-a343a294e9e3",
+      "logged_at_utc": "2026-08-29T20:58:49.531412",
       "trigger_rule": "exposure_score >= 0.0216 AND agronomically_plausible == true",
       "district": "Jhelum",
       "date": "20260827",
@@ -305,8 +305,8 @@
       }
     },
     {
-      "event_id": "5631a099-25c9-4797-b351-4cc59772c2e9",
-      "logged_at_utc": "2026-08-29T20:28:09.829743",
+      "event_id": "bf4cd87a-823f-433c-b894-9ca41fb0390c",
+      "logged_at_utc": "2026-08-29T20:58:52.129873",
       "trigger_rule": "exposure_score >= 0.0216 AND agronomically_plausible == true",
       "district": "Gwadar",
       "date": "20260708",
@@ -340,8 +340,8 @@
       }
     },
     {
-      "event_id": "ab14f773-8f52-4fe9-9f6f-1904431a21a0",
-      "logged_at_utc": "2026-08-29T20:28:11.451562",
+      "event_id": "16b5ca7b-8f40-4590-ad94-2096bf8749ef",
+      "logged_at_utc": "2026-08-29T20:58:54.752666",
       "trigger_rule": "exposure_score >= 0.0216 AND agronomically_plausible == true",
       "district": "Hafizabad",
       "date": "20260712",
@@ -387,8 +387,8 @@
       }
     },
     {
-      "event_id": "7cdddcbc-73c2-4b89-8edb-c73d6d9ee3f1",
-      "logged_at_utc": "2026-08-29T20:28:13.429330",
+      "event_id": "dbaf6983-b1d6-48c6-8e24-aa9b8289302c",
+      "logged_at_utc": "2026-08-29T20:58:57.250300",
       "trigger_rule": "exposure_score >= 0.0216 AND agronomically_plausible == true",
       "district": "Mansehra",
       "date": "20260828",
@@ -422,8 +422,8 @@
       }
     },
     {
-      "event_id": "55aa37d3-b612-4295-b118-1c0a885f6c87",
-      "logged_at_utc": "2026-08-29T20:28:15.193440",
+      "event_id": "cb5841a5-6f67-4e11-9946-cc5c8ae179cb",
+      "logged_at_utc": "2026-08-29T20:58:59.769182",
       "trigger_rule": "exposure_score >= 0.0216 AND agronomically_plausible == true",
       "district": "Sanghar",
       "date": "20260713",
@@ -465,8 +465,8 @@
       }
     },
     {
-      "event_id": "dc39af69-5e26-41b8-ac89-8c4a8cf2b38d",
-      "logged_at_utc": "2026-08-29T20:28:17.036501",
+      "event_id": "6f104e75-502f-4e9b-9f92-0114f89f481e",
+      "logged_at_utc": "2026-08-29T20:59:02.269368",
       "trigger_rule": "exposure_score >= 0.0216 AND agronomically_plausible == true",
       "district": "Gujranwala",
       "date": "20260623",
@@ -538,8 +538,8 @@
       }
     },
     {
-      "event_id": "6a2de1ea-36c5-4a30-9556-ff645e994431",
-      "logged_at_utc": "2026-08-29T20:28:18.909104",
+      "event_id": "5af7f89f-6718-4db7-8990-493fb6de7c4f",
+      "logged_at_utc": "2026-08-29T20:59:04.793098",
       "trigger_rule": "exposure_score >= 0.0216 AND agronomically_plausible == true",
       "district": "Haripur",
       "date": "20260829",
@@ -573,8 +573,8 @@
       }
     },
     {
-      "event_id": "1e55345a-0722-4308-9a81-cf9d8e023ecb",
-      "logged_at_utc": "2026-08-29T20:28:20.722947",
+      "event_id": "ab603ea4-1a5b-4696-a99f-299cafa2b900",
+      "logged_at_utc": "2026-08-29T20:59:07.167521",
       "trigger_rule": "exposure_score >= 0.0216 AND agronomically_plausible == true",
       "district": "Haripur",
       "date": "20260829",
@@ -608,8 +608,8 @@
       }
     },
     {
-      "event_id": "5658db4e-e4af-4c81-a9ed-5fcfe7aca4af",
-      "logged_at_utc": "2026-08-29T20:28:22.478365",
+      "event_id": "e87d3b0c-01c2-4a7d-81b2-29f0a863a8ba",
+      "logged_at_utc": "2026-08-29T20:59:09.804922",
       "trigger_rule": "exposure_score >= 0.0216 AND agronomically_plausible == true",
       "district": "Haripur",
       "date": "20260829",
@@ -643,8 +643,8 @@
       }
     },
     {
-      "event_id": "d4d68ba9-c629-4a55-9816-b3071077927f",
-      "logged_at_utc": "2026-08-29T20:28:24.409382",
+      "event_id": "147cb94e-fc51-4b39-b058-c7e58de42770",
+      "logged_at_utc": "2026-08-29T20:59:12.420361",
       "trigger_rule": "exposure_score >= 0.0216 AND agronomically_plausible == true",
       "district": "Awaran",
       "date": "20260708",
@@ -678,8 +678,8 @@
       }
     },
     {
-      "event_id": "a9304669-330e-4e7a-b583-cd7eca6a4e8b",
-      "logged_at_utc": "2026-08-29T20:28:26.352721",
+      "event_id": "3af539cc-afbf-4a0e-909b-1fc5f0c86211",
+      "logged_at_utc": "2026-08-29T20:59:15.134246",
       "trigger_rule": "exposure_score >= 0.0216 AND agronomically_plausible == true",
       "district": "Awaran",
       "date": "20260714",
@@ -713,8 +713,8 @@
       }
     },
     {
-      "event_id": "ff9a7048-126e-40d7-90f9-519add3a28d7",
-      "logged_at_utc": "2026-08-29T20:28:28.226163",
+      "event_id": "e9c562e3-122f-4072-b991-dc82288911e5",
+      "logged_at_utc": "2026-08-29T20:59:17.793150",
       "trigger_rule": "exposure_score >= 0.0216 AND agronomically_plausible == true",
       "district": "Sanghar",
       "date": "20260623",
@@ -756,8 +756,8 @@
       }
     },
     {
-      "event_id": "917d45e9-ac03-4261-85e3-d69f2a59e58d",
-      "logged_at_utc": "2026-08-29T20:28:30.356176",
+      "event_id": "337da5ac-c9da-4f38-88f1-352217c17327",
+      "logged_at_utc": "2026-08-29T20:59:20.553893",
       "trigger_rule": "exposure_score >= 0.0216 AND agronomically_plausible == true",
       "district": "Sanghar",
       "date": "20260829",
@@ -799,8 +799,8 @@
       }
     },
     {
-      "event_id": "3803a490-2474-424b-89ce-b960bdf89bae",
-      "logged_at_utc": "2026-08-29T20:28:32.089728",
+      "event_id": "5caf9d4c-b1d2-4564-b426-8b5b208e450f",
+      "logged_at_utc": "2026-08-29T20:59:23.198506",
       "trigger_rule": "exposure_score >= 0.0216 AND agronomically_plausible == true",
       "district": "Sanghar",
       "date": "20260829",

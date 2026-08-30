@@ -2,6 +2,7 @@
 
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, CircleMarker, Tooltip } from "react-leaflet";
+import { formatDate } from "../../lib/formatDate";
 
 export interface RegisteredFarm {
   farm_id: string;
@@ -31,7 +32,7 @@ export default function FarmRegistryMap({ farms }: { farms: RegisteredFarm[] }) 
         {farms.map((f) => (
           <CircleMarker key={f.farm_id} center={[f.lat, f.lon]} radius={6} pathOptions={{ color: "#faf7f0", weight: 1, fillColor: "#4a8f3c", fillOpacity: 0.9 }}>
             <Tooltip>
-              {f.district} &middot; {f.area_ha.toFixed(2)} ha &middot; registered {new Date(f.registered).toLocaleDateString()}
+              {f.district} &middot; {f.area_ha.toFixed(2)} ha &middot; registered {formatDate(f.registered.slice(0, 10))}
             </Tooltip>
           </CircleMarker>
         ))}

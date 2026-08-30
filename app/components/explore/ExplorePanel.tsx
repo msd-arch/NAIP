@@ -9,6 +9,7 @@ import FarmSubmissionForm from "./FarmSubmissionForm";
 import { CROPS, Crop, LAYERS, LAYER_GROUPS, LayerId } from "../../explore/layers";
 import type { DataBundle, HistoricalEvent } from "../../explore/types";
 import { useAppLocale } from "../../i18n/LocaleProvider";
+import { formatDate, formatDatesInText } from "../../lib/formatDate";
 
 const PROJECT_BLURB =
   "NAIP extends an existing satellite hazard-detection pipeline (MSG/SEVIRI + WRF/GFS, " +
@@ -188,7 +189,7 @@ function LiveHazardsWindow({ data, district }: { data: DataBundle; district: str
           {row.n_currently_flagged === 0
             ? "No hazard currently flagged here"
             : `${row.n_currently_flagged} hazard${row.n_currently_flagged === 1 ? "" : "s"} currently flagged here`}
-          {" "}— as of the most recent real check, {row.most_recent_check_date}
+          {" "}— as of the most recent real check, {formatDate(row.most_recent_check_date)}
         </p>
       </div>
       {entries.map((h) => (
@@ -213,7 +214,7 @@ function LiveHazardsWindow({ data, district }: { data: DataBundle; district: str
               {locale === "ur" ? h.message_ur : h.message_en}
             </p>
             <p className="mt-1 text-[10px] text-faint">
-              as of {h.date} · confidence {Math.round(h.max_confidence * 100)}%
+              as of {formatDate(h.date)} · confidence {Math.round(h.max_confidence * 100)}%
             </p>
           </div>
           {/* Real historical context, shown alongside the live reading above,
@@ -227,7 +228,7 @@ function LiveHazardsWindow({ data, district }: { data: DataBundle; district: str
                 <>
                   triggered on <span className="tnum">{h.historical_n_days_triggered}</span> real day
                   {h.historical_n_days_triggered === 1 ? "" : "s"} in the archive, last on{" "}
-                  <span className="tnum">{h.historical_last_triggered_date}</span>
+                  <span className="tnum">{formatDate(h.historical_last_triggered_date)}</span>
                 </>
               )}
           </p>
@@ -273,7 +274,9 @@ function ForecastWindow({ data, district }: { data: DataBundle; district: string
           <div className="flex items-center justify-between">
             <span className="font-medium text-main">
               {FORECAST_HAZARD_LABEL[r.forecast_hazard] ?? r.forecast_hazard}
-              {r.window_days ? ` (${r.window_days[0]} → ${r.window_days[r.window_days.length - 1]})` : ` — ${r.valid_date}`}
+              {r.window_days
+                ? ` (${formatDate(r.window_days[0])} → ${formatDate(r.window_days[r.window_days.length - 1])})`
+                : ` — ${formatDate(r.valid_date)}`}
             </span>
             {r.flag && <span className="pill tier-model rounded-full bg-secondary-500 px-2 py-0.5 text-[10px] font-bold uppercase text-white">Forecast flag</span>}
           </div>
@@ -569,7 +572,7 @@ function ExposureDetail({ data, district }: { data: DataBundle; district: string
           <h3 className="text-sm font-semibold text-main">
             {district} · {r.hazard.replace(/_/g, " ")} × {r.crop}
           </h3>
-          <Row k="Date" v={r.date} />
+          <Row k="Date" v={formatDate(r.date)} />
           <Row k="Hazard confidence" v={r.hazard_confidence.toString()} />
           {r.crop_mix_source && <Row k="Crop data source" v={TIER_LABEL[r.crop_mix_source] ?? r.crop_mix_source} />}
           <Row k="Exposure score" v={String(r.exposure_score)} />
@@ -634,7 +637,7 @@ function TriggerDetail({
               severity="critical"
               confidencePct={Math.round(r.hazard_confidence * 100)}
               modelLabel={`score ${r.exposure_score}`}
-              asOf={r.date}
+              asOf={formatDate(r.date)}
               tierLabel={TIER_LABEL[r.crop_mix_source ?? ""] ?? r.crop_mix_source ?? "—"}
               tierClassName={TIER_CLASS[r.crop_mix_source ?? ""] ?? "text-faint"}
             />
@@ -714,7 +717,7 @@ function EventCard({ event }: { event: HistoricalEvent }) {
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
           <h3 className="text-sm font-semibold text-main">{event.title}</h3>
-          <p className="mt-0.5 text-[11px] text-faint">{event.window}</p>
+          <p className="mt-0.5 text-[11px] text-faint">{formatDatesInText(event.window)}</p>
         </div>
         <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${STATUS_TONE_CLASS[event.status_tone]}`}>
           {event.status}

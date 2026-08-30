@@ -7,6 +7,7 @@ import type { Feature, Geometry } from "geojson";
 import type { Crop, LayerId } from "../../explore/layers";
 import { LAYERS } from "../../explore/layers";
 import type { DataBundle } from "../../explore/types";
+import { formatDate } from "../../lib/formatDate";
 
 const NATIONAL_CENTER: [number, number] = [30.3753, 69.3451];
 const NATIONAL_ZOOM = 5;
@@ -62,8 +63,8 @@ function styleForDistrict(
     return {
       fillColor, fillOpacity: n === 0 ? 0.55 : 0.92,
       tooltip: n === 0
-        ? `${name}: no hazard currently flagged (as of ${row?.most_recent_check_date ?? "n/a"})`
-        : `${name}: ${n} hazard${n === 1 ? "" : "s"} currently flagged (as of ${row?.most_recent_check_date})`,
+        ? `${name}: no hazard currently flagged (as of ${formatDate(row?.most_recent_check_date)})`
+        : `${name}: ${n} hazard${n === 1 ? "" : "s"} currently flagged (as of ${formatDate(row?.most_recent_check_date)})`,
     };
   }
   if (layerId === "home") {
