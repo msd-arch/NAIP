@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useRef } from "react";
+import { createRoot, type Root } from "react-dom/client";
+import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, GeoJSON, Polyline, CircleMarker, Tooltip, useMap } from "react-leaflet";
 import type { Feature, Geometry } from "geojson";
@@ -8,6 +10,7 @@ import type { Crop, LayerId } from "../../explore/layers";
 import { LAYERS } from "../../explore/layers";
 import type { DataBundle } from "../../explore/types";
 import { formatDate } from "../../lib/formatDate";
+import HazardPopupContent from "./HazardPopupContent";
 
 const NATIONAL_CENTER: [number, number] = [30.3753, 69.3451];
 const NATIONAL_ZOOM = 5;
@@ -197,6 +200,16 @@ export default function ExploreMap({
     selectRef.current = onSelectDistrict;
   }, [onSelectDistrict]);
 
+  // onEachFeature (below) only runs once, when the GeoJSON layer is first
+  // created -- the layer is never recreated on re-render (see the comment
+  // on the restyle effect), so its click handler's closure would otherwise
+  // capture stale layerId/hazardsView/data from first mount. Same real ref
+  // pattern selectRef already uses for onSelectDistrict.
+  const popupCtxRef = useRef({ layerId, hazardsView, data });
+  useEffect(() => {
+    popupCtxRef.current = { layerId, hazardsView, data };
+  }, [layerId, hazardsView, data]);
+
   const mode = LAYERS[layerId].mode;
   const isChoropleth = mode === "choropleth";
 
@@ -234,7 +247,52 @@ export default function ExploreMap({
 
   const onEachFeature = useMemo(
     () => (feature: Feature<Geometry, any>, layer: any) => {
-      layer.on("click", () => selectRef.current(feature.properties?.shapeName));
+      layer.on("click", (e: any) => {
+        const name = feature.properties?.shapeName as string;
+        selectRef.current(name);
+
+        // Real hazard-animation popup: only for the National Hazards Live
+        // window, and only when this real district has 1+ real currently-
+        // flagged hazards -- an unflagged district has nothing to animate,
+        // so it gets the existing side-panel behavior only, no popup.
+        const { layerId: curLayerId, hazardsView: curHazardsView, data: curData } = popupCtxRef.current;
+        if (curLayerId !== "hazards" || curHazardsView !== "live") return;
+        const row = curData.hazardCurrent?.districts.find((d) => d.district === name);
+        const flagged = row?.hazards.filter((h) => h.currently_flagged) ?? [];
+        if (flagged.length === 0) return;
+
+        const map = (e.target as any)?._map;
+        if (!map) return;
+
+        const container = document.createElement("div");
+        const root: Root = createRoot(container);
+
+        const popup = L.popup({ maxWidth: 300, className: "hazard-popup-wrap" })
+          .setLatLng(e.latlng)
+          .setContent(container)
+          .openOn(map);
+
+        // Real bug this fixes: Leaflet measures the popup content's width
+        // synchronously when opened, but React's createRoot().render() is
+        // async -- Leaflet was locking in an inline width from a still-
+        // empty container (as little as 51px), then never remeasuring once
+        // the real content (menu list, or the canvas animation) actually
+        // painted a moment later. A ResizeObserver on the real rendered
+        // content calls popup.update() (Leaflet's own real resize API)
+        // every time its real size changes -- covers the initial async
+        // mount AND later menu <-> detail-view transitions, which change
+        // height substantially (back button, canvas, real message text).
+        const resizeObserver = new ResizeObserver(() => popup.update());
+        resizeObserver.observe(container);
+        root.render(<HazardPopupContent district={name} hazards={flagged} />);
+
+        popup.on("remove", () => {
+          resizeObserver.disconnect();
+          // real cleanup -- unmount deferred a tick so React doesn't warn
+          // about unmounting mid-render if this fires synchronously
+          setTimeout(() => root.unmount(), 0);
+        });
+      });
     },
     []
   );

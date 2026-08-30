@@ -1,13 +1,13 @@
 {
-  "generated_utc": "2026-08-30T01:12:27.517975+00:00",
+  "generated_utc": "2026-08-30T01:57:20.187762+00:00",
   "status": "error",
   "detail": "prepare_data.py (dashboard resync) failed (exit 1, 2s): copied drought_national.json (42 KB)\ncopied drought_old_vs_new.json (5 KB)\ncopied track_j_crossyear_results.json (4 KB)\ncopied real_crop_mix_interim_estimates.json (84 KB)\ncopied track_g_dashboard_summary.json (6 KB)\ncopied track_d_dashboard_summary.json (41 KB)\ncopied track_f_results.json (5 KB)\ncopied track_o_yield_results.json (10 KB)\ncopied crop_stress_screen.json (50 KB)\ncopied real_crop_mix.json (113 KB)\ncopied forecast_alerts.json (3",
-  "last_cycle_duration_seconds": 335.5,
+  "last_cycle_duration_seconds": 327.8,
   "last_scene_processed": null,
   "last_success_utc": "2026-08-29T20:57:12.008097+00:00",
   "last_success_scene": "MSG3-SEVI-MSG15-0100-NA-20260829195743.234000000Z-NA",
   "n_success": 183,
-  "n_failure": 33,
+  "n_failure": 36,
   "n_no_new_scene": 16,
   "min_latency_hours_tier": 1.0,
   "windows_uptime_caveat": "This pipeline only runs while this personal Windows machine is on, awake, and Task Scheduler fires -- there is no server-grade uptime guarantee, no failover host. A gap in cycles most likely means the machine was off/asleep, not a silent pipeline failure -- check the log for the real reason either way."

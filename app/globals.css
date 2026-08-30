@@ -90,6 +90,18 @@ h1, h2, h3, .font-display {
 }
 .leaflet-control-attribution a { color: var(--text-dim) !important; }
 
+/* Hazard-animation popup (ExploreMap.tsx/HazardPopupContent.tsx) -- override
+   Leaflet's default white popup chrome to match this product's paper theme
+   instead of looking like a foreign browser-default box. */
+.hazard-popup-wrap .leaflet-popup-content-wrapper {
+  background: var(--bg-elev);
+  color: var(--text);
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 24px rgba(43, 42, 36, 0.18);
+}
+.hazard-popup-wrap .leaflet-popup-content { margin: 12px; }
+.hazard-popup-wrap .leaflet-popup-tip { background: var(--bg-elev); }
+
 /* Range input accent */
 input[type="range"] { accent-color: #4a8f3c; }
 
