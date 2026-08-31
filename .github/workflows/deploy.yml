@@ -27,6 +27,16 @@ jobs:
       - name: Build static export
         env:
           NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
+          # Real free-tier constraint, not a placeholder: this is Cloudflare's
+          # free "quick tunnel" (cloudflared tunnel --url ...) exposing the
+          # local submission_server.py bridge -- no domain, no paid Cloudflare
+          # plan. Real, honest tradeoff: quick-tunnel URLs are NOT permanent,
+          # they change whenever the tunnel process restarts (laptop reboot,
+          # crash, cloudflared update). When that happens, Farm Data
+          # submissions will fail with a clear "server not reachable" error
+          # (see FarmSubmissionForm.tsx) until someone starts a fresh tunnel,
+          # updates this one line with the new URL, and pushes again.
+          NEXT_PUBLIC_FARM_API_BASE: https://humor-itself-jacob-investigate.trycloudflare.com
         run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:

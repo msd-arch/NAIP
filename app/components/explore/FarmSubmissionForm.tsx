@@ -7,7 +7,22 @@ import type { RegisteredFarm } from "./FarmRegistryMap";
 
 const FarmRegistryMap = dynamic(() => import("./FarmRegistryMap"), { ssr: false });
 
-const API_BASE = "http://localhost:8420";
+// Real local-only bridge to Postgres (submission_server.py). In local dev
+// this is genuinely localhost -- in the real deployed build it's baked in
+// at build time (see .github/workflows/deploy.yml's NEXT_PUBLIC_FARM_API_BASE)
+// as the real Cloudflare Tunnel URL that exposes the same local server to
+// the public internet, since a static GitHub Pages export has no
+// server-side code of its own to reach the real database directly.
+// REAL, HONEST CAVEAT: this is Cloudflare's free "quick tunnel"
+// (no domain, no account required -- the named-tunnel alternative needs a
+// real domain, which this project doesn't have and isn't paying for). A
+// quick-tunnel URL is not permanent: it changes every time the tunnel
+// process restarts (a laptop reboot, a crash, cloudflared updating). When
+// that happens this constant goes stale until someone starts a new tunnel,
+// updates NEXT_PUBLIC_FARM_API_BASE in the workflow, and re-deploys --
+// there is no free way around that instability, so it's stated here
+// plainly rather than left to be discovered as a silent outage.
+const API_BASE = process.env.NEXT_PUBLIC_FARM_API_BASE || "http://localhost:8420";
 
 interface Summary {
   n_real_farms_total: number;
@@ -100,7 +115,7 @@ function RegistrationForm({ onRegistered }: { onRegistered: () => void }) {
         setError(data.error || "Submission failed for an unknown real reason.");
       }
     } catch {
-      setError("Local Farm Registry server not reachable (localhost:8420) — start it with `python submission_server.py`, then try again.");
+      setError(`Farm Registry server not reachable (${API_BASE}) — it may be offline right now, try again shortly.`);
     } finally {
       setSubmitting(false);
     }
@@ -234,7 +249,7 @@ function FindMyRegistration() {
       if (data.success) setResult(data);
       else setError(data.error || "Lookup failed for an unknown real reason.");
     } catch {
-      setError("Local Farm Registry server not reachable (localhost:8420).");
+      setError(`Farm Registry server not reachable (${API_BASE}).`);
     } finally {
       setSearching(false);
     }
@@ -323,7 +338,7 @@ export default function FarmSubmissionForm() {
           setSummaryError(d.error || "real error loading summary");
         }
       })
-      .catch(() => setSummaryError("Local Farm Registry server not reachable (localhost:8420) — start it with `python submission_server.py`."));
+      .catch(() => setSummaryError(`Farm Registry server not reachable (${API_BASE}).`));
     fetch(`${API_BASE}/api/farms`)
       .then((r) => r.json())
       .then((d) => { if (d.success) setFarms(d.farms); })
@@ -337,11 +352,11 @@ export default function FarmSubmissionForm() {
   return (
     <div className="space-y-3">
       <div className="rounded-lg border border-secondary-500/40 bg-secondary-soft p-3 text-[11px] leading-relaxed text-dim">
-        <span className="font-medium">Dev-only feature — </span>
-        real submissions only work while the local Farm Registry server is running
-        (<code>python submission_server.py</code>) alongside <code>npm run dev</code>. It cannot
-        reach the live database from the public GitHub Pages deployment — that credential is
-        deliberately never shipped to the browser bundle.
+        <span className="font-medium">Real submissions depend on a laptop staying online — </span>
+        this form never ships the live database credential to the browser (deliberately, for real
+        farmer PII). Instead it calls a small local server on the project owner&apos;s own machine,
+        reached over a free Cloudflare Tunnel when you&apos;re on the deployed site. If that
+        machine is offline, submissions will fail with a clear network error, not silently.
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[420px_1fr]">
