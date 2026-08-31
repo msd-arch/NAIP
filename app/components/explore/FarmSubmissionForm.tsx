@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useState } from "react";
 import { CROPS, Crop } from "../../explore/layers";
-import type { RegisteredFarm } from "./FarmRegistryMap";
+import type { MapFarm } from "./FarmRegistryMap";
 
 const FarmRegistryMap = dynamic(() => import("./FarmRegistryMap"), { ssr: false });
 
@@ -325,7 +325,7 @@ function FindMyRegistration() {
 export default function FarmSubmissionForm() {
   const [summary, setSummary] = useState<Summary | null>(null);
   const [summaryError, setSummaryError] = useState<string | null>(null);
-  const [farms, setFarms] = useState<RegisteredFarm[]>([]);
+  const [farms, setFarms] = useState<MapFarm[]>([]);
 
   const fetchSummary = useCallback(() => {
     fetch(`${API_BASE}/api/summary`)
@@ -339,7 +339,7 @@ export default function FarmSubmissionForm() {
         }
       })
       .catch(() => setSummaryError(`Farm Registry server not reachable (${API_BASE}).`));
-    fetch(`${API_BASE}/api/farms`)
+    fetch(`${API_BASE}/api/farms-map`)
       .then((r) => r.json())
       .then((d) => { if (d.success) setFarms(d.farms); })
       .catch(() => {});
@@ -380,10 +380,10 @@ export default function FarmSubmissionForm() {
           <div>
             <h3 className="text-sm font-semibold text-main">Registered farms</h3>
             <p className="mt-0.5 text-[10px] text-faint">
-              Every real, identity-linked farm ({farms.length} shown) — never a synthetic farm, never a raw
-              identity field.
+              All three real farm categories ({farms.length} total) — toggle any combination on or off.
+              Never a raw identity field, on any marker, in any layer.
             </p>
-            <div className="mt-2 h-[320px]">
+            <div className="mt-2">
               <FarmRegistryMap farms={farms} />
             </div>
           </div>
