@@ -170,16 +170,3 @@ input[type="range"] { accent-color: #4a8f3c; }
 .themed-scrollbar::-webkit-scrollbar-thumb:hover {
   background: var(--text-faint);
 }
-
-/* Nav bar (ExploreNav.tsx): stays scrollable on a narrow viewport where
-   items genuinely don't fit (real fallback, not removed), but the native
-   scrollbar track/thumb itself is visually hidden -- on a wide viewport
-   where everything already fits, that bar was just visual clutter under
-   an otherwise-clean nav row. */
-.no-visible-scrollbar {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.no-visible-scrollbar::-webkit-scrollbar {
-  display: none;
-}

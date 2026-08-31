@@ -14,7 +14,6 @@ export type LayerId =
   | "trigger"
   | "forecast"
   | "models"
-  | "history"
   | "register";
 
 export type LayerMode = "choropleth" | "zoom-locust" | "zoom-canal" | "panel-only";
@@ -200,17 +199,6 @@ export const LAYERS: Record<LayerId, LayerMeta> = {
     aboutUr:
       "یہ پروڈکٹ کیا ہے، اور اس میں چلنے والے تربیت یافتہ ماڈلز — ہر ایک اس اصول یا سادہ بیس لائن کے ساتھ دکھایا گیا ہے جسے اسے شکست دینی تھی۔ مقامی نہیں، اس لیے نقشہ یہاں پیچھے ہٹ جاتا ہے۔",
   },
-  history: {
-    id: "history",
-    group: "",
-    label: "Historical Events",
-    labelUr: "تاریخی واقعات",
-    mode: "panel-only",
-    about:
-      "Real cross-year and cross-event generalization tests, browsable as event cards — fire, flood, locust, and crop models checked against real years/events they weren't trained on. Not spatial, so the map steps back here.",
-    aboutUr:
-      "حقیقی بین السنوات جانچ، ایونٹ کارڈز کی صورت میں — آگ، سیلاب، ٹڈی دل اور فصل کے ماڈلز کو ایسے حقیقی سالوں یا واقعات پر جانچا گیا جن پر انہیں تربیت نہیں دی گئی۔ مقامی نہیں، اس لیے نقشہ یہاں پیچھے ہٹ جاتا ہے۔",
-  },
   register: {
     id: "register",
     group: "",
@@ -243,7 +231,6 @@ export const LAYER_GROUPS: LayerGroup[] = [
     layers: ["cropmodel", "irrigation", "crossyear", "yield"],
   },
   { label: "Insurance Engine", labelUr: "انشورنس نظام", layers: ["exposure", "trigger"] },
-  { label: "History", labelUr: "تاریخی واقعات", layers: ["history"], standalone: true },
   { label: "Farm Data", labelUr: "فارم ڈیٹا", layers: ["register"], standalone: true },
   { label: "About", labelUr: "تعارف", layers: ["models"], standalone: true },
 ];

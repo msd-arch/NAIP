@@ -879,8 +879,21 @@ export default function ExplorePanel({
       {layerId === "trigger" && (
         <TriggerDetail data={data} district={selectedDistrict} threshold={triggerThreshold} onThresholdChange={onTriggerThresholdChange} />
       )}
-      {layerId === "models" && <ModelsDetail data={data} />}
-      {layerId === "history" && <HistoryDetail data={data} />}
+      {layerId === "models" && (
+        <div className="space-y-6">
+          <ModelsDetail data={data} />
+          <div>
+            <h3 className="text-base font-semibold text-main">History</h3>
+            <p className="mt-1 text-xs text-dim">
+              Real cross-year and cross-event generalization tests, browsable as event cards — fire, flood,
+              locust, and crop models checked against real years/events they weren&apos;t trained on.
+            </p>
+            <div className="mt-3">
+              <HistoryDetail data={data} />
+            </div>
+          </div>
+        </div>
+      )}
       {layerId === "register" && <FarmSubmissionForm />}
       {layerId === "locust" && (
         <div className="space-y-3">
