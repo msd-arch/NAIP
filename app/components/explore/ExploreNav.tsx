@@ -135,7 +135,7 @@ export default function ExploreNav({
       <div className="flex flex-wrap items-center gap-3 py-2.5">
         <span className="font-display text-sm font-semibold tracking-tight text-main">NAIP</span>
 
-        <nav className="hidden flex-1 flex-wrap items-center gap-0.5 sm:flex">
+        <nav className="hidden flex-1 flex-nowrap items-center gap-0.5 overflow-x-auto sm:flex">
           {LAYER_GROUPS.map((group) => {
             if (group.standalone) {
               const id = group.layers[0];
