@@ -124,6 +124,46 @@ export interface WaterStress {
   canals: CanalWaterStress[];
 }
 
+// Track V: real PMIU (Punjab Irrigation) government channel-gauge coverage
+// EXTENSION -- structurally separate from WaterStress above (a different,
+// directly-measured quantity: real gauge-vs-entitlement ratio, not a
+// MODIS ET/PET-derived stress index). Never merged into the same type or
+// the same UI number.
+export interface PMIUChannel {
+  channel_id: string;
+  imis_code: string;
+  name: string;
+  status: string;
+  design_discharge_cusecs: number | null;
+  authorized_tail_gauge_ft: number;
+  current_tail_gauge_ft: number;
+  tail_gauge_ratio: number;
+  daily_discharge_cusecs: number | null;
+  reading_datetime: string | null;
+  gauge_at_rd: string | null;
+  centroid_lon: number;
+  centroid_lat: number;
+  head_lon: number | null;
+  head_lat: number | null;
+  tail_lon: number | null;
+  tail_lat: number | null;
+}
+export interface PMIUChannelExpansion {
+  scope: string;
+  source: string;
+  reading_date: string;
+  generated_at_utc: string;
+  last_computed_utc: string;
+  refresh_cadence_note: string;
+  methodology_note: string;
+  n_channels_returned_by_pmiu: number;
+  n_excluded_already_covered_by_existing_module: number;
+  n_excluded_not_reported_NR: number;
+  n_excluded_missing_or_zero_authorized_gauge: number;
+  n_channels_included: number;
+  channels: PMIUChannel[];
+}
+
 export interface LocustRegion {
   region: string; boundary_type: string; boundary_note: string;
   sm_surface_m3m3: number | null; sm_surface_anomaly_m3m3: number | null;
@@ -336,6 +376,7 @@ export interface DataBundle {
   cropStress: CropStressScreen | null;
   cropMix: RealCropMix | null;
   water: WaterStress | null;
+  pmiu: PMIUChannelExpansion | null;
   locust: LocustData | null;
   flood: FloodSummary | null;
   exposure: ExposureData | null;

@@ -21,6 +21,10 @@ os.makedirs(OUT, exist_ok=True)
 SOURCES = {
     "district_alerts.json": os.path.join(NAIP, "backend", "alerts", "district_alerts.json"),
     "water_stress.json": os.path.join(NAIP, "models", "water_stress", "water_stress.json"),
+    # Track V: real PMIU channel-gauge coverage EXTENSION (2,012 new Punjab
+    # channels, structurally separate from water_stress.json's 6-canal
+    # MODIS ET/PET module -- never merged into the same file/metric).
+    "pmiu_channel_expansion.json": os.path.join(NAIP, "models", "water_stress", "pmiu_channel_expansion.json"),
     "crop_classifier_report.json": os.path.join(NAIP, "models", "crop_classifier", "report.json"),
     "locust_risk.json": os.path.join(NAIP, "models", "locust_risk", "locust_risk.json"),
     "exposure_risk.json": os.path.join(NAIP, "models", "fusion", "exposure_risk.json"),

@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import AlertCard from "../AlertCard";
 import ModelCard from "../ModelCard";
@@ -811,6 +812,129 @@ function HistoryDetail({ data }: { data: DataBundle }) {
   );
 }
 
+const PMIU_STATUS_CLASS: Record<string, string> = {
+  Dry: "text-critical bg-critical-soft border-critical/40",
+  Short: "text-secondary-500 bg-secondary-soft border-secondary-500/40",
+  Authorized: "text-accent-500 bg-accent-soft border-accent-500/40",
+  Excessive: "text-secondary-500 bg-secondary-soft border-secondary-500/40",
+};
+
+/** Track V, Part 2: real PMIU (Punjab Irrigation Department) government
+    channel-gauge data -- 2,012 real channels, a directly-measured
+    gauge-vs-entitlement quantity, structurally separate from the
+    satellite-inferred stress_index shown above it in the same "canal"
+    layer. Deliberately its own component/section (own search+sort state,
+    own about-text with the real exclusion counts) rather than folded into
+    CanalDetail's Row list, so the two real metrics never blend into one
+    number on screen. A searchable/filterable list, not 2,012 cards or a
+    2nd map layer -- checked before building: this project's Farm Registry
+    map already proved ~750 Leaflet markers render with no lag, but a flat
+    list is the honestly simpler, still-fully-usable pattern for "search a
+    channel by name, see its real reading" and avoids a second real map
+    surface competing with the existing zoom-canal OSM/MODIS view on the
+    same layer. */
+function PMIUChannelExplorer({ data }: { data: DataBundle }) {
+  const [search, setSearch] = useState("");
+  const [visibleCount, setVisibleCount] = useState(50);
+
+  const pmiu = data.pmiu;
+
+  const filtered = useMemo(() => {
+    if (!pmiu) return [];
+    const q = search.trim().toLowerCase();
+    if (!q) return pmiu.channels;
+    return pmiu.channels.filter((c) => c.name.toLowerCase().includes(q));
+  }, [pmiu, search]);
+
+  if (!pmiu) return <EmptyHint>Loading real PMIU channel data…</EmptyHint>;
+
+  const visible = filtered.slice(0, visibleCount);
+
+  return (
+    <div className="mt-5 space-y-3 border-t border-soft pt-4">
+      <div>
+        <h3 className="text-sm font-semibold text-main">
+          Real Government Channel Gauges (PMIU)
+        </h3>
+        <p className="mt-1 text-xs leading-relaxed text-dim">
+          A different, directly-measured quantity from the satellite stress index above —
+          Punjab Irrigation&apos;s own daily gauge reading at each channel&apos;s tail, divided by
+          that channel&apos;s own real sanctioned (authorized) tail gauge. 1.00 means the tail is
+          running exactly at its real entitlement; below 1.00 means it is running short.
+        </p>
+        <p className="mt-1.5 text-[11px] leading-relaxed text-faint">
+          PMIU reported {pmiu.n_channels_returned_by_pmiu.toLocaleString()} real channels for{" "}
+          {pmiu.reading_date}. {pmiu.n_channels_included.toLocaleString()} shown here — excludes{" "}
+          {pmiu.n_excluded_not_reported_NR.toLocaleString()} not-reported that day,{" "}
+          {pmiu.n_excluded_already_covered_by_existing_module} already covered by the satellite
+          module above (Muridke Disty, Upper Sohag Branch — kept separate rather than double-
+          counted), and {pmiu.n_excluded_missing_or_zero_authorized_gauge} with no real
+          entitlement value to compare against. Real ratio range across all included channels is
+          0.0–3.5, median 1.0 — most channels run at or near their own sanctioned level.
+        </p>
+      </div>
+
+      <input
+        type="text"
+        value={search}
+        onChange={(e) => {
+          setSearch(e.target.value);
+          setVisibleCount(50);
+        }}
+        placeholder="Search a channel by name…"
+        className="w-full rounded-lg border border-soft bg-elev px-3 py-1.5 text-xs text-main outline-none focus:border-accent-500"
+      />
+
+      <div className="text-[11px] text-faint">
+        {filtered.length.toLocaleString()} match{filtered.length === 1 ? "" : "es"}
+        {search && ` for "${search}"`} — sorted worst tail ratio first
+      </div>
+
+      <div className="max-h-[420px] space-y-1.5 overflow-y-auto pr-1">
+        {visible.length === 0 && <EmptyHint>No real channel matches that search.</EmptyHint>}
+        {visible.map((c) => (
+          <div
+            key={c.channel_id}
+            className="flex items-center justify-between gap-2 rounded-lg border border-soft bg-elev px-3 py-2"
+          >
+            <div className="min-w-0 flex-1">
+              <div className="truncate text-xs font-medium text-main">{c.name}</div>
+              <div className="mt-0.5 text-[10.5px] text-faint">
+                design {c.design_discharge_cusecs ?? "n/a"} cusecs · tail gauge{" "}
+                {c.current_tail_gauge_ft.toFixed(2)}ft / {c.authorized_tail_gauge_ft.toFixed(2)}ft
+                authorized
+              </div>
+            </div>
+            <div className="flex shrink-0 items-center gap-2">
+              <span className="tnum text-xs font-semibold text-main">
+                {c.tail_gauge_ratio.toFixed(2)}
+              </span>
+              <span
+                className={`rounded-full border px-2 py-0.5 text-[10px] font-medium ${
+                  PMIU_STATUS_CLASS[c.status] ?? "text-faint bg-elev-2 border-soft"
+                }`}
+              >
+                {c.status}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {visibleCount < filtered.length && (
+        <button
+          onClick={() => setVisibleCount((n) => n + 50)}
+          className="w-full rounded-lg border border-soft py-1.5 text-xs text-dim hover:text-main"
+        >
+          Show 50 more ({filtered.length - visibleCount} remaining)
+        </button>
+      )}
+
+      <LastComputed iso={pmiu.last_computed_utc} note={pmiu.refresh_cadence_note} />
+    </div>
+  );
+}
+
 export default function ExplorePanel({
   layerId,
   data,
@@ -980,6 +1104,7 @@ export default function ExplorePanel({
               </div>
             );
           })()}
+          <PMIUChannelExplorer data={data} />
         </div>
       )}
     </div>
