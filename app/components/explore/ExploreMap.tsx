@@ -2,11 +2,14 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import "leaflet/dist/leaflet.css";
+import "leaflet.markercluster/dist/MarkerCluster.css";
+import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import { MapContainer, TileLayer, GeoJSON, Polyline, CircleMarker, Tooltip, useMap } from "react-leaflet";
+import MarkerClusterGroup from "react-leaflet-cluster";
 import type { Feature, Geometry } from "geojson";
 import type { Crop, LayerId } from "../../explore/layers";
 import { LAYERS } from "../../explore/layers";
-import type { CropStressDistrict, DataBundle, DistrictHazardCurrentEntry, ExposureRow, FloodDistrictResult } from "../../explore/types";
+import type { CropStressDistrict, DataBundle, DistrictHazardCurrentEntry, ExposureRow, FloodDistrictResult, PMIUChannel } from "../../explore/types";
 import { formatDate } from "../../lib/formatDate";
 import HazardPopupContent from "./HazardPopupContent";
 import CropStressPopupContent from "./CropStressPopupContent";
@@ -160,6 +163,22 @@ function FlyAndSize({ layerId, canalCenter }: { layerId: LayerId; canalCenter: [
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [layerId, canalCenter, map]);
   return null;
+}
+
+// Track V, Part 2: real PMIU channel status colors -- reuses PMIU's OWN
+// reported status field (Dry/Short/Authorized/Excessive), not a re-derived
+// bucket, and matches the exact same semantic mapping ExplorePanel's
+// PMIU_STATUS_CLASS already uses for the list view (critical red = Dry,
+// secondary brown/tan = Short/Excessive, accent green = Authorized) so a
+// channel reads the same severity on the map as it does in the list.
+function pmiuStatusColor(status: string): string {
+  switch (status) {
+    case "Dry": return "#c93b35";
+    case "Short": return "#8a6d3f";
+    case "Excessive": return "#8a6d3f";
+    case "Authorized": return "#4a8f3c";
+    default: return "#b0aa95";
+  }
 }
 
 function stressColor(v: number | null) {
@@ -411,6 +430,31 @@ export default function ExploreMap({
               </CircleMarker>
             ))}
           </>
+        )}
+
+        {/* Track V, Part 2: real PMIU channel-gauge coverage extension, shown
+            nationally (not tied to the single canalPick selection above) --
+            real clustering (leaflet.markercluster via react-leaflet-cluster),
+            same real severity colors the list panel uses, so map and list
+            never disagree on what a channel's status means. Additive to the
+            existing zoom-canal view, never replaces it. */}
+        {layerId === "canal" && data.pmiu && (
+          <MarkerClusterGroup chunkedLoading maxClusterRadius={60} spiderfyOnMaxZoom>
+            {data.pmiu.channels.map((c: PMIUChannel) => (
+              <CircleMarker
+                key={c.channel_id}
+                center={[c.centroid_lat, c.centroid_lon]}
+                radius={5}
+                pathOptions={{ color: "#faf7f0", weight: 1, fillColor: pmiuStatusColor(c.status), fillOpacity: 0.9 }}
+              >
+                <Tooltip>
+                  <strong>{c.name}</strong>
+                  <br />
+                  {c.status} &middot; ratio={c.tail_gauge_ratio.toFixed(2)} &middot; tail {c.current_tail_gauge_ft.toFixed(2)}ft / {c.authorized_tail_gauge_ft.toFixed(2)}ft
+                </Tooltip>
+              </CircleMarker>
+            ))}
+          </MarkerClusterGroup>
         )}
 
         <TileLayer

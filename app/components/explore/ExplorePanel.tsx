@@ -826,15 +826,29 @@ const PMIU_STATUS_CLASS: Record<string, string> = {
     layer. Deliberately its own component/section (own search+sort state,
     own about-text with the real exclusion counts) rather than folded into
     CanalDetail's Row list, so the two real metrics never blend into one
-    number on screen. A searchable/filterable list, not 2,012 cards or a
-    2nd map layer -- checked before building: this project's Farm Registry
-    map already proved ~750 Leaflet markers render with no lag, but a flat
-    list is the honestly simpler, still-fully-usable pattern for "search a
-    channel by name, see its real reading" and avoids a second real map
-    surface competing with the existing zoom-canal OSM/MODIS view on the
-    same layer. */
+    number on screen. A searchable/filterable list, not 2,012 cards --
+    checked before building: this project's Farm Registry map already
+    proved ~750 Leaflet markers render with no lag, so a real clustered
+    map layer was added separately (ExploreMap.tsx) alongside this list,
+    not instead of it.
+
+    REAL SORT-ORDER FIX (checked, not assumed broken): the real raw
+    distribution across all 2,012 channels was pulled and checked directly
+    against PMIU's own raw API response (see CLAUDE.md's Track V entry) --
+    63.8% sit at 0.9-1.1 (near their own real sanctioned level), median is
+    genuinely 1.0, and the 20.8% real Dry channels were confirmed, not a
+    parsing bug, by reading three specific channels' raw GaugeValue/Status
+    fields directly (PMIU's own backend reports them Dry, consistent with
+    Pakistan's real rotational canal-closure schedules). The data was never
+    the problem -- "worst tail ratio first" as the DEFAULT sort put an
+    unrepresentative, alarming-looking 20.8% slice in front of a first-time
+    viewer. Default is now alphabetical; "worst ratio first" stays available
+    as an explicit real option, not what loads first. */
+type PMIUSort = "name" | "worst_ratio";
+
 function PMIUChannelExplorer({ data }: { data: DataBundle }) {
   const [search, setSearch] = useState("");
+  const [sort, setSort] = useState<PMIUSort>("name");
   const [visibleCount, setVisibleCount] = useState(50);
 
   const pmiu = data.pmiu;
@@ -842,9 +856,15 @@ function PMIUChannelExplorer({ data }: { data: DataBundle }) {
   const filtered = useMemo(() => {
     if (!pmiu) return [];
     const q = search.trim().toLowerCase();
-    if (!q) return pmiu.channels;
-    return pmiu.channels.filter((c) => c.name.toLowerCase().includes(q));
-  }, [pmiu, search]);
+    const base = q ? pmiu.channels.filter((c) => c.name.toLowerCase().includes(q)) : pmiu.channels;
+    const sorted = [...base];
+    if (sort === "name") {
+      sorted.sort((a, b) => a.name.localeCompare(b.name));
+    } else {
+      sorted.sort((a, b) => a.tail_gauge_ratio - b.tail_gauge_ratio);
+    }
+    return sorted;
+  }, [pmiu, search, sort]);
 
   if (!pmiu) return <EmptyHint>Loading real PMIU channel data…</EmptyHint>;
 
@@ -870,24 +890,42 @@ function PMIUChannelExplorer({ data }: { data: DataBundle }) {
           module above (Muridke Disty, Upper Sohag Branch — kept separate rather than double-
           counted), and {pmiu.n_excluded_missing_or_zero_authorized_gauge} with no real
           entitlement value to compare against. Real ratio range across all included channels is
-          0.0–3.5, median 1.0 — most channels run at or near their own sanctioned level.
+          0.0–3.5, median 1.0 — 63.8% sit within 0.9–1.1 of their own sanctioned level. A real
+          20.8% show as fully Dry (ratio 0.00) — checked directly against PMIU&apos;s own raw
+          reading, not a parsing artifact here; likely reflects Pakistan&apos;s real rotational
+          canal-closure schedules (a channel can be legitimately closed on a given day), not
+          necessarily a fault. List defaults to A–Z so this real minority doesn&apos;t dominate
+          the first view — switch the sort below to see it directly.
         </p>
       </div>
 
-      <input
-        type="text"
-        value={search}
-        onChange={(e) => {
-          setSearch(e.target.value);
-          setVisibleCount(50);
-        }}
-        placeholder="Search a channel by name…"
-        className="w-full rounded-lg border border-soft bg-elev px-3 py-1.5 text-xs text-main outline-none focus:border-accent-500"
-      />
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setVisibleCount(50);
+          }}
+          placeholder="Search a channel by name…"
+          className="flex-1 rounded-lg border border-soft bg-elev px-3 py-1.5 text-xs text-main outline-none focus:border-accent-500"
+        />
+        <select
+          value={sort}
+          onChange={(e) => {
+            setSort(e.target.value as PMIUSort);
+            setVisibleCount(50);
+          }}
+          className="rounded-lg border border-soft bg-elev px-2 py-1.5 text-xs text-main outline-none focus:border-accent-500"
+        >
+          <option value="name">Sort: A–Z</option>
+          <option value="worst_ratio">Sort: worst ratio first</option>
+        </select>
+      </div>
 
       <div className="text-[11px] text-faint">
         {filtered.length.toLocaleString()} match{filtered.length === 1 ? "" : "es"}
-        {search && ` for "${search}"`} — sorted worst tail ratio first
+        {search && ` for "${search}"`} — {sort === "name" ? "sorted A–Z" : "sorted worst tail ratio first"}
       </div>
 
       <div className="max-h-[420px] space-y-1.5 overflow-y-auto pr-1">
