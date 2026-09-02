@@ -66,13 +66,17 @@ export function styleForDistrict(
 ): DistrictStyleResult {
   // Real territorial-context polygon (see prepare_data.py) -- part of
   // Pakistan's official claimed northern extent, not one of the 126 real
-  // administrative districts any data source covers. Always no-data, on
-  // every layer, with an honest explanation rather than the generic
-  // "no data" every other uncovered feature gets.
+  // administrative districts any data source covers. Colored the same
+  // fixed green every other real Pakistani district uses at rest, on
+  // every layer, so it reads as real national territory rather than a
+  // void/hole on the map (the NODATA neutral gray it used before was
+  // indistinguishable from "outside the country" -- a real, reported
+  // user complaint, not a subtle styling nit). Never data-driven: no
+  // real data source covers it, so there's nothing to grade it against.
   if (name === "Northern Frontier (Trans-Karakoram)") {
     return {
-      fillColor: NODATA,
-      fillOpacity: 0.4,
+      fillColor: STEP1,
+      fillOpacity: 0.55,
       tooltip: `${name}: part of Pakistan's officially claimed territory — no satellite/hazard/crop/water monitoring data exists for this area in any NAIP layer.`,
     };
   }
