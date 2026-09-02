@@ -36,11 +36,22 @@ const GROUP_LABEL_UR: Record<string, string> = Object.fromEntries(
 );
 
 const TIER_LABEL: Record<string, string> = {
-  real_district_area: "real government data",
+  real_district_area: "government data",
   model_estimated_interim: "model's best guess",
   model_predicted: "model's best guess",
   hand_classified_mask: "manual estimate",
 };
+
+/** Pulls the real reporting season (e.g. "2022-23") out of a tier's own
+    `source` citation text, so the UI shows what season the data actually
+    covers instead of a vague "real" label with no date attached. Returns
+    null when the source has no season-shaped substring (e.g. the hand-
+    classified mask, which isn't dated at all). */
+function extractSeasonLabel(source: string | undefined): string | null {
+  if (!source) return null;
+  const m = source.match(/\b(19|20)\d{2}-\d{2,4}\b/);
+  return m ? m[0] : null;
+}
 const TIER_CLASS: Record<string, string> = {
   real_district_area: "text-accent-500",
   model_estimated_interim: "text-secondary-500",
@@ -468,6 +479,9 @@ function CropModelDetail({
               <h3 className="text-sm font-semibold text-main">{district}</h3>
               <p className={`mt-1 text-[11px] font-medium ${TIER_CLASS[entry.tier] ?? "text-faint"}`}>
                 {TIER_LABEL[entry.tier] ?? entry.tier}
+                {extractSeasonLabel(entry.source) && (
+                  <span className="text-faint"> · updated {extractSeasonLabel(entry.source)}</span>
+                )}
               </p>
               {CROPS.map((c) => (
                 <Row key={c} k={c} v={`${((entry.crops[c]?.share_of_4crop_area ?? 0) * 100).toFixed(1)}%`} />
