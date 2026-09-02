@@ -24,10 +24,19 @@ const LOCUST_ZOOM = 6;
 const CHOLISTAN_PROXY = new Set(["Bahawalpur", "Bahawalnagar", "Rahim Yar Khan"]);
 const LOCUST_REAL_BOUNDARY = new Set(["Tharparkar", "Kharan"]);
 
+// Alert-severity ramp, recolored from a monochrome green scale (darker
+// green = more alerts, which reads backwards for a hazard map -- "more
+// green" implied "more good") to a real green-yellow-red severity ramp.
+// Same 4-bucket binning every layer already used (NODATA/STEP1/STEP2/STEP3)
+// -- this is a recolor, not a rethink of the thresholds. NODATA is left
+// unchanged: it's a genuine "no data available" neutral, distinct from a
+// real confirmed-zero reading, and several layers (cropstress/drought/
+// flood/cropmodel) return it specifically for "not covered," not "zero
+// severity" -- changing its hue would blur that real distinction.
 const NODATA = "#e8e2d1";
-const STEP1 = "#bcd9b3";
-const STEP2 = "#4a8f3c";
-const STEP3 = "#2f5e26";
+const STEP1 = "#8fc78a"; // light green -- low/mild severity (reuses the app's existing accent-300 token)
+const STEP2 = "#e0a940"; // amber/yellow -- moderate severity
+const STEP3 = "#c93b35"; // red -- high severity (reuses the app's existing `critical` token, same red already used for fired triggers)
 const TIER_COLOR: Record<string, string> = {
   real_district_area: "#4a8f3c",
   model_estimated_interim: "#8a6d3f",
@@ -181,13 +190,19 @@ function pmiuStatusColor(status: string): string {
   }
 }
 
+// stress_index is "higher = more water-stressed" (see water_stress.json's
+// own stress_index_definition) -- recolored from a monochrome green ramp
+// (darker green = more stressed, same backwards "more green = worse"
+// problem the whole choropleth scale had) to a real green-yellow-red
+// severity ramp. Already a continuous interpolation (not banded), so it
+// stays continuous -- only the 3 color stops changed, same t-mapping.
 function stressColor(v: number | null) {
   if (v === null) return "#b0aa95";
   const t = Math.min(1, Math.max(0, (v - 0.82) / 0.15));
   const stops: [number, number, number][] = [
-    [143, 199, 138],
-    [74, 143, 60],
-    [47, 94, 38],
+    [143, 199, 138], // light green -- low stress
+    [224, 169, 64],  // amber/yellow -- moderate stress
+    [201, 59, 53],   // red -- high stress (same `critical` red used elsewhere)
   ];
   const seg = t < 0.5 ? [stops[0], stops[1], t * 2] : [stops[1], stops[2], (t - 0.5) * 2];
   const [a, b, lt] = seg as [number[], number[], number];

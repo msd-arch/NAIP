@@ -826,6 +826,39 @@ function HistoryDetail({ data }: { data: DataBundle }) {
   );
 }
 
+/** Shared legend for every choropleth that uses the green-yellow-red
+    severity ramp (ExploreMap.tsx's NODATA/STEP1/STEP2/STEP3). Each caller
+    supplies its own real labels -- no generic copy-pasted legend text,
+    since what "moderate" or "high" means differs per layer (a raw hazard
+    count vs. a relative-to-max share vs. a model score band). Text labels
+    sit next to every swatch (not color alone) as a real, if partial,
+    colorblind mitigation -- red-green color blindness is the single most
+    common form and this ramp is exactly the red/green pair that's hardest
+    to tell apart by hue alone; labels let severity still be read without
+    relying on hue discrimination. Not a full fix (no pattern/texture
+    layer) -- stated plainly in the Part 1 report, not shipped silently. */
+function ChoroplethLegend({ items }: { items: { color: string; label: string }[] }) {
+  return (
+    <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg border border-soft bg-elev-2 px-3 py-2 text-[10.5px]">
+      <span className="text-faint">Legend:</span>
+      {items.map((it) => (
+        <span key={it.label} className="flex items-center gap-1.5">
+          <span
+            className="inline-block h-2.5 w-2.5 shrink-0 rounded-sm border border-black/10"
+            style={{ backgroundColor: it.color }}
+          />
+          <span className="text-dim">{it.label}</span>
+        </span>
+      ))}
+    </div>
+  );
+}
+
+const NODATA_SWATCH = "#e8e2d1";
+const STEP1_SWATCH = "#8fc78a";
+const STEP2_SWATCH = "#e0a940";
+const STEP3_SWATCH = "#c93b35";
+
 const PMIU_STATUS_CLASS: Record<string, string> = {
   Dry: "text-critical bg-critical-soft border-critical/40",
   Short: "text-secondary-500 bg-secondary-soft border-secondary-500/40",
@@ -1038,13 +1071,66 @@ export default function ExplorePanel({
         </p>
       </div>
 
-      {layerId === "home" && <HomeDetail data={data} />}
-      {layerId === "hazards" && (
-        <HazardsDetail data={data} district={selectedDistrict} hazardsView={hazardsView} onHazardsViewChange={onHazardsViewChange} />
+      {layerId === "home" && (() => {
+        const rows = data.hazards?.districts ?? [];
+        const max = Math.max(0, ...rows.map((d) => d.n_triggered_rows));
+        return (
+          <>
+            <ChoroplethLegend items={[
+              { color: NODATA_SWATCH, label: "0 (no archived alerts)" },
+              { color: STEP1_SWATCH, label: `low (up to ${Math.max(1, Math.round(max * 0.33))})` },
+              { color: STEP2_SWATCH, label: `moderate (up to ${Math.max(1, Math.round(max * 0.66))})` },
+              { color: STEP3_SWATCH, label: `high (up to real max ${max.toLocaleString()})` },
+            ]} />
+            <HomeDetail data={data} />
+          </>
+        );
+      })()}
+      {layerId === "hazards" && (() => {
+        const rows = data.hazardCurrent?.districts ?? [];
+        const max = Math.max(0, ...rows.map((d) => d.n_currently_flagged ?? 0));
+        return (
+          <>
+            <ChoroplethLegend items={[
+              { color: NODATA_SWATCH, label: "0 flagged" },
+              { color: STEP1_SWATCH, label: "1 flagged" },
+              { color: STEP2_SWATCH, label: "2 flagged" },
+              { color: STEP3_SWATCH, label: `3+ flagged (real max ${max})` },
+            ]} />
+            <HazardsDetail data={data} district={selectedDistrict} hazardsView={hazardsView} onHazardsViewChange={onHazardsViewChange} />
+          </>
+        );
+      })()}
+      {layerId === "cropstress" && (
+        <>
+          <ChoroplethLegend items={[
+            { color: NODATA_SWATCH, label: "no signal flagged" },
+            { color: STEP1_SWATCH, label: "one signal flagged" },
+            { color: STEP3_SWATCH, label: "both signals flagged" },
+          ]} />
+          <CropStressDetail data={data} district={selectedDistrict} />
+        </>
       )}
-      {layerId === "cropstress" && <CropStressDetail data={data} district={selectedDistrict} />}
-      {layerId === "drought" && <DroughtDetail data={data} district={selectedDistrict} />}
-      {layerId === "flood" && <FloodDetail data={data} district={selectedDistrict} />}
+      {layerId === "drought" && (
+        <>
+          <ChoroplethLegend items={[
+            { color: NODATA_SWATCH, label: "not flagged" },
+            { color: STEP3_SWATCH, label: "flagged drier than usual" },
+          ]} />
+          <DroughtDetail data={data} district={selectedDistrict} />
+        </>
+      )}
+      {layerId === "flood" && (
+        <>
+          <ChoroplethLegend items={[
+            { color: NODATA_SWATCH, label: "score < 0.3" },
+            { color: STEP1_SWATCH, label: "0.3 – 0.5" },
+            { color: STEP2_SWATCH, label: "0.5 – 0.7" },
+            { color: STEP3_SWATCH, label: "≥ 0.7 (flagged)" },
+          ]} />
+          <FloodDetail data={data} district={selectedDistrict} />
+        </>
+      )}
       {layerId === "cropmodel" && (
         <CropModelDetail data={data} district={selectedDistrict} cropPick={cropPick} onCropPickChange={onCropPickChange} />
       )}
@@ -1120,6 +1206,14 @@ export default function ExplorePanel({
       )}
       {layerId === "canal" && data.water && (
         <div className="space-y-3">
+          <div className="mb-1 flex items-center gap-2 rounded-lg border border-soft bg-elev-2 px-3 py-2 text-[10.5px]">
+            <span className="text-faint shrink-0">Stress index:</span>
+            <div
+              className="h-2.5 flex-1 rounded-sm"
+              style={{ background: "linear-gradient(to right, rgb(143,199,138), rgb(224,169,64), rgb(201,59,53))" }}
+            />
+            <span className="text-dim shrink-0">0.82 (low) → 0.97+ (high)</span>
+          </div>
           <div className="flex flex-wrap gap-1.5">
             {data.water.canals.map((c) => (
               <button
