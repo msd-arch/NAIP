@@ -36,7 +36,7 @@ jobs:
           # submissions will fail with a clear "server not reachable" error
           # (see FarmSubmissionForm.tsx) until someone starts a fresh tunnel,
           # updates this one line with the new URL, and pushes again.
-          NEXT_PUBLIC_FARM_API_BASE: https://frequencies-ways-existence-cameras.trycloudflare.com
+          NEXT_PUBLIC_FARM_API_BASE: https://laid-suggested-wood-influenced.trycloudflare.com
         run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:
