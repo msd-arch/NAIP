@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { MapContainer, GeoJSON, CircleMarker } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import type { LayerId } from "../../explore/layers";
@@ -18,7 +19,20 @@ import {
     directly, not reimplemented), just mounted small with every interaction
     handler disabled and no raster TileLayer (see HomeMapTiles.tsx for the
     real, measured reasoning). Clicking anywhere in the tile is handled by
-    the parent <button>, not by the map itself. */
+    the parent <button>, not by the map itself.
+
+    REAL BUG FOUND AND FIXED (reported live: a tile showed a district's
+    real 3+/red-flagged status in its text line but stayed uncolored on
+    the actual mini-map): react-leaflet's declarative `style={...}` prop
+    on <GeoJSON> is only evaluated once, at initial mount -- it does NOT
+    re-run when the closed-over `data` prop changes on a later render,
+    a well-known react-leaflet gap. The first paint happens before the
+    real DataBundle has loaded (data.hazardCurrent etc are still null), so
+    every district paints as NODATA and never gets restyled once real data
+    arrives. ExploreMap.tsx's own main map already solved this correctly
+    (see its own `useEffect` calling `layer.setStyle(...)` imperatively,
+    watching `data`) -- this component was rebuilt to use the exact same
+    real, proven pattern instead of the naive declarative style prop. */
 
 const NONINTERACTIVE = {
   dragging: false,
@@ -36,6 +50,29 @@ const TIER_DOT_COLOR: Record<string, string> = {
   pending: "#4a8f3c",
   synthetic: "#9a9488",
 };
+
+function ChoroplethGeoJSON({ geo, layerId, data }: { geo: GeoJSON.FeatureCollection; layerId: LayerId; data: DataBundle }) {
+  const ref = useRef<any>(null);
+
+  useEffect(() => {
+    const gj = ref.current;
+    if (!gj) return;
+    gj.eachLayer((layer: any) => {
+      const feature = layer.feature;
+      const name = feature.properties?.shapeName as string;
+      const s = styleForDistrict(name, layerId, data, "wheat", "national", "live");
+      layer.setStyle({ color: "#faf7f088", weight: 0.4, fillColor: s.fillColor, fillOpacity: s.fillOpacity });
+    });
+  }, [layerId, data]);
+
+  return (
+    <GeoJSON
+      ref={ref as any}
+      data={geo as any}
+      style={() => ({ color: "#faf7f088", weight: 0.4, fillColor: "#e8e2d1", fillOpacity: 0.5 })}
+    />
+  );
+}
 
 export default function MiniLeafletTile({
   layerId,
@@ -109,18 +146,11 @@ export default function MiniLeafletTile({
   }
 
   // hazards / cropstress / flood / drought / home / etc -- national
-  // choropleth, real styleForDistrict() coloring, same function the full
-  // page uses.
+  // choropleth, real styleForDistrict() coloring, kept reactive to real
+  // data changes via the imperative setStyle pattern above.
   return (
     <MapContainer center={NATIONAL_CENTER} zoom={4} {...NONINTERACTIVE} className="h-full w-full pointer-events-none">
-      <GeoJSON
-        data={geo as any}
-        style={(feature: any) => {
-          const name = feature.properties?.shapeName;
-          const s = styleForDistrict(name, layerId, data, "wheat", "national", "live");
-          return { color: "#faf7f088", weight: 0.4, fillColor: s.fillColor, fillOpacity: s.fillOpacity };
-        }}
-      />
+      <ChoroplethGeoJSON geo={geo} layerId={layerId} data={data} />
     </MapContainer>
   );
 }
