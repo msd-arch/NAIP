@@ -228,6 +228,7 @@ export default function ExploreView() {
             <ExplorePanel
               layerId={activeLayer}
               data={data}
+              geo={geo}
               selectedDistrict={selectedDistrict}
               cropPick={cropPick}
               onCropPickChange={setCropPick}
@@ -237,6 +238,7 @@ export default function ExploreView() {
               onTriggerThresholdChange={setTriggerThreshold}
               hazardsView={hazardsView}
               onHazardsViewChange={setHazardsView}
+              onSelectLayer={handleSelectLayer}
             />
           </div>
         </div>

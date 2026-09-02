@@ -16,13 +16,16 @@ import CropStressPopupContent from "./CropStressPopupContent";
 import ExposurePopupContent from "./ExposurePopupContent";
 import FloodPopupContent from "./FloodPopupContent";
 
-const NATIONAL_CENTER: [number, number] = [30.3753, 69.3451];
-const NATIONAL_ZOOM = 5;
-const LOCUST_CENTER: [number, number] = [26.5, 68.5];
-const LOCUST_ZOOM = 6;
+// Exported (not just module-local) so the Home screen's preview tiles
+// (HomeMapTiles.tsx) can reuse the exact real center/zoom/boundary-set
+// logic rather than re-deriving a slightly different copy.
+export const NATIONAL_CENTER: [number, number] = [30.3753, 69.3451];
+export const NATIONAL_ZOOM = 5;
+export const LOCUST_CENTER: [number, number] = [26.5, 68.5];
+export const LOCUST_ZOOM = 6;
 
-const CHOLISTAN_PROXY = new Set(["Bahawalpur", "Bahawalnagar", "Rahim Yar Khan"]);
-const LOCUST_REAL_BOUNDARY = new Set(["Tharparkar", "Kharan"]);
+export const CHOLISTAN_PROXY = new Set(["Bahawalpur", "Bahawalnagar", "Rahim Yar Khan"]);
+export const LOCUST_REAL_BOUNDARY = new Set(["Tharparkar", "Kharan"]);
 
 // Alert-severity ramp, recolored from a monochrome green scale (darker
 // green = more alerts, which reads backwards for a hazard map -- "more
@@ -53,7 +56,7 @@ interface DistrictStyleResult {
 
 const EMPTY: DistrictStyleResult = { fillColor: NODATA, fillOpacity: 0.55, tooltip: "no data" };
 
-function styleForDistrict(
+export function styleForDistrict(
   name: string,
   layerId: LayerId,
   data: DataBundle,
@@ -196,7 +199,7 @@ function pmiuStatusColor(status: string): string {
 // problem the whole choropleth scale had) to a real green-yellow-red
 // severity ramp. Already a continuous interpolation (not banded), so it
 // stays continuous -- only the 3 color stops changed, same t-mapping.
-function stressColor(v: number | null) {
+export function stressColor(v: number | null) {
   if (v === null) return "#b0aa95";
   const t = Math.min(1, Math.max(0, (v - 0.82) / 0.15));
   const stops: [number, number, number][] = [

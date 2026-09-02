@@ -7,6 +7,7 @@ import ModelCard from "../ModelCard";
 import { R2Bar, AccuracyBar, YieldBar } from "../ChartBars";
 import ProvenanceLine from "../ProvenanceLine";
 import FarmSubmissionForm from "./FarmSubmissionForm";
+import HomeMapTiles from "./HomeMapTiles";
 import { CROPS, Crop, LAYERS, LAYER_GROUPS, LayerId } from "../../explore/layers";
 import type { DataBundle, HistoricalEvent } from "../../explore/types";
 import { useAppLocale } from "../../i18n/LocaleProvider";
@@ -118,7 +119,15 @@ function StatTile({ label, value }: { label: string; value: string }) {
   );
 }
 
-function HomeDetail({ data }: { data: DataBundle }) {
+function HomeDetail({
+  data,
+  geo,
+  onSelectLayer,
+}: {
+  data: DataBundle;
+  geo: GeoJSON.FeatureCollection | null;
+  onSelectLayer?: (id: LayerId) => void;
+}) {
   const rows = data.hazards?.districts ?? [];
   const totalObservations = rows.reduce((s, d) => s + d.n_rows, 0);
   const districtCount = rows.length || 126;
@@ -140,6 +149,14 @@ function HomeDetail({ data }: { data: DataBundle }) {
       <p className={`text-[11px] text-faint ${locale === "ur" ? "urdu-text" : ""}`} dir={locale === "ur" ? "rtl" : undefined}>
         {t("hint")}
       </p>
+      {onSelectLayer && (
+        <div>
+          <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-faint">
+            Live monitoring — tap any map for the full page
+          </h3>
+          <HomeMapTiles geo={geo} data={data} onSelectLayer={onSelectLayer} />
+        </div>
+      )}
     </div>
   );
 }
@@ -1023,6 +1040,7 @@ function PMIUChannelExplorer({ data }: { data: DataBundle }) {
 export default function ExplorePanel({
   layerId,
   data,
+  geo,
   selectedDistrict,
   cropPick,
   onCropPickChange,
@@ -1032,9 +1050,11 @@ export default function ExplorePanel({
   onTriggerThresholdChange,
   hazardsView,
   onHazardsViewChange,
+  onSelectLayer,
 }: {
   layerId: LayerId;
   data: DataBundle;
+  geo?: GeoJSON.FeatureCollection | null;
   selectedDistrict: string | null;
   cropPick: Crop;
   onCropPickChange: (c: Crop) => void;
@@ -1044,6 +1064,7 @@ export default function ExplorePanel({
   onTriggerThresholdChange: (t: "national" | "demo") => void;
   hazardsView: "live" | "forecast";
   onHazardsViewChange: (v: "live" | "forecast") => void;
+  onSelectLayer?: (id: LayerId) => void;
 }) {
   const meta = LAYERS[layerId];
   const { locale } = useAppLocale();
@@ -1082,7 +1103,7 @@ export default function ExplorePanel({
               { color: STEP2_SWATCH, label: `moderate (up to ${Math.max(1, Math.round(max * 0.66))})` },
               { color: STEP3_SWATCH, label: `high (up to real max ${max.toLocaleString()})` },
             ]} />
-            <HomeDetail data={data} />
+            <HomeDetail data={data} geo={geo ?? null} onSelectLayer={onSelectLayer} />
           </>
         );
       })()}
