@@ -64,6 +64,18 @@ export function styleForDistrict(
   triggerThreshold: "national" | "demo",
   hazardsView: "live" | "forecast" = "live"
 ): DistrictStyleResult {
+  // Real territorial-context polygon (see prepare_data.py) -- part of
+  // Pakistan's official claimed northern extent, not one of the 126 real
+  // administrative districts any data source covers. Always no-data, on
+  // every layer, with an honest explanation rather than the generic
+  // "no data" every other uncovered feature gets.
+  if (name === "Northern Frontier (Trans-Karakoram)") {
+    return {
+      fillColor: NODATA,
+      fillOpacity: 0.4,
+      tooltip: `${name}: part of Pakistan's officially claimed territory — no satellite/hazard/crop/water monitoring data exists for this area in any NAIP layer.`,
+    };
+  }
   if (layerId === "hazards" && hazardsView === "forecast") {
     const rows = (data.forecast?.alerts ?? []).filter((a) => a.district === name && a.flag);
     if (rows.length === 0) return { fillColor: NODATA, fillOpacity: 0.35, tooltip: `${name}: no forecast flag in the next 72h` };

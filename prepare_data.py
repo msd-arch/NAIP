@@ -63,6 +63,33 @@ for name, path in SOURCES.items():
     shutil.copyfile(path, os.path.join(OUT, name))
     print(f"copied {name} ({os.path.getsize(path)/1024:.0f} KB)")
 
+# ---- pk_districts.geojson gets one extra polygon merged in, dashboard-side
+# only -- NEVER written back into the canonical naip/data/seed/ source above,
+# because hazards.py/exposure_risk.py/trigger_engine.py/every other real
+# backend script assumes exactly 126 real administrative districts in that
+# file and loops over it for real detection/scoring; silently growing it to
+# 127 there risks corrupting real per-district output. This is Pakistan's
+# real officially-claimed northern extent (Survey of Pakistan map) beyond
+# Gilgit-Baltistan's administered districts -- computed as the real
+# geometric difference between Natural Earth's public ne_10m_admin_0_
+# disputed_areas "Pakistan" polygon and the union of our 126 real district
+# polygons, keeping only the coherent northern cluster (the southern
+# cluster was line-tracing noise between the two datasets, not real
+# missing land -- discarded, not included). No monitoring data exists for
+# it in any real NAIP layer; it always renders no-data, for territorial
+# completeness on the map only, never counted in any "126 districts" stat.
+_overlay_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data_overlays", "no_data_territories.json")
+with open(_overlay_path, encoding="utf-8") as f:
+    _overlay = json.load(f)
+_districts_out_path = os.path.join(OUT, "pk_districts.geojson")
+with open(_districts_out_path, encoding="utf-8") as f:
+    _districts = json.load(f)
+_districts["features"] = _districts["features"] + _overlay["features"]
+with open(_districts_out_path, "w", encoding="utf-8") as f:
+    json.dump(_districts, f)
+print(f"merged {len(_overlay['features'])} real no-data territorial-context polygon(s) into pk_districts.geojson "
+      f"(dashboard copy only, {len(_districts['features'])} total map features, still 126 real data-bearing districts)")
+
 # ---- JSONL audit logs -> JSON arrays (easier to fetch/parse in the browser) ----
 for name, path in [
     # PHASE 4 FINAL ITEM: found and fixed a real, pre-existing bug here while
